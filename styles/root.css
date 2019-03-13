@@ -1,0 +1,22 @@
+:root{
+  --background_main:#647c75;
+  --card_background: #7b92b4; 
+  --text_color:#0d1118;
+}
+
+.main{
+  height: 100%;
+  width: 100%;
+  background: var(--background_main);
+}
+
+.card{
+  background: var(--card_background);
+  color: var(--text_color);
+  border: 5px;
+}
+
+html, body{
+  margin: 0;
+  padding: 0;
+}
