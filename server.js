@@ -40,6 +40,10 @@ app.prepare().then(() => {
     return app.render(req, res, '/', req.query)
   })
 
+  server.get('/FAQ', (req, res) => {
+    return app.render(req, res, '/FAQ', req.query)
+  })
+
   // server.get('/archive', (req, res) => {
   //   return app.render(req, res, '/archive', req.query)
   // })
