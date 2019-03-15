@@ -24,30 +24,56 @@ class Submit extends Component{
 
   handlePost = () => {
     console.log('inside handlePost')
+    console.log('value of this.props: ', this.props)
     const uploadData = new FormData()
     uploadData.append('pic', this.state.selectedFile)
-    uploadData.append('post', this.state.textVal)
 
-    for (let [key, value] of uploadData.entries()) { 
-      console.log(key, value);
-    }
-
-    axios({
-      method: 'post',
-      url: 'http://localhost:5000/uploadPost',
-      data: uploadData,
-      config: { headers: {'Content-Type': 'multipart/form-data' }}
+    if(this.props.submitType=='post'){
+      uploadData.append('post', this.state.textVal)
+      axios({
+        method: 'post',
+        url: 'http://localhost:5000/uploadPost',
+        data: uploadData,
+        config: { headers: {'Content-Type': 'multipart/form-data' }}
       })
       .then((response)=>{
-          //handle success
-          console.log(response);
-          this.props.reloadPosts();
+        //handle success
+        console.log(response);
+        this.setState({
+          selectedFile: null, 
+          textVal: ''
+        })
+        this.props.reloadPage();
       })
       .catch((response)=>{
-          //handle error
-          console.log(response);
+        //handle error
+        console.log(response);
       });
-
+    }else if(this.props.submitType=='comment'){
+      console.log('inside if statement for comment')
+      uploadData.append('comment', this.state.textVal)
+      uploadData.append('postID', this.props.postID)
+      axios({
+        method: 'post',
+        url: 'http://localhost:5000/uploadComment',
+        data: uploadData,
+        config: { headers: {'Content-Type': 'multipart/form-data' }}
+      })
+      .then((response)=>{
+        console.log('inside axios return for submitType comment')
+        //handle success
+        console.log(response);
+        this.setState({
+          selectedFile: null, 
+          textVal: ''
+        })
+        this.props.reloadPage();
+      })
+      .catch((response)=>{
+        //handle error
+        console.log(response);
+      });
+    }
   }
 
   render(){
@@ -56,6 +82,7 @@ class Submit extends Component{
       <div className='submitPostContainer'>
         <textarea
           style={{height: '20vh', width: '40vw', marginBottom:'5px'}}
+          value={this.state.textVal}
           onChange={(e)=>{this.setState({textVal: e.target.value})}}
         ></textarea>
         <div>

@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
+import Router from 'next/router'
 import Head from '../components/head'
 import Nav from '../components/nav'
 
 import axios from 'axios';
 
 import Submit from '../components/Submit'
+
 
 import renderIf from 'render-if';
 
@@ -63,7 +65,7 @@ class Home extends Component{
     });
   }
 
-  reloadPosts = () => {
+  reloadPage = () => {
     console.log('inside reloadPosts')
     let url = "http://localhost:5000/getFirstPage"
     console.log('value of url: ', url)
@@ -111,7 +113,7 @@ class Home extends Component{
       console.log('value of response from getNavPage', response)
       this.setState({
         postData: response.data,
-        currentPage: navPage+1
+        currentPage: navPage + 1
       },()=>{
         this.mainRef.scrollTop = 0;
       })
@@ -141,17 +143,35 @@ class Home extends Component{
       <div className='main' ref={(input)=>this.mainRef = input}>
         <div style={{height: '10vh'}}>
         </div>
-        <Submit reloadPosts={()=>this.reloadPosts()}></Submit>
+        <Submit 
+        reloadPage={()=>this.reloadPage()}
+        submitType={'post'}
+        ></Submit>
         <div>
           {this.state.postData.posts.map((post, index)=>{
             let picVal = this.state.postData.dataArr.find((datum)=>{return datum.post == post._id})
             return(
               <div className='card' key={index} style={{marginBottom: '5px'}}>
-                <div style={{display: 'inline-block', marginRight: '5px'}}>
-                  {this.picHandler(picVal)}
+                <div>
+                  <div style={{display: 'inline-block', marginRight: '5px'}}>
+                    {this.picHandler(picVal)}
+                  </div>
+                  <div style={{display: 'inline-block', verticalAlign: 'top'}}>
+                    {post.body}
+                  </div>
                 </div>
-                <div style={{display: 'inline-block', verticalAlign: 'top'}}>
-                  {post.body}
+                <div style={{width: '100%'}}>
+                  <div className='button' style={{float: 'right'}}
+                  onClick={()=>{
+                    Router.push({
+                      pathname: '/reply',
+                      query: { post: post._id }
+                    })
+                  }}
+                  >
+                    REPLY
+                  </div>
+                  <div style={{clear: 'both'}}/>
                 </div>
               </div>
             )

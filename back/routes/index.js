@@ -157,6 +157,71 @@ router.post('/uploadPost', (req, res, next)=>{
   }
 })
 
+router.post('/uploadComment', (req, res, next)=>{
+  console.log('inside /uploadComment')
+  console.log('value of req.body: ', req.body)
+  var fileName = ''
+
+  const uploadComment = () => {
+
+    console.log('inside uploadComment')
+
+    var comment = {
+      body: req.body.comment, 
+      created: Date.now(),
+      flags: 0, 
+      fileName: fileName
+    }
+
+    let commentInstance = new model.Comment(comment)
+  
+    commentInstance.save().then(comment=>{
+      model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }}, {new: true}, (err, post)=>{
+        if(err){
+          console.log('there was an error: ', err)
+        }
+        console.log('value of post after updating: ', post)     
+        res.json({'success': 'success'})   
+      })
+    }).catch( (e) => {
+      console.log('there was an error: ', e)
+    });
+  }
+
+  console.log('value of req.files: ', req.files)
+
+  if(req.files!=null){
+    let tempFileName = Date.now().toString() + '&&' + req.files.pic.name
+    console.log('value of tempFileName: ', tempFileName)
+    console.log('inside req.Files != null')
+    let dest = __dirname+'/../picFolder/sharp/'+tempFileName
+    console.log('value of dest: ', dest)
+    console.log('value of data:  ', req.files.pic.data)
+    sharp(req.files.pic.data)
+    .resize(200, 300, {
+      fit: 'inside',
+      background: { r: 255, g: 255, b: 255, alpha: 0 }
+    })
+    .toFile(dest)
+    .then(() => {
+      console.log('inside .then for sharp')
+      let dest = __dirname+'/../picFolder/'+tempFileName
+      console.log('value of dest: ', dest)
+      console.log('req.files.pic.data: ', req.files.pic.data)
+      fs.writeFile(dest, req.files.pic.data, function(err, data) {
+        if (err) console.log(err);
+        console.log("Successfully Written to File.");
+        fileName = tempFileName;
+        uploadComment()
+      });
+    });
+  }else{
+    uploadComment()
+  }
+
+
+})
+
 router.post('/getNavPage', (req, res, next)=>{
   console.log('inside /getNavPage')
   console.log('value of req.body.navPage: ', req.body.navPage)
@@ -198,6 +263,44 @@ router.post('/getNavPage', (req, res, next)=>{
       res.json({posts: tempPosts, dataArr: dataArr})
     }
     asyncFunc()
+  })
+})
+
+router.post('/getPost', (req, res, next)=>{
+  console.log('inside /getPost')
+
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+
+  model.Post.findOne({_id: req.body.postID}).populate('comments').exec((err, post)=>{
+
+    commentArr = [];
+    var fileObj = null;
+    const asyncFunc = async () => {
+      if(post.fileName!=''){
+        console.log('inside first if statement and value of post: ', post)
+        console.log('inside first if statement and value of post.fileName: ', post.fileName)
+        var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+post.fileName)
+        fileObj = {post: post._id, data: fileData.toString('base64'), extension: post.fileName.match(/\.[0-9a-z]+$/i)[0]}
+      }
+      if(post.comments.length>0){
+        console.log('inside second if statement and post.comments; ', post.comments)
+        await asyncForEach(post.comments, async (comment) => {
+          console.log('inside asyncForEach')
+          if (comment.fileName!=''){
+            var commentData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+comment.fileName)
+            commentArr.push({post: comment._id, data: commentData.toString('base64'), extension: comment.fileName.match(/\.[0-9a-z]+$/i)[0]})
+          }
+        })
+      }
+      console.log('inside model.Post.findOne and value of res: ', {post: post, postObj: fileObj, commentArr: commentArr})
+      res.json({post: post, postObj: fileObj, commentArr: commentArr})
+    }
+    asyncFunc()
+
   })
 })
 
