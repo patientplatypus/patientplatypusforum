@@ -29,13 +29,19 @@ class Home extends Component{
     return({postData: postReturn})
   }
 
-  state = {
-    postData: this.props.postData,
-    numPages: 1, 
-    currentPage: 1,
-    posts: [], 
-    files: []
+  constructor(props){
+    super(props)
+    this.state = {
+      postData: this.props.postData,
+      numPages: 1, 
+      currentPage: 1,
+      posts: [], 
+      files: []
+    }
+    this.mainRef = React.createRef();
   }
+
+
 
   componentDidMount(){
     // console.log('value of this.props.postData: ', this.props.postData.dataArr[0].data)
@@ -94,12 +100,35 @@ class Home extends Component{
     }
   }
 
+  navFetch = (navPage) => {
+    console.log('inside navFetch')
+    let url = "http://localhost:5000/getNavPage"
+    console.log('value of url: ', url)
+    axios.post(url, {
+      navPage: navPage
+    })
+    .then(response=>{
+      console.log('value of response from getNavPage', response)
+      this.setState({
+        postData: response.data,
+        currentPage: navPage+1
+      },()=>{
+        this.mainRef.scrollTop = 0;
+      })
+    })
+    .catch(error=>{
+      console.log('value of error from getNavPage: ', error);
+    })
+  }
+
   navHandler = () => {
     var navArray = [...Array(this.state.numPages).keys()]
     return(
       navArray.map(navNum=>{
         return(
-          <div key={navNum} style={{display: 'inline-block', marginRight: '5px', cursor: 'pointer', fontWeight: this.state.currentPage==navNum+1?'bolder':''}}>
+          <div key={navNum} style={{display: 'inline-block', marginRight: '5px', cursor: 'pointer', fontWeight: this.state.currentPage==navNum+1?'bolder':''}}
+          onClick={()=>{this.navFetch(navNum)}}
+          >
             {navNum+1}
           </div>
         )
@@ -109,7 +138,7 @@ class Home extends Component{
 
   render(){
     return(
-      <div className='main'>
+      <div className='main' ref={(input)=>this.mainRef = input}>
         <div style={{height: '10vh'}}>
         </div>
         <Submit reloadPosts={()=>this.reloadPosts()}></Submit>

@@ -157,4 +157,48 @@ router.post('/uploadPost', (req, res, next)=>{
   }
 })
 
+router.post('/getNavPage', (req, res, next)=>{
+  console.log('inside /getNavPage')
+  console.log('value of req.body.navPage: ', req.body.navPage)
+
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+
+  model.Post.find({}).sort({created: -1}).skip(15*req.body.navPage).limit(15).exec((err, posts)=>{
+    if(err){
+      console.log('there was an err: ', err)
+    }
+
+    console.log("***before readFiles***")
+    let dest = __dirname+'/../picFolder/sharp/'
+
+    var tempPosts = posts;
+    var dataArr = [];
+
+    console.log('value of tempPosts: ', tempPosts)
+
+    const asyncFunc = async () => {
+      await asyncForEach(tempPosts, async (tempPost) => {
+        console.log('inside asyncForEach')
+        if (tempPost.fileName!=''){
+          console.log('inside fileName!= if statement')
+          console.log('tempPosts[tempPosts.indexOf(tempPost)]: ', tempPosts[tempPosts.indexOf(tempPost)])
+          var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+tempPost.fileName)
+          console.log('value of fileData: ', fileData);
+          // tempPost.data = fileData;
+          dataArr.push({post: tempPost._id, data: fileData.toString('base64'), extension: tempPost.fileName.match(/\.[0-9a-z]+$/i)[0]})
+          console.log('after assignment and value of tempPosts in asyncForEach: ', tempPosts)
+        }
+      })
+      console.log('before send and value of tempPosts: ', tempPosts)
+      console.log("before send and value of dataArr: ", dataArr)
+      res.json({posts: tempPosts, dataArr: dataArr})
+    }
+    asyncFunc()
+  })
+})
+
 module.exports = router;
