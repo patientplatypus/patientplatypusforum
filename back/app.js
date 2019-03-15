@@ -10,23 +10,28 @@ const fileUpload = require('express-fileupload')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var cors = require('cors')
+var mongoose = require('mongoose');
 
 var app = express();
+app.use(cors())
 
-var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/mydb";
-
-MongoClient.connect(url, function(err, db) {
-  if (err) throw err;
-  console.log("Database created!");
-  db.close();
+mongoose.connect("mongodb://localhost:27017/anotherDB2");
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', function() {
+  // we're connected!
+  console.log('connected to mongoose db')
 });
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-app.use(cors())
+process.on('unhandledRejection', (reason, promise) => {
+  console.log('Hey! Unhandled Rejection at:', reason.stack || reason)
+})
+
 app.use(bodyParser.json()) // handle json data
 app.use(bodyParser.urlencoded({ extended: true })) // handle URL-encoded data
 app.use(logger('dev'));
