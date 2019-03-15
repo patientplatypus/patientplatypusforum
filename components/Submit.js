@@ -38,11 +38,12 @@ class Submit extends Component{
       data: uploadData,
       config: { headers: {'Content-Type': 'multipart/form-data' }}
       })
-      .then(function (response) {
+      .then((response)=>{
           //handle success
           console.log(response);
+          this.props.reloadPosts();
       })
-      .catch(function (response) {
+      .catch((response)=>{
           //handle error
           console.log(response);
       });

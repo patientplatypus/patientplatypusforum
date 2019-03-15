@@ -65,7 +65,7 @@ router.get('/getFirstPage', (req, res, next)=>{
           var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+tempPost.fileName)
           console.log('value of fileData: ', fileData);
           // tempPost.data = fileData;
-          dataArr.push({post: tempPost._id, data: fileData.toString('base64')})
+          dataArr.push({post: tempPost._id, data: fileData.toString('base64'), extension: tempPost.fileName.match(/\.[0-9a-z]+$/i)[0]})
           console.log('after assignment and value of tempPosts in asyncForEach: ', tempPosts)
         }
       })

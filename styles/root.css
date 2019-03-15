@@ -17,7 +17,7 @@
   width: 100vw;
   background: var(--background_main);
   position: relative;
-  overflow-y: hidden;
+  overflow-y: auto;
   text-align: left;
 }
 
