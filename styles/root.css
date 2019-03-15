@@ -37,6 +37,17 @@
   border-radius: 5px;
 }
 
+.navCard{
+  background: var(--card_background);
+  color: var(--text_color);
+  margin-left: 10vw;
+  margin-bottom: 5px;
+  width: calc(80vw - 10px);
+  padding: 5px;
+  border-radius: 5px;
+  text-align: center;
+}
+
 .faq{
   margin-left: 20vw;
   width: 50vw;

@@ -32,6 +32,7 @@ class Home extends Component{
   state = {
     postData: this.props.postData,
     numPages: 1, 
+    currentPage: 1,
     posts: [], 
     files: []
   }
@@ -63,6 +64,22 @@ class Home extends Component{
     axios.get(url)
     .then(response=>{
       this.setState({postData: response.data})
+      axios({
+        method: 'get',
+        url: 'http://localhost:5000/getNumPages',
+      })
+      .then((response)=>{
+        //handle success
+        console.log(response);
+        console.log('value of this.state: ', this.state);
+        this.setState({numPages: response.data.numPages}, ()=>{
+          console.log('value of getNumPages after assignment: ', this.state.numPages)
+        })
+      })
+      .catch(function (response) {
+        //handle error
+        console.log(response);
+      });
     })
     .catch(error=>{
       console.log('error from Node: ', error)
@@ -75,6 +92,19 @@ class Home extends Component{
     }else{
       return <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`}/>
     }
+  }
+
+  navHandler = () => {
+    var navArray = [...Array(this.state.numPages).keys()]
+    return(
+      navArray.map(navNum=>{
+        return(
+          <div key={navNum} style={{display: 'inline-block', marginRight: '5px', cursor: 'pointer', fontWeight: this.state.currentPage==navNum+1?'bolder':''}}>
+            {navNum+1}
+          </div>
+        )
+      })
+    )
   }
 
   render(){
@@ -97,6 +127,9 @@ class Home extends Component{
               </div>
             )
           })}
+        </div>
+        <div className='navCard'>
+          {this.navHandler()}
         </div>
         <div className='nav'>
           <div style={{fontWeight:'bold', textAlign: 'center', width: '100%'}}>
