@@ -43,7 +43,7 @@ router.get('/getFirstPage', (req, res, next)=>{
     }
   }
 
-  model.Post.find({}).sort({created: -1}).exec((err, posts)=>{
+  model.Post.find({}).sort({created: -1}).limit(15).exec((err, posts)=>{
     if(err){
       console.log('there was an err: ', err)
     }

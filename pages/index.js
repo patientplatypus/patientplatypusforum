@@ -14,20 +14,18 @@ import '../styles/root.css'
 class Home extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    if(req){
-      let url = "http://localhost:5000/getFirstPage"
-      console.log('value of url: ', url)
-      var postReturn = await axios.get(url)
-      .then(response=>{
-        console.log('value of response.data: ', response.data)
-        console.log('value of response.data.dataArr[0].data: ', response.data.dataArr[0].data);
-        return response.data
-      })
-      .catch(error=>{
-        console.log('error from Node: ', error)
-        return({})
-      })
-    }
+    let url = "http://localhost:5000/getFirstPage"
+    console.log('value of url: ', url)
+    var postReturn = await axios.get(url)
+    .then(response=>{
+      // console.log('value of response.data: ', response.data)
+      // console.log('value of response.data.dataArr[0].data: ', response.data.dataArr[0].data);
+      return response.data
+    })
+    .catch(error=>{
+      console.log('error from Node: ', error)
+      return({})
+    })
     return({postData: postReturn})
   }
 
@@ -39,21 +37,23 @@ class Home extends Component{
   }
 
   componentDidMount(){
-    console.log('value of this.props.postData: ', this.props.postData.dataArr[0].data)
+    // console.log('value of this.props.postData: ', this.props.postData.dataArr[0].data)
     axios({
       method: 'get',
       url: 'http://localhost:5000/getNumPages',
+    })
+    .then((response)=>{
+      //handle success
+      console.log(response);
+      console.log('value of this.state: ', this.state);
+      this.setState({numPages: response.data.numPages}, ()=>{
+        console.log('value of getNumPages after assignment: ', this.state.numPages)
       })
-      .then((response)=>{
-        //handle success
-        console.log(response);
-        console.log('value of this.state: ', this.state);
-        this.setState({numPages: response.data.numPages})
-      })
-      .catch(function (response) {
-        //handle error
-        console.log(response);
-      });
+    })
+    .catch(function (response) {
+      //handle error
+      console.log(response);
+    });
   }
 
   reloadPosts = () => {
