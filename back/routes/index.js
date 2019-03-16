@@ -43,7 +43,7 @@ router.get('/getFirstPage', (req, res, next)=>{
     }
   }
 
-  model.Post.find({}).sort({created: -1}).limit(15).exec((err, posts)=>{
+  model.Post.find({}).sort({created: -1}).limit(15).populate('comments').exec((err, posts)=>{
     if(err){
       console.log('there was an err: ', err)
     }
@@ -176,7 +176,7 @@ router.post('/uploadComment', (req, res, next)=>{
     let commentInstance = new model.Comment(comment)
   
     commentInstance.save().then(comment=>{
-      model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }}, {new: true}, (err, post)=>{
+      model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }, created: Date.now()}, {new: true}, (err, post)=>{
         if(err){
           console.log('there was an error: ', err)
         }
@@ -232,7 +232,7 @@ router.post('/getNavPage', (req, res, next)=>{
     }
   }
 
-  model.Post.find({}).sort({created: -1}).skip(15*req.body.navPage).limit(15).exec((err, posts)=>{
+  model.Post.find({}).sort({created: -1}).skip(15*req.body.navPage).limit(15).populate('comments').exec((err, posts)=>{
     if(err){
       console.log('there was an err: ', err)
     }

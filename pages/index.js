@@ -150,6 +150,7 @@ class Home extends Component{
         <div>
           {this.state.postData.posts.map((post, index)=>{
             let picVal = this.state.postData.dataArr.find((datum)=>{return datum.post == post._id})
+            console.log('value of post.comments.map(comment=>comment.fileName!="")', post.comments.filter(comment=>comment.fileName!='').length)
             return(
               <div className='card' key={index} style={{marginBottom: '5px'}}>
                 <div>
@@ -170,6 +171,12 @@ class Home extends Component{
                   }}
                   >
                     REPLY
+                  </div>
+                  <div style={{float: 'right', marginRight: '5px'}}>
+                    Images: {post.comments.filter(comment=>comment.fileName!='').length}
+                  </div>
+                  <div style={{float: 'right', marginRight: '5px'}}>
+                    Replies: {post.comments.length}
                   </div>
                   <div style={{clear: 'both'}}/>
                 </div>

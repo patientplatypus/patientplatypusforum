@@ -73,12 +73,21 @@ class Reply extends Component{
           <div style={{display: 'inline-block', verticalAlign: 'top'}}>
             {this.state.postData.post.body}
           </div>
+          <div style={{width: '100%'}}>
+            <div style={{float: 'right', marginRight: '5px'}}>
+              Images: {this.state.postData.post.comments.filter(comment=>comment.fileName!='').length}
+            </div>
+            <div style={{float: 'right', marginRight: '5px'}}>
+              Replies: {this.state.postData.post.comments.length}
+            </div>
+            <div style={{clear: 'both'}}/>
+          </div>
         </div>
         <div>
           {this.state.postData.post.comments.map((comment, index)=>{
             let commentPicVal = this.state.postData.commentArr.find((datum)=>{return datum.post == comment._id});
             return(
-              <div className='card' key={index} style={{marginBottom: '5px'}}>
+              <div className='cardComment' key={index} style={{marginBottom: '5px'}}>
                 <div style={{display: 'inline-block', marginRight: '5px'}}>
                   {this.picHandler(commentPicVal)}
                 </div>

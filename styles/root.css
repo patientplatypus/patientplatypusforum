@@ -7,7 +7,9 @@
 
 .button{
   display: inline-block;
-  padding: 5px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 3px;
   cursor: pointer;
   background: var(--button_color)
 }
@@ -33,6 +35,15 @@
   color: var(--text_color);
   margin-left: 20vw;
   width: calc(55vw - 10px);
+  padding: 5px;
+  border-radius: 5px;
+}
+
+.cardComment{
+  background: var(--card_background);
+  color: var(--text_color);
+  margin-left: 25vw;
+  width: calc(50vw - 10px);
   padding: 5px;
   border-radius: 5px;
 }
