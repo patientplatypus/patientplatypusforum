@@ -36,8 +36,12 @@ app.prepare().then(() => {
     return res.status(200).sendFile('sitemap.xml', options)
   });
 
-  server.get('/', (req, res) => {
-    return app.render(req, res, '/', req.query)
+  // server.get('/', (req, res) => {
+  //   return app.render(req, res, '/', req.query)
+  // })
+
+  server.get("/:navPage", (req, res) => {
+    return app.render(req, res, "/", { navPage: req.params.navPage })
   })
 
   server.get('/FAQ', (req, res) => {
