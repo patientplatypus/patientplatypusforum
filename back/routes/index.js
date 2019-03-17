@@ -7,6 +7,8 @@ const sharp = require('sharp');
 // var getDirName = require('path').dirname;
 
 /* GET home page. */
+
+
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });

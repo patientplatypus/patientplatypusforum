@@ -15,8 +15,10 @@
     "next-images": "^1.1.0",
     "path": "^0.12.7",
     "react": "^16.8.4",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.8.4",
     "react-html-parser": "^2.0.2",
+    "react-ticker": "^1.1.1",
     "render-if": "^0.1.1",
     "socket.io-client": "^2.2.0",
     "tls": "0.0.1"

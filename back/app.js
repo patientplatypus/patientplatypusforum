@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 const fileUpload = require('express-fileupload')
+// var feed = require('../feed/feed')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -27,6 +28,13 @@ app.use(function(req, res, next) {
 
 io.sockets.on('connection', function (socket) {
   socket.emit("connection established", "connection established")
+  socket.on('addFeed', (item)=>{
+    console.log('inside addFeed and value of item: ', item)
+    io.sockets.emit('feedItem', item)
+  })
+  socket.on('disconnect', function() {
+    console.log("disconnect: ", socket.id);
+  });
 });
 
 mongoose.connect("mongodb://localhost:27017/anotherDB3");

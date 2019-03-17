@@ -12,13 +12,16 @@ class NavMenu extends Component{
           Navigation
         </div>
         <div>
-          <Link href='/FAQ'>FAQ</Link>
+          <Link href='/FAQ'><a href=''>FAQ</a></Link>
         </div>
         <div>
-          <Link href='/forum/sfw'>SFW Forum</Link>
+          <Link href='/forum/sfw'><a href=''>SFW Forum</a></Link>
         </div>
         <div>
-          <Link href='/forum/nsfw'>NSFW Forum</Link>
+          <Link href='/forum/nsfw'><a href=''>NSFW Forum</a></Link>
+        </div>
+        <div>
+          <Link href='/feed'><a href=''>Feed</a></Link>
         </div>
       </div>
     )

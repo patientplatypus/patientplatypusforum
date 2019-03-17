@@ -12,7 +12,7 @@ class Submit extends Component{
     this.fileRef = React.createRef();
     this.state = {
       selectedFile: null, 
-      textVal: null
+      textVal: ''
     }
   }
 

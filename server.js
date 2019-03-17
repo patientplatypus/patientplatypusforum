@@ -39,6 +39,10 @@ app.prepare().then(() => {
   // server.get('/', (req, res) => {
   //   return app.render(req, res, '/', req.query)
   // })
+  server.get('/feed', (req, res) => {
+    return app.render(req, res, '/feed', req.query)
+  })
+
 
   server.get("/forum/sfw/:navPage", (req, res) => {
     return app.render(req, res, "/forum/sfw", { navPage: req.params.navPage })
@@ -51,6 +55,7 @@ app.prepare().then(() => {
   server.get('/FAQ', (req, res) => {
     return app.render(req, res, '/FAQ', req.query)
   })
+
 
   // server.get('/archive', (req, res) => {
   //   return app.render(req, res, '/archive', req.query)
