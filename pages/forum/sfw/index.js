@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import Submit from '../../../components/Submit'
 import NavMenu from '../../../components/NavMenu'
+import Feed from '../../../components/Feed';
 
 import renderIf from 'render-if';
 
@@ -65,9 +66,6 @@ class Home extends Component{
   reloadPage = () => {
     console.log('inside reloadPosts')
     window.location.href='http://localhost:3000/forum/sfw/'+this.state.currentPage
-    // Router.push({
-    //   pathname: '/forum/sfw'
-    // })
   }
 
   picHandler = (picVal) => {
@@ -126,6 +124,7 @@ class Home extends Component{
   render(){
     return(
       <div className='main' ref={(input)=>this.mainRef = input}>
+        <Feed/>
         <div style={{height: '10vh'}}>
         </div>
         <Submit 

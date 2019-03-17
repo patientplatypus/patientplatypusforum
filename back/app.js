@@ -13,7 +13,21 @@ var cors = require('cors')
 var mongoose = require('mongoose');
 
 var app = express();
-app.use(cors())
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+
+var server = require('http').Server(app);
+var io = require('socket.io').listen(server, { origins: '*:*'}); 
+
+server.listen(5000)
+
+app.use(function(req, res, next) {
+  req.io = io;
+  next();
+});
+
+io.sockets.on('connection', function (socket) {
+  socket.emit("connection established", "connection established")
+});
 
 mongoose.connect("mongodb://localhost:27017/anotherDB3");
 mongoose.Promise = global.Promise;
