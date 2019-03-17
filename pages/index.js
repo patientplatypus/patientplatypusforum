@@ -23,8 +23,6 @@ class Home extends Component{
       navPage: query.navPage
     })
     .then(response=>{
-      // console.log('value of response.data: ', response.data)
-      // console.log('value of response.data.dataArr[0].data: ', response.data.dataArr[0].data);
       return response.data
     })
     .catch(error=>{
@@ -104,6 +102,29 @@ class Home extends Component{
     )
   }
 
+  handleCommentPreview = (post) => {
+    if(post.comments.length >= 3){
+      var lastThreeComments = post.comments.slice(Math.max(post.comments.length - 3, 1))
+    }else{
+      var lastThreeComments = post.comments
+    }
+    return(
+      lastThreeComments.map((comment, index)=>{
+        let commentPicVal = this.state.postData.dataArr.find((datum)=>{return datum.post == comment._id});
+        return(
+          <div className='cardComment' key={index} style={{marginBottom: '5px'}}>
+            <div style={{display: 'inline-block', marginRight: '5px'}}>
+              {this.picHandler(commentPicVal)}
+            </div>
+            <div style={{display: 'inline-block', verticalAlign: 'top'}}>
+              {comment.body}
+            </div>
+          </div>
+        )
+      })
+    )
+  }
+
   render(){
     return(
       <div className='main' ref={(input)=>this.mainRef = input}>
@@ -118,34 +139,37 @@ class Home extends Component{
             let picVal = this.state.postData.dataArr.find((datum)=>{return datum.post == post._id})
             console.log('value of post.comments.map(comment=>comment.fileName!="")', post.comments.filter(comment=>comment.fileName!='').length)
             return(
-              <div className='card' key={index} style={{marginBottom: '5px'}}>
-                <div>
-                  <div style={{display: 'inline-block', marginRight: '5px'}}>
-                    {this.picHandler(picVal)}
+              <div>
+                <div className='card' key={index} style={{marginBottom: '5px'}}>
+                  <div>
+                    <div style={{display: 'inline-block', marginRight: '5px'}}>
+                      {this.picHandler(picVal)}
+                    </div>
+                    <div style={{display: 'inline-block', verticalAlign: 'top'}}>
+                      {post.body}
+                    </div>
                   </div>
-                  <div style={{display: 'inline-block', verticalAlign: 'top'}}>
-                    {post.body}
+                  <div style={{width: '100%'}}>
+                    <div className='button' style={{float: 'right'}}
+                    onClick={()=>{
+                      Router.push({
+                        pathname: '/reply',
+                        query: { post: post._id }
+                      })
+                    }}
+                    >
+                      REPLY
+                    </div>
+                    <div style={{float: 'right', marginRight: '5px'}}>
+                      Images: {post.comments.filter(comment=>comment.fileName!='').length}
+                    </div>
+                    <div style={{float: 'right', marginRight: '5px'}}>
+                      Replies: {post.comments.length}
+                    </div>
+                    <div style={{clear: 'both'}}/>
                   </div>
                 </div>
-                <div style={{width: '100%'}}>
-                  <div className='button' style={{float: 'right'}}
-                  onClick={()=>{
-                    Router.push({
-                      pathname: '/reply',
-                      query: { post: post._id }
-                    })
-                  }}
-                  >
-                    REPLY
-                  </div>
-                  <div style={{float: 'right', marginRight: '5px'}}>
-                    Images: {post.comments.filter(comment=>comment.fileName!='').length}
-                  </div>
-                  <div style={{float: 'right', marginRight: '5px'}}>
-                    Replies: {post.comments.length}
-                  </div>
-                  <div style={{clear: 'both'}}/>
-                </div>
+                {this.handleCommentPreview(post)}
               </div>
             )
           })}
