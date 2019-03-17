@@ -3,6 +3,8 @@ import Link from 'next/link'
 import axios from 'axios'
 import Submit from '../../components/Submit'
 
+import NavMenu from '../../components/NavMenu';
+
 import '../../styles/root.css'
 
 class Reply extends Component{
@@ -98,17 +100,7 @@ class Reply extends Component{
             )
           })}
         </div>
-        <div className='nav'>
-          <div style={{fontWeight:'bold', textAlign: 'center', width: '100%'}}>
-            Navigation
-          </div>
-          <div>
-            <Link href='/FAQ'>FAQ</Link>
-          </div>
-          <div>
-            <Link href='/'>Forum</Link>
-          </div>
-        </div>
+        <NavMenu/>
       </div>
     )
   }

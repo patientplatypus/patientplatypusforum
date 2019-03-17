@@ -15,7 +15,7 @@ var mongoose = require('mongoose');
 var app = express();
 app.use(cors())
 
-mongoose.connect("mongodb://localhost:27017/anotherDB2");
+mongoose.connect("mongodb://localhost:27017/anotherDB3");
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));

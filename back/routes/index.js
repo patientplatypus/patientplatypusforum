@@ -11,9 +11,9 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.get('/getNumPages', (req, res, next)=>{
+router.get('/getNumPages/:boardType', (req, res, next)=>{
   console.log('inside /getNumPages')
-  model.Post.find({}).sort({created: -1}).exec((err, posts)=>{
+  model.Post.find({board: req.params.boardType}).sort({created: -1}).exec((err, posts)=>{
     if(err){
       console.log("there was an error: ", err)
     }
@@ -44,7 +44,8 @@ router.post('/uploadPost', (req, res, next)=>{
       created: Date.now(),
       flags: 0, 
       comments: [],
-      fileName: fileName
+      fileName: fileName, 
+      board: req.body.boardType
     }
   
     console.log('value of post: ', post)
@@ -166,7 +167,7 @@ router.post('/getNavPage', (req, res, next)=>{
     }
   }
 
-  model.Post.find({}).sort({created: -1}).skip(15*req.body.navPage).limit(15).populate('comments').exec((err, posts)=>{
+  model.Post.find({board: req.body.boardType}).sort({created: -1}).skip(15*req.body.navPage).limit(15).populate('comments').exec((err, posts)=>{
     if(err){
       console.log('there was an err: ', err)
     }
@@ -218,8 +219,6 @@ router.post('/getPost', (req, res, next)=>{
     var fileObj = null;
     const asyncFunc = async () => {
       if(post.fileName!=''){
-        console.log('inside first if statement and value of post: ', post)
-        console.log('inside first if statement and value of post.fileName: ', post.fileName)
         var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+post.fileName)
         fileObj = {post: post._id, data: fileData.toString('base64'), extension: post.fileName.match(/\.[0-9a-z]+$/i)[0]}
       }

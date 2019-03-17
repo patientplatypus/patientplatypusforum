@@ -19,6 +19,7 @@ var PostSchema = new Schema({
   created: { type: Date, default: Date.now },
   flags: {type: Number, default: 0},
   fileName: {type: String, default: ""},
+  board: {type: String, default: ""},
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
 }, {
   writeConcern: {

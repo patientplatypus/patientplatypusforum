@@ -40,8 +40,12 @@ app.prepare().then(() => {
   //   return app.render(req, res, '/', req.query)
   // })
 
-  server.get("/:navPage", (req, res) => {
-    return app.render(req, res, "/", { navPage: req.params.navPage })
+  server.get("/forum/sfw/:navPage", (req, res) => {
+    return app.render(req, res, "/forum/sfw", { navPage: req.params.navPage })
+  })
+
+  server.get("/forum/nsfw/:navPage", (req, res) => {
+    return app.render(req, res, "/forum/nsfw", { navPage: req.params.navPage })
   })
 
   server.get('/FAQ', (req, res) => {

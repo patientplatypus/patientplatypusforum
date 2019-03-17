@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
 import Router from 'next/router'
-import Head from '../components/head'
-import Nav from '../components/nav'
 
 import axios from 'axios';
 
-import Submit from '../components/Submit'
-
+import Submit from '../../../components/Submit'
+import NavMenu from '../../../components/NavMenu'
 
 import renderIf from 'render-if';
 
-import '../styles/root.css'
+import '../../../styles/root.css'
 
 class Home extends Component{
   static async getInitialProps({req, query}){
@@ -20,7 +18,8 @@ class Home extends Component{
     console.log('value of url: ', url)
     console.log('value of query: ', query)
     var postReturn = await axios.post(url, {
-      navPage: query.navPage
+      navPage: query.navPage, 
+      boardType: 'nsfw'
     })
     .then(response=>{
       return response.data
@@ -44,12 +43,10 @@ class Home extends Component{
     this.mainRef = React.createRef();
   }
 
-
-
   componentDidMount(){
     axios({
       method: 'get',
-      url: 'http://localhost:5000/getNumPages',
+      url: 'http://localhost:5000/getNumPages/nsfw',
     })
     .then((response)=>{
       //handle success
@@ -67,9 +64,7 @@ class Home extends Component{
 
   reloadPage = () => {
     console.log('inside reloadPosts')
-    Router.push({
-      pathname: '/'
-    })
+    window.location.href='http://localhost:3000/forum/nsfw/'+this.state.currentPage
   }
 
   picHandler = (picVal) => {
@@ -83,7 +78,7 @@ class Home extends Component{
   navFetch = (navPage) => {
     console.log('inside navFetch and value of navPage: ', navPage)
     Router.push({
-      pathname: '/'+navPage
+      pathname: '/forum/nsfw/'+navPage
     })
   }
 
@@ -133,6 +128,7 @@ class Home extends Component{
         <Submit 
         reloadPage={()=>this.reloadPage()}
         submitType={'post'}
+        boardType={'nsfw'}
         ></Submit>
         <div>
           {this.state.postData.posts.map((post, index)=>{
@@ -177,17 +173,7 @@ class Home extends Component{
         <div className='navCard'>
           {this.navHandler()}
         </div>
-        <div className='nav'>
-          <div style={{fontWeight:'bold', textAlign: 'center', width: '100%'}}>
-            Navigation
-          </div>
-          <div>
-            <Link href='/FAQ'><a href=''>FAQ</a></Link>
-          </div>
-          <div>
-            <Link href='/'><a href=''>Forum</a></Link>
-          </div>
-        </div>
+        <NavMenu/>
       </div>
     )
   }

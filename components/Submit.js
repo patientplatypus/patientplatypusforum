@@ -27,7 +27,7 @@ class Submit extends Component{
     console.log('value of this.props: ', this.props)
     const uploadData = new FormData()
     uploadData.append('pic', this.state.selectedFile)
-
+    uploadData.append('boardType', this.props.boardType)
     if(this.props.submitType=='post'){
       uploadData.append('post', this.state.textVal)
       axios({
