@@ -70,11 +70,35 @@ class Home extends Component{
     window.location.href='http://localhost:3000/forum/nsfw/'+this.state.currentPage
   }
 
+  flipPic = (picVal) => { 
+    picVal.data = "" //in order to prevent sending the entire buffer in request
+    axios.post('http://localhost:5000/flipPic', {picVal})
+    .then(response=>{
+      let tempArr = this.state.postData.dataArr;
+      let indexVal = tempArr.indexOf(tempArr.find((datum)=>{return datum.post == picVal.post}))
+      tempArr[indexVal] = response.data.picVal
+      let tempPost = this.state.postData;
+      tempPost.dataArr = tempArr
+      console.log('value of tempPost: ', tempPost)
+      this.setState({postData: tempPost})
+    })
+    .catch(error=>{
+      console.log('value of error from /flipPic: ', error)
+    })
+  }
+
   picHandler = (picVal) => {
     if(picVal==undefined){
       return null
     }else{
-      return <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`}/>
+      return (
+        <div
+        style={{cursor: 'pointer', height: '100%', width: '100%'}}
+        onClick={()=>{this.flipPic(picVal)}}
+        >
+          <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+        </div>
+      )
     }
   }
 
