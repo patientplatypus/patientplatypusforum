@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import Link from 'next/link'
 import axios from 'axios'
 import Submit from '../../components/Submit'
-
+import Feed from '../../components/Feed';
 import NavMenu from '../../components/NavMenu';
-
+import Head from 'next/head'
 import '../../styles/root.css'
 
 class Reply extends Component{
@@ -48,20 +48,56 @@ class Reply extends Component{
     })
   }
 
-  picHandler = (picVal) => {
+  flipPic = (picVal, picType) => { 
+    picVal.data = "" //in order to prevent sending the entire buffer in request
+    axios.post('http://localhost:5000/flipPic', {picVal})
+    .then(response=>{
+      if(picType=='post'){
+        let tempPostData = this.state.postData;
+        tempPostData.postObj = response.data.picVal;
+        this.setState({postData: tempPostData})
+      }else if(picType=='comment'){
+        let tempArr = this.state.postData.commentArr;
+        let indexVal = tempArr.indexOf(tempArr.find((datum)=>{return datum.post == picVal.post}))
+        tempArr[indexVal] = response.data.picVal
+        let tempPost = this.state.postData;
+        tempPost.dataArr = tempArr
+        console.log('value of tempPost: ', tempPost)
+        this.setState({postData: tempPost})
+      }
+    })
+    .catch(error=>{
+      console.log('value of error from /flipPic: ', error)
+    })
+  }
+
+  picHandler = (picVal, picType) => {
     console.log('value of picVal: ', picVal)
     if(picVal==undefined || picVal == null || picVal == -1){
       return null
     }else{
-      return <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`}/>
+      return (
+        <div
+        style={{cursor: 'pointer', height: '100%', width: '100%'}}
+        onClick={()=>{this.flipPic(picVal, picType)}}
+        >
+          <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+        </div>
+      )
     }
   }
-  // res.json({post: post, postObj: fileObj, commentArr: commentArr})
+
+
   render(){
     let postPicVal = this.state.postData.postObj == null?-1:this.state.postData.postObj;
     return(
       <div className='main'>
-        <div style={{height: '10vh'}}>
+        <Head>
+          <title>patientplatypus</title>
+          <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
+        </Head>
+        <Feed/>
+        <div style={{height: '5vh'}}>
         </div>
         <Submit 
         reloadPage={()=>this.reloadPage()}
@@ -70,7 +106,7 @@ class Reply extends Component{
         ></Submit>
         <div className='card' style={{marginBottom: '5px'}}>
           <div style={{display: 'inline-block', marginRight: '5px'}}>
-            {this.picHandler(postPicVal)}
+            {this.picHandler(postPicVal, 'post')}
           </div>
           <div style={{display: 'inline-block', verticalAlign: 'top'}}>
             {this.state.postData.post.body}
@@ -91,7 +127,7 @@ class Reply extends Component{
             return(
               <div className='cardComment' key={index} style={{marginBottom: '5px'}}>
                 <div style={{display: 'inline-block', marginRight: '5px'}}>
-                  {this.picHandler(commentPicVal)}
+                  {this.picHandler(commentPicVal, 'comment')}
                 </div>
                 <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                   {comment.body}

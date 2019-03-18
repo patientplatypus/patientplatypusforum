@@ -69,39 +69,31 @@ class Home extends Component{
     window.location.href='http://localhost:3000/forum/sfw/'+this.state.currentPage
   }
 
-  flipPic = (picVal, post) => { 
+  flipPic = (picVal) => { 
     picVal.data = "" //in order to prevent sending the entire buffer in request
     axios.post('http://localhost:5000/flipPic', {picVal})
     .then(response=>{
-      console.log('value of response from flipPic: ', response)
-      console.log('length of buffer: ', response.data.picVal.data)
       let tempArr = this.state.postData.dataArr;
       let indexVal = tempArr.indexOf(tempArr.find((datum)=>{return datum.post == picVal.post}))
       tempArr[indexVal] = response.data.picVal
       let tempPost = this.state.postData;
       tempPost.dataArr = tempArr
       console.log('value of tempPost: ', tempPost)
-      this.setState({postData: tempPost}, ()=>{
-        console.log('after setState in flipPic and')
-        let picVal = this.state.postData.dataArr.find((datum)=>{return datum.post == post._id})
-        console.log('value of picVal: ', picVal)
-        console.log('length of buffer: ', response.data.picVal.data)
-      })
+      this.setState({postData: tempPost})
     })
     .catch(error=>{
       console.log('value of error from /flipPic: ', error)
     })
   }
 
-  picHandler = (picVal, post) => {
-    // console.log('########### value of picVal.data in picHandler: ', picVal.data)
+  picHandler = (picVal) => {
     if(picVal==undefined){
       return null
     }else{
       return (
         <div
         style={{cursor: 'pointer', height: '100%', width: '100%'}}
-        onClick={()=>{this.flipPic(picVal, post)}}
+        onClick={()=>{this.flipPic(picVal)}}
         >
           <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
         </div>
@@ -145,7 +137,7 @@ class Home extends Component{
             <div 
             style={{display: 'inline-block', marginRight: '5px'}}
             >
-              {this.picHandler(commentPicVal, comment)}
+              {this.picHandler(commentPicVal)}
             </div>
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
               {comment.body}
@@ -184,8 +176,8 @@ class Home extends Component{
               <div>
                 <div className='card' key={index} style={{marginBottom: '5px'}}>
                   <div>
-                    <div style={{display: 'inline-block', maxWidth: '100%', marginRight: '5px'}}>
-                      {this.picHandler(picVal, post)}
+                    <div style={{display: 'inline-block', marginRight: '5px'}}>
+                      {this.picHandler(picVal)}
                     </div>
                     <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                       {post.body}

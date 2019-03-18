@@ -257,7 +257,7 @@ router.post('/getPost', (req, res, next)=>{
           console.log('inside asyncForEach')
           if (comment.fileName!=''){
             var commentData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+comment.fileName)
-            commentArr.push({post: comment._id, data: commentData.toString('base64'), extension: comment.fileName.match(/\.[0-9a-z]+$/i)[0], fileType: 'file', fileName: comment.fileName})
+            commentArr.push({post: comment._id, data: commentData.toString('base64'), extension: comment.fileName.match(/\.[0-9a-z]+$/i)[0], fileType: 'preview', fileName: comment.fileName})
           }
         })
       }
