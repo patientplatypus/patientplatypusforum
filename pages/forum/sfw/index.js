@@ -69,11 +69,43 @@ class Home extends Component{
     window.location.href='http://localhost:3000/forum/sfw/'+this.state.currentPage
   }
 
-  picHandler = (picVal) => {
+  flipPic = (picVal, post) => { 
+    picVal.data = "" //in order to prevent sending the entire buffer in request
+    axios.post('http://localhost:5000/flipPic', {picVal})
+    .then(response=>{
+      console.log('value of response from flipPic: ', response)
+      console.log('length of buffer: ', response.data.picVal.data)
+      let tempArr = this.state.postData.dataArr;
+      let indexVal = tempArr.indexOf(tempArr.find((datum)=>{return datum.post == picVal.post}))
+      tempArr[indexVal] = response.data.picVal
+      let tempPost = this.state.postData;
+      tempPost.dataArr = tempArr
+      console.log('value of tempPost: ', tempPost)
+      this.setState({postData: tempPost}, ()=>{
+        console.log('after setState in flipPic and')
+        let picVal = this.state.postData.dataArr.find((datum)=>{return datum.post == post._id})
+        console.log('value of picVal: ', picVal)
+        console.log('length of buffer: ', response.data.picVal.data)
+      })
+    })
+    .catch(error=>{
+      console.log('value of error from /flipPic: ', error)
+    })
+  }
+
+  picHandler = (picVal, post) => {
+    // console.log('########### value of picVal.data in picHandler: ', picVal.data)
     if(picVal==undefined){
       return null
     }else{
-      return <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`}/>
+      return (
+        <div
+        style={{cursor: 'pointer', height: '100%', width: '100%'}}
+        onClick={()=>{this.flipPic(picVal, post)}}
+        >
+          <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+        </div>
+      )
     }
   }
 
@@ -110,8 +142,10 @@ class Home extends Component{
         let commentPicVal = this.state.postData.dataArr.find((datum)=>{return datum.post == comment._id});
         return(
           <div className='cardComment' key={index} style={{marginBottom: '5px'}}>
-            <div style={{display: 'inline-block', marginRight: '5px'}}>
-              {this.picHandler(commentPicVal)}
+            <div 
+            style={{display: 'inline-block', marginRight: '5px'}}
+            >
+              {this.picHandler(commentPicVal, comment)}
             </div>
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
               {comment.body}
@@ -120,6 +154,12 @@ class Home extends Component{
         )
       })
     )
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot){
+    if(prevState!=this.state){
+      console.log('~~~~~~there was a state change~~~~~~')
+    }
   }
 
   render(){
@@ -140,13 +180,12 @@ class Home extends Component{
         <div>
           {this.state.postData.posts.map((post, index)=>{
             let picVal = this.state.postData.dataArr.find((datum)=>{return datum.post == post._id})
-            console.log('value of post.comments.map(comment=>comment.fileName!="")', post.comments.filter(comment=>comment.fileName!='').length)
             return(
               <div>
                 <div className='card' key={index} style={{marginBottom: '5px'}}>
                   <div>
-                    <div style={{display: 'inline-block', marginRight: '5px'}}>
-                      {this.picHandler(picVal)}
+                    <div style={{display: 'inline-block', maxWidth: '100%', marginRight: '5px'}}>
+                      {this.picHandler(picVal, post)}
                     </div>
                     <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                       {post.body}

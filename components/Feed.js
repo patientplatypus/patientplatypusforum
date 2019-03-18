@@ -20,7 +20,7 @@ class NavMenu extends Component{
     }
    
     this.state = {
-      feedArr: "ʕっ˘ڡ˘ςʔ FEED", 
+      feedArr: "FEED ʕっ˘ڡ˘ςʔ", 
       componentMounted: false
     }
   }
@@ -43,12 +43,6 @@ class NavMenu extends Component{
           console.log("after setState and value of feedArr : ", this.state.feedArr)
         })
       })
-      // setTimeout(() => {
-      //   this.socket.emit('addFeed', 'hello there sailor yohoho and a bottle of rum')
-      // }, 2000);
-      // setTimeout(() => {
-      //   this.socket.emit('addFeed', 'yolobitches')
-      // }, 2000);
     })
   }
 
@@ -70,13 +64,3 @@ class NavMenu extends Component{
 }
 
 export default NavMenu
-
-{/* <div className='feedFont' style={{display: 'inline-block', whiteSpace: 'nowrap', width: 'max-content', float: 'left', transition: 'transform 2s', transitionTimingFunction: 'linear', transform: `translateX(${this.state.transition}px)`}}> */}
-
-{/* <ReactCSSTransitionGroup
-style={{display: 'inline-block', whiteSpace: 'nowrap'}}
-transitionName="example"
-transitionEnterTimeout={500}
-transitionLeaveTimeout={300}>
-  {items}
-</ReactCSSTransitionGroup> */}

@@ -107,7 +107,7 @@ router.post('/uploadComment', (req, res, next)=>{
       body: req.body.comment, 
       created: Date.now(),
       flags: 0, 
-      fileName: fileName
+      fileName: fileName,
     }
 
     let commentInstance = new model.Comment(comment)
@@ -159,6 +159,33 @@ router.post('/uploadComment', (req, res, next)=>{
 
 })
 
+router.post('/flipPic', (req, res, next)=>{
+  console.log('inside /flipPic')
+  console.log('value of req.body: ', req.body)
+  let dest = __dirname+'/../picFolder/'
+  var picVal = req.body.picVal
+  if(req.body.picVal.fileType=='actual'){
+    console.log('inside if statement 1')
+    dest = dest + 'sharp/'
+    picVal.fileType = 'preview'
+  }else if (req.body.picVal.fileType=='preview'){
+    console.log('inside if statement 2')
+    picVal.fileType = 'actual'
+    //no extension main folder
+  }
+  console.log('value of dest: ', dest)
+  console.log('value of dest+req.body.picVal.fileName: ', dest+req.body.picVal.fileName)
+  const asyncFunc = async () => {
+    var fileData =  await fsPromise.readFile(dest+req.body.picVal.fileName)
+    picVal.data = fileData.toString('base64')
+    console.log('value of picVal: ', picVal)
+    res.json({picVal: picVal})
+  }
+
+  asyncFunc()
+
+})
+
 router.post('/getNavPage', (req, res, next)=>{
   console.log('inside /getNavPage')
   console.log('value of req.body.navPage: ', req.body.navPage)
@@ -183,7 +210,7 @@ router.post('/getNavPage', (req, res, next)=>{
       await asyncForEach(tempPosts, async (tempPost) => {
         if (tempPost.fileName!=''){
           var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+tempPost.fileName)
-          dataArr.push({post: tempPost._id, data: fileData.toString('base64'), extension: tempPost.fileName.match(/\.[0-9a-z]+$/i)[0]})
+          dataArr.push({post: tempPost._id, data: fileData.toString('base64'), extension: tempPost.fileName.match(/\.[0-9a-z]+$/i)[0], fileType: 'preview', fileName: tempPost.fileName})
         }
         if(tempPost.comments.length >= 3){
           var lastThreeComments = tempPost.comments.slice(Math.max(tempPost.comments.length - 3, 1))
@@ -193,7 +220,7 @@ router.post('/getNavPage', (req, res, next)=>{
         await asyncForEach(lastThreeComments, async (comment) => {
           if (comment.fileName!=''){
             var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+comment.fileName)
-            dataArr.push({post: comment._id, data: fileData.toString('base64'), extension: comment.fileName.match(/\.[0-9a-z]+$/i)[0]})
+            dataArr.push({post: comment._id, data: fileData.toString('base64'), extension: comment.fileName.match(/\.[0-9a-z]+$/i)[0], fileType: 'preview', fileName: tempPost.fileName})
           }
         })
       })
@@ -222,7 +249,7 @@ router.post('/getPost', (req, res, next)=>{
     const asyncFunc = async () => {
       if(post.fileName!=''){
         var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+post.fileName)
-        fileObj = {post: post._id, data: fileData.toString('base64'), extension: post.fileName.match(/\.[0-9a-z]+$/i)[0]}
+        fileObj = {post: post._id, data: fileData.toString('base64'), extension: post.fileName.match(/\.[0-9a-z]+$/i)[0], fileType:'preview', fileName: post.fileName}
       }
       if(post.comments.length>0){
         console.log('inside second if statement and post.comments; ', post.comments)
@@ -230,7 +257,7 @@ router.post('/getPost', (req, res, next)=>{
           console.log('inside asyncForEach')
           if (comment.fileName!=''){
             var commentData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+comment.fileName)
-            commentArr.push({post: comment._id, data: commentData.toString('base64'), extension: comment.fileName.match(/\.[0-9a-z]+$/i)[0]})
+            commentArr.push({post: comment._id, data: commentData.toString('base64'), extension: comment.fileName.match(/\.[0-9a-z]+$/i)[0], fileType: 'file', fileName: comment.fileName})
           }
         })
       }
