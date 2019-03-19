@@ -48,7 +48,7 @@ class NavMenu extends Component{
 
   render(){
     return(
-      <div className='feed' style={{width: '40vw', marginLeft: '20vw', marginTop: '2vw', background: 'black', color: 'white', fontSize: '30pt', overflow: 'hidden'}}>
+      <div className='feed'>
         {renderIf(this.state.componentMounted)(
           <Ticker
           offset="run-in"

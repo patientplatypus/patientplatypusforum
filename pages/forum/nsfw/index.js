@@ -7,7 +7,7 @@ import axios from 'axios';
 import Submit from '../../../components/Submit'
 import NavMenu from '../../../components/NavMenu'
 import Feed from '../../../components/Feed';
-
+import Chat from '../../../components/Chat'
 import renderIf from 'render-if';
 
 import Head from 'next/head'
@@ -205,7 +205,10 @@ class Home extends Component{
         <div className='navCard'>
           {this.navHandler()}
         </div>
-        <NavMenu/>
+        <div className='rightItemContainer'>
+          <NavMenu/>
+          <Chat/>
+        </div>
       </div>
     )
   }

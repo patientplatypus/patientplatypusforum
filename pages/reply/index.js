@@ -4,6 +4,7 @@ import axios from 'axios'
 import Submit from '../../components/Submit'
 import Feed from '../../components/Feed';
 import NavMenu from '../../components/NavMenu';
+import Chat from '../../../components/Chat'
 import Head from 'next/head'
 import '../../styles/root.css'
 
@@ -136,7 +137,10 @@ class Reply extends Component{
             )
           })}
         </div>
-        <NavMenu/>
+        <div className='rightItemContainer'>
+          <NavMenu/>
+          <Chat/>
+        </div>
       </div>
     )
   }

@@ -8,6 +8,7 @@ import NavMenu from '../../components/NavMenu'
 import Head from 'next/head'
 import renderIf from 'render-if'
 import Feed from '../../components/Feed'
+import Chat from '../../components/Chat'
 
 class FeedPage extends Component{
   constructor(props){
@@ -67,7 +68,10 @@ class FeedPage extends Component{
             </div>
           )}
         </div>
-        <NavMenu/>
+        <div className='rightItemContainer'>
+          <NavMenu/>
+          <Chat/>
+        </div>
       </div>
     )
   }

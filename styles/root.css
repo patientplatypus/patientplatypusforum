@@ -29,7 +29,7 @@
 
 .submitPostContainer{
   margin-left: 20vw;
-  width: 40vw;
+  width: 55vw;
   padding-bottom: 10px;
   text-align: right;
 }
@@ -55,9 +55,9 @@
 .navCard{
   background: var(--card_background);
   color: var(--text_color);
-  margin-left: 10vw;
+  margin-left: 20vw;
   margin-bottom: 5px;
-  width: calc(80vw - 10px);
+  width: calc(55vw - 10px);
   padding: 5px;
   border-radius: 5px;
   text-align: center;
@@ -73,17 +73,50 @@
   width: 50vw;
 }
 
-.nav{
+.feed{
+  width: 55vw;
+  margin-left: 20vw;
+  margin-top: 2vw;
+  background: black;
+  color: white;
+  font-size: 30pt;
+  overflow: hidden;
+}
+
+.rightItemContainer{
   position: absolute;
   top: 5vh;
   right: 1vw;
+}
+
+.leftItemContainer{
+  position: absolute;
+  top: 2.5vh;
+  left: 0vw;
+  width: 20vw;
+  /* background: orange; */
+}
+
+.nav{
   width: 20vw;
   text-align: right;
   padding: 5px;
   border-width: 5px;
   border-color: black;
   border-style: solid;
+  margin-bottom: 5px;
 }
+
+.chat{
+  width: 20vw;
+  height: 60vh;
+  text-align: right;
+  padding: 5px;
+  border-width: 5px;
+  border-color: black;
+  border-style: solid;
+}
+
 
 html, body{
   margin: 0;

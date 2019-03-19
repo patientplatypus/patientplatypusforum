@@ -81,23 +81,23 @@ class Submit extends Component{
     return(
       <div className='submitPostContainer'>
         <textarea
-          style={{height: '20vh', width: '40vw', marginBottom:'5px'}}
+          style={{height: '20vh', width: '55vw', marginBottom:'5px'}}
           value={this.state.textVal}
           onChange={(e)=>{this.setState({textVal: e.target.value})}}
         ></textarea>
         <div>
-        {renderIf(name!=null)(
-          <div style={{fontStyle: 'italic', display: 'inline-block', marginRight: '5px'}}>
-            chosen file: {name}
+          {renderIf(name!=null)(
+            <div style={{fontStyle: 'italic', display: 'inline-block', marginRight: '5px'}}>
+              chosen file: {name}
+            </div>
+          )}
+          <input type="file" style={{display: 'none'}}  name="file"  ref={(input)=>this.fileRef = input} onChange={this.handleselectedFile}/>
+          <div className='button' style={{marginRight: '5px'}} onClick={()=>{this.fileRef.click();}}>
+            CHOOSE PIC
           </div>
-        )}
-        <input type="file" style={{display: 'none'}}  name="file"  ref={(input)=>this.fileRef = input} onChange={this.handleselectedFile}/>
-        <div className='button' style={{marginRight: '5px'}} onClick={()=>{this.fileRef.click();}}>
-          CHOOSE PIC
-        </div>
-        <div className='button' onClick={()=>{this.handlePost()}}>
-          POST
-        </div>
+          <div className='button' onClick={()=>{this.handlePost()}}>
+            POST
+          </div>
         </div>
       </div>
     )
