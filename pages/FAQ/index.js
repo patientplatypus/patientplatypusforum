@@ -1,12 +1,21 @@
 import React, { Component } from 'react'
+import {MainContext} from '../../services'
 import Link from 'next/link'
+
+import renderIf from 'render-if'
 
 import '../../styles/root.css'
 
 import NavMenu from '../../components/NavMenu'
 import Chat from '../../components/Chat'
+
 class FAQ extends Component{
-  state = {}
+  state = {
+    componentMounted: false
+  }
+  componentDidMount(){
+    this.setState({componentMounted: true})
+  }
   render(){
     return(
       <div className='main'>

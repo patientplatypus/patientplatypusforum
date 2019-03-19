@@ -38,6 +38,9 @@ io.sockets.on('connection', function (socket) {
   socket.on('heartbeat', (msg)=>{
     console.log('heart beats bump da-', msg)
   })
+  socket.on('addChat', (payload)=>{
+    io.sockets.emit('chatItem', payload);
+  })
 });
 
 mongoose.connect("mongodb://localhost:27017/anotherDB7");

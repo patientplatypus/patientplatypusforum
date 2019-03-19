@@ -5,6 +5,11 @@
   --button_color:#af6500;
 }
 
+textarea{
+  resize: none;
+  white-space: pre-line;
+}
+
 .feedFont{
   font-family: 'Share Tech Mono', monospace;
 }
@@ -115,6 +120,7 @@
   border-width: 5px;
   border-color: black;
   border-style: solid;
+  position: relative;
 }
 
 

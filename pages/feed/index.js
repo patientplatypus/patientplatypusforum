@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
-import Socket from 'socket.io-client';
 import {MainContext} from '../../services';
 import '../../styles/root.css'
 
@@ -42,7 +41,7 @@ class FeedPage extends Component{
             <MainContext.Consumer>
             {context => {
               return(
-                <div className='button' style={{display: 'inline-block', float: 'right', marginRight: '10vw'}} onClick={()=>{context.sendFeed(this.state.textVal)}}>
+                <div className='button' style={{display: 'inline-block', float: 'right', marginRight: '10vw'}} onClick={()=>{context.sendFeed(this.state.textVal); this.setState({textVal: ''})}}>
                   SEND TO FEED
                   </div>
               )

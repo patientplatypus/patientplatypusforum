@@ -2,10 +2,14 @@
 import React, { Component } from "react";
 import { MainContext } from "./MainContext";
 import Socket from 'socket.io-client';
+import axios from 'axios';
 
 class Provider extends Component {
   state = {
-    feedArr: 'FEED ʕっ˘ڡ˘ςʔ'
+    feedArr: '~FEED ʕっ˘ڡ˘ςʔ', 
+    chatArr: [],
+    chatName: 'anonyMouse', 
+    dummy: Date.now()
   }
   socket = null
 
@@ -32,11 +36,29 @@ class Provider extends Component {
             console.log("after setState and value of feedArr : ", this.state.feedArr)
           })
         })
+        this.socket.on('chatItem', (payload)=>{
+          let tempChatArr = this.state.chatArr;
+          tempChatArr.push(payload)
+          this.setState({chatArr: tempChatArr}, ()=>{
+            console.log('after setting and value of chatArr: ', this.state.chatArr)
+          })
+        })
         setInterval(() => {
           this.socket.emit('heartbeat', 'bump')
         }, 1000);
       })
     }
+    axios.get('https://ipapi.co/json/')
+    .then(response=>{
+      axios.post('http://localhost:5000/getChatName', {ip: response.data.ip}, {withCredentials: true})
+      .then(response=>{console.log('response from getChatName', response)
+        this.setState({chatName: response.data.chatName})
+      })
+      .catch(error=>{console.log('error from getChatName', error)})
+    })
+    .catch(error=>{
+      console.log('there was an error in getting your ip: ', error)
+    })
   }
 
   render() {
@@ -44,6 +66,16 @@ class Provider extends Component {
       <MainContext.Provider
         value={{
           state: this.state,
+          setState: (keyName, value) =>{
+            console.log('inside setState for Provider and Key: ', keyName, ' and value: ', value)
+            var tempState = this.state;
+            tempState[keyName] = value; 
+            this.setState({state: tempState})
+          },
+          sendChat: (payload)=>{
+            console.log('inside sendChat')
+            this.socket.emit('addChat', payload)
+          },
           sendFeed: (feedStr)=>{
             this.socket.emit('addFeed', feedStr)
           }
