@@ -4,7 +4,7 @@ import axios from 'axios'
 import Submit from '../../components/Submit'
 import Feed from '../../components/Feed';
 import NavMenu from '../../components/NavMenu';
-import Chat from '../../../components/Chat'
+import Chat from '../../components/Chat'
 import Head from 'next/head'
 import '../../styles/root.css'
 
@@ -140,6 +140,11 @@ class Reply extends Component{
         <div className='rightItemContainer'>
           <NavMenu/>
           <Chat/>
+        </div>
+        <div className='leftItemContainer'>
+          <div style={{width: '15vw', marginLeft: '2.5vw'}}>
+            <img src='/static/patientplatypus777.svg' style={{width: '100%'}}/>
+          </div>
         </div>
       </div>
     )

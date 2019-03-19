@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
 import Socket from 'socket.io-client';
-
+import {MainContext} from '../../services';
 import '../../styles/root.css'
 
 import NavMenu from '../../components/NavMenu'
@@ -11,31 +11,9 @@ import Feed from '../../components/Feed'
 import Chat from '../../components/Chat'
 
 class FeedPage extends Component{
-  constructor(props){
-    super(props);
-    try{
-      this.socket =  Socket('http://localhost:5000');
-    }catch(e){
-      console.log('catch: ', e)
-    }
-   
-    this.state = {
-      textVal: "", 
-      componentMounted: false
-    }
+  state = {
+    textVal: ''
   }
-
-  componentDidMount(){
-    this.socket.on('connection established', (msg)=>{
-      this.setState({componentMounted: true})
-    })
-  }
-
-  handlePost = () => {
-    this.socket.emit('addFeed', this.state.textVal)
-    this.setState({textVal: ''})
-  }
-
   render(){
     return(
       <div className='main'>
@@ -54,23 +32,32 @@ class FeedPage extends Component{
             Input a phrase or some text to send to the Feed. It will be added to the queue to be displayed in the banner at the top of the page.
           </div>
           <br/>
-          {renderIf(this.state.componentMounted)(
-            <div> 
-              <textarea
-                style={{height: '10vh', width: '40vw', marginBottom:'5px'}}
-                value={this.state.textVal}
-                onChange={(e)=>{this.setState({textVal: e.target.value})}}
-              ></textarea>
-              <br/>
-              <div className='button' style={{display: 'inline-block', float: 'right', marginRight: '10vw'}}onClick={()=>{this.handlePost()}}>
-                SEND TO FEED
-              </div>
-            </div>
-          )}
+          <div> 
+            <textarea
+              style={{height: '10vh', width: '40vw', marginBottom:'5px'}}
+              value={this.state.textVal}
+              onChange={(e)=>{this.setState({textVal: e.target.value})}}
+            ></textarea>
+            <br/>
+            <MainContext.Consumer>
+            {context => {
+              return(
+                <div className='button' style={{display: 'inline-block', float: 'right', marginRight: '10vw'}} onClick={()=>{context.sendFeed(this.state.textVal)}}>
+                  SEND TO FEED
+                  </div>
+              )
+            }}
+            </MainContext.Consumer>
+          </div>
         </div>
         <div className='rightItemContainer'>
           <NavMenu/>
           <Chat/>
+        </div>
+        <div className='leftItemContainer'>
+          <div style={{width: '15vw', marginLeft: '2.5vw'}}>
+            <img src='/static/patientplatypus777.svg' style={{width: '100%'}}/>
+          </div>
         </div>
       </div>
     )

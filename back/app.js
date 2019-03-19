@@ -35,6 +35,9 @@ io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function() {
     console.log("disconnect: ", socket.id);
   });
+  socket.on('heartbeat', (msg)=>{
+    console.log('heart beats bump da-', msg)
+  })
 });
 
 mongoose.connect("mongodb://localhost:27017/anotherDB7");
