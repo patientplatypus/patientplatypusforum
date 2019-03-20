@@ -23,6 +23,9 @@ class NavMenu extends Component{
         <div>
           <Link href='/feed'><a href=''>Feed</a></Link>
         </div>
+        <div>
+          <Link href='/blog'><a href=''>Blog</a></Link>
+        </div>
       </div>
     )
   }
