@@ -23,6 +23,7 @@ class FeedPage extends Component{
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
         </Head>
+        <div className='middleView'>
         <Feed/>
         <div style={{height: '5vh'}}>
         </div>
@@ -36,22 +37,25 @@ class FeedPage extends Component{
           <br/>
           <div> 
             <textarea
-              style={{height: '10vh', width: '40vw', marginBottom:'5px'}}
+              style={{height: '10vh', width: 'calc(100% - 5px)', marginBottom:'5px'}}
               value={this.state.textVal}
               onChange={(e)=>{this.setState({textVal: e.target.value})}}
             ></textarea>
-            <br/>
-            <MainContext.Consumer>
-            {context => {
-              return(
-                <div className='button' style={{display: 'inline-block', float: 'right', marginRight: '10vw'}} onClick={()=>{context.sendFeed(this.state.textVal); this.setState({textVal: ''})}}>
-                  SEND TO FEED
+            <div style={{width: '100%', textAlign: 'right'}}>
+              <MainContext.Consumer>
+              {context => {
+                return(
+                  <div className='button' style={{}} onClick={()=>{context.sendFeed(this.state.textVal); this.setState({textVal: ''})}}>
+                    SEND TO FEED
                   </div>
-              )
-            }}
-            </MainContext.Consumer>
+                )
+              }}
+              </MainContext.Consumer>
+            </div>
           </div>
         </div>
+        </div>
+        
         <div className='rightItemContainer'>
           <NavMenu/>
           <Chat/>

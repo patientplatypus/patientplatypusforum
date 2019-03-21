@@ -98,45 +98,47 @@ class Reply extends Component{
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
         </Head>
-        <Feed/>
-        <div style={{height: '5vh'}}>
-        </div>
-        <Submit 
-        reloadPage={()=>this.reloadPage()}
-        submitType={'comment'}
-        postID={this.props.postID}
-        ></Submit>
-        <div className='card' style={{marginBottom: '5px'}}>
-          <div style={{display: 'inline-block', marginRight: '5px'}}>
-            {this.picHandler(postPicVal, 'post')}
+        <div className='middleView'>
+          <Feed/>
+          <div style={{height: '5vh'}}>
           </div>
-          <div style={{display: 'inline-block', verticalAlign: 'top'}}>
-            {this.state.postData.post.body}
-          </div>
-          <div style={{width: '100%'}}>
-            <div style={{float: 'right', marginRight: '5px'}}>
-              Images: {this.state.postData.post.comments.filter(comment=>comment.fileName!='').length}
+          <Submit 
+          reloadPage={()=>this.reloadPage()}
+          submitType={'comment'}
+          postID={this.props.postID}
+          ></Submit>
+          <div className='card' style={{marginBottom: '5px'}}>
+            <div style={{display: 'inline-block', marginRight: '5px'}}>
+              {this.picHandler(postPicVal, 'post')}
             </div>
-            <div style={{float: 'right', marginRight: '5px'}}>
-              Replies: {this.state.postData.post.comments.length}
+            <div style={{display: 'inline-block', verticalAlign: 'top'}}>
+              {this.state.postData.post.body}
             </div>
-            <div style={{clear: 'both'}}/>
-          </div>
-        </div>
-        <div>
-          {this.state.postData.post.comments.map((comment, index)=>{
-            let commentPicVal = this.state.postData.commentArr.find((datum)=>{return datum.post == comment._id});
-            return(
-              <div className='cardComment' key={index} style={{marginBottom: '5px'}}>
-                <div style={{display: 'inline-block', marginRight: '5px'}}>
-                  {this.picHandler(commentPicVal, 'comment')}
-                </div>
-                <div style={{display: 'inline-block', verticalAlign: 'top'}}>
-                  {comment.body}
-                </div>
+            <div style={{width: '100%'}}>
+              <div style={{float: 'right', marginRight: '5px'}}>
+                Images: {this.state.postData.post.comments.filter(comment=>comment.fileName!='').length}
               </div>
-            )
-          })}
+              <div style={{float: 'right', marginRight: '5px'}}>
+                Replies: {this.state.postData.post.comments.length}
+              </div>
+              <div style={{clear: 'both'}}/>
+            </div>
+          </div>
+          <div>
+            {this.state.postData.post.comments.map((comment, index)=>{
+              let commentPicVal = this.state.postData.commentArr.find((datum)=>{return datum.post == comment._id});
+              return(
+                <div className='cardComment' key={index} style={{marginBottom: '5px'}}>
+                  <div style={{display: 'inline-block', marginRight: '5px'}}>
+                    {this.picHandler(commentPicVal, 'comment')}
+                  </div>
+                  <div style={{display: 'inline-block', verticalAlign: 'top'}}>
+                    {comment.body}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
         <div className='rightItemContainer'>
           <NavMenu/>

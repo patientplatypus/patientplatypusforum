@@ -27,39 +27,42 @@ class Blog extends Component{
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
         </Head>
-        <Feed/>
-        <div style={{height: '0vh'}}>
-        </div>
-        <div className='blog'> 
-          <div className='flexContainerRow' style={{height: '20vh', width: '55vw'}}>
-            <div style={{flex: 1}}>
-              <img src={'/static/deskof.svg'} style={{maxWidth: '100%', maxHeight: '100%'}}/>
-            </div>
-            <div style={{flex: 2, textAlign: 'center'}}>
-              <div className='flexContainerColumn' style={{width: '100%'}}>
-                <div style={{flex: 1}}/>
-                <div style={{flex: 3}}>
-                  <div>
-                    <span style={{fontWeight: 'bold'}}>Welcome to the Blog</span>
+        <div className='middleView'>
+          <Feed/>
+          <div style={{height: '0vh'}}>
+          </div>
+          <div className='blogHeader'> 
+            <div className='flexContainerRow' style={{height: '20vh', width: '55vw'}}>
+              <div style={{flex: 1}}>
+                <img src={'/static/deskof.svg'} style={{maxWidth: '100%', maxHeight: '100%'}}/>
+              </div>
+              <div style={{flex: 2, textAlign: 'center'}}>
+                <div className='flexContainerColumn' style={{width: '100%'}}>
+                  <div style={{flex: 1}}/>
+                  <div style={{flex: 3}}>
+                    <div>
+                      <span style={{fontWeight: 'bold'}}>Welcome to the Blog</span>
+                    </div>
+                    <div>
+                      I have strong opinions, held loosely, and I often say more than I know.
+                    </div>
+                    <div>
+                      If you're offended, I don't care, go away - the Internet is a big place.
+                    </div>
+                    <div>
+                      The fools have given me a keyboard and a place to write ~ Fear me!
+                    </div>
                   </div>
-                  <div>
-                    I have strong opinions, held loosely, and I often say more than I know.
-                  </div>
-                  <div>
-                    If you're offended, I don't care, go away - the Internet is a big place.
-                  </div>
-                  <div>
-                    The fools have given me a keyboard and a place to write ~ Fear me!
-                  </div>
+                  <div style={{flex: 1}}/>
                 </div>
-                <div style={{flex: 1}}/>
               </div>
             </div>
+            <hr/>
+            <hr/>
+            <div style={{clear: 'both'}}/>
           </div>
-          <hr/>
-          <hr/>
-          <div style={{clear: 'both'}}/>
         </div>
+        
         <div className='rightItemContainer'>
           <NavMenu/>
           <Chat/>

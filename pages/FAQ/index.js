@@ -26,16 +26,18 @@ class FAQ extends Component{
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
         </Head>
-        <Feed/>
-        <div style={{height: '5vh'}}>
-        </div>
-        <div className='faq'> 
-          <div style={{fontWeight: 'bold'}}>
-            Welcome to the FAQ
+        <div className='middleView'>
+          <Feed/>
+          <div style={{height: '5vh'}}>
           </div>
-          <br/>
-          <div>
-            I'm making a forum (obviously), but I have no idea what people want. So I'm just going to make it simple at first. And it's very simple as you can tell. You submit posts and you can reply to the posts that are already submitted. If you have any suggestions please feel free to go to the contact page and email me or make a forum post. Anything goes, so long as it's not illegal. Also try and keep the cancer to the NSFW board. Have fun!
+          <div className='faq'> 
+            <div style={{fontWeight: 'bold'}}>
+              Welcome to the FAQ
+            </div>
+            <br/>
+            <div>
+              I'm making a forum (obviously), but I have no idea what people want. So I'm just going to make it simple at first. And it's very simple as you can tell. You submit posts and you can reply to the posts that are already submitted. If you have any suggestions please feel free to go to the contact page and email me or make a forum post. Anything goes, so long as it's not illegal. Also try and keep the cancer to the NSFW board. Have fun!
+            </div>
           </div>
         </div>
         <div className='rightItemContainer'>

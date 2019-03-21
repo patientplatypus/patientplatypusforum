@@ -298,7 +298,7 @@ router.post('/confirmPass', (req, res, next)=>{
   console.log('inside /confirmPass')
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   console.log(ip)
-  var ipWhitelist = ['67.198.78.26']
+  var ipWhitelist = ['67.198.78.26', '70.118.40.114']
   if(ipWhitelist.includes(req.body.payload.ip)&&req.body.payload.pass==process.env.adminPass){
     res.json({'confirmed': true})
   }else{

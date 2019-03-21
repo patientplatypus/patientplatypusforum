@@ -39,8 +39,19 @@ textarea{
   text-align: left;
 }
 
+.middleView{
+  margin-left: 19vw;
+  padding-top: 2vh;
+  padding-bottom: 2vh;
+  width: 57vw;
+  height: 96vh;
+  left: 20vw;
+  background-image: url(/static/pattern.png);
+  background-repeat: repeat; 
+}
+
 .submitPostContainer{
-  margin-left: 20vw;
+  margin-left: 1vw;
   width: 55vw;
   padding-bottom: 10px;
   text-align: right;
@@ -49,51 +60,56 @@ textarea{
 .card{
   background: var(--card_background);
   color: var(--text_color);
-  margin-left: 20vw;
   width: calc(55vw - 10px);
   padding: 5px;
+  margin-left: 1vw;
   border-radius: 5px;
 }
 
 .cardComment{
   background: var(--card_background);
   color: var(--text_color);
-  margin-left: 25vw;
+  margin-left: 5vw;
   width: calc(50vw - 10px);
   padding: 5px;
+  margin-left: 6vw;
   border-radius: 5px;
 }
 
 .navCard{
   background: var(--card_background);
   color: var(--text_color);
-  margin-left: 20vw;
   margin-bottom: 5px;
   width: calc(55vw - 10px);
   padding: 5px;
   border-radius: 5px;
+  margin-left: 1vw;
   text-align: center;
 }
 
 .faq{
-  margin-left: 20vw;
+  margin-left: calc(1vw - 5px);
   width: 55vw;
+  background: var(--card_background);
+  padding: 5px;
 }
 
-.blog{
-  margin-left: 20vw;
+.blogHeader{
+  margin-left: calc(1vw - 5px);
   width: 55vw;
+  background: rgb(111, 153, 123);
+  padding: 5px;
 }
 
 .feedPage{
-  margin-left: 20vw;
-  width: 50vw;
+  margin-left: calc(1vw - 5px);
+  width: 55vw;
+  background: var(--card_background);
+  padding: 5px;
 }
 
 .feed{
-  width: 55vw;
-  margin-left: 20vw;
-  margin-top: 2vw;
+  width: 57vw;
   background: black;
   color: white;
   font-size: 30pt;
