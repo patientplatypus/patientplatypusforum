@@ -157,7 +157,10 @@ class Home extends Component{
         </Head>
         <div className='middleView'>
           <Feed/>
-          <div style={{height: '5vh'}}>
+          <div style={{height: '5vh', textAlign: 'center'}}>
+            <div className='titleFont' style={{fontSize: '4vh'}}>
+              NSFW Forum
+            </div>
           </div>
           <Submit 
           reloadPage={()=>this.reloadPage()}

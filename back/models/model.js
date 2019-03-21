@@ -31,9 +31,10 @@ var PostSchema = new Schema({
 
 var BlogSchema = new Schema({
   title: {type: String},
-  bodyArr: [{type: String}],
-  fileArr: [{type: String}],
-  created: {type: Date, default: Date.now()},
+  bodyArr: [{value: {type:String}, index: {type:Number}}],
+  fileArr: [{fileName: {type:String}, index: {type:Number}}],
+  dateText: {type: String},
+  created: { type: Date, default: Date.now },
 }, {
   writeConcern: {
     w: 0,

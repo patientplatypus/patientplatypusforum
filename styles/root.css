@@ -44,7 +44,7 @@ textarea{
   padding-top: 2vh;
   padding-bottom: 2vh;
   width: 57vw;
-  height: 96vh;
+  min-height: 96vh;
   left: 20vw;
   background-image: url(/static/pattern.png);
   background-repeat: repeat; 
@@ -52,9 +52,11 @@ textarea{
 
 .submitPostContainer{
   margin-left: 1vw;
-  width: 55vw;
-  padding-bottom: 10px;
+  width: calc(55vw - 20px);
+  margin-bottom: 10px;
+  padding: 10px;
   text-align: right;
+  background: var(--card_background)
 }
 
 .card{

@@ -19,7 +19,9 @@ class FAQ extends Component{
     passText: '',
     creatingBlogPost: false,
     passwordVerified: false, 
-    displayArr: [] 
+    displayArr: [], 
+    titleText: '', 
+    dateText: ''
   }
   componentDidMount(){
     this.setState({componentMounted: true})
@@ -48,6 +50,25 @@ class FAQ extends Component{
     })
   }
 
+  handleSubmitBlog = () => {
+    let payload = {
+      blogArr: this.state.displayArr,
+      title: this.state.titleText,
+      dateText: this.state.dateText
+    }
+    axios.post('http://localhost:5000/sumbitBlogPost', {payload})
+    .then(response=>{
+      console.log('response from blog post: ', response)
+      this.setState({
+        displayArr: [], 
+        titleText: '',
+        dateText: '',
+        creatingBlogPost: false
+      })
+    })
+    .catch(error=>{console.log('error on submitting blog post: ', error)})
+  }
+
   render(){
     return(
       <div className='main'>
@@ -58,7 +79,10 @@ class FAQ extends Component{
         </Head>
         <div className='middleView'>
           <Feed/>
-          <div style={{height: '5vh'}}>
+          <div style={{height: '5vh', textAlign: 'center'}}>
+            <div className='titleFont' style={{fontSize: '4vh'}}>
+              Administration
+            </div>
           </div>
           <div className='faq'> 
             <div style={{fontWeight: 'bold'}}>
@@ -97,15 +121,36 @@ class FAQ extends Component{
                       <div style={{marginLeft: '5px', marginTop: '5px', fontWeight: 'bold'}}>
                         Let's Create A Blog Post!
                       </div>
+                      <div style={{marginBottom: '5px', marginLeft: '5px'}}>
+                        <span style={{marginRight: '5px'}}>Title:</span>
+                        <input
+                        value={this.state.titleText}
+                        onChange={(e)=>{
+                          this.setState({titleText: e.target.value})
+                        }}
+                        >
+                        </input>
+                      </div>
+                      <div style={{marginBottom: '5px', marginLeft: '5px'}}>
+                        <span style={{marginRight: '5px'}}>Date:</span>
+                        <input
+                        value={this.state.dateText}
+                        onChange={(e)=>{
+                          this.setState({dateText: e.target.value})
+                        }}
+                        >
+                        </input>
+                      </div>
                       <div>
                         {this.state.displayArr.map((disp, index)=>{
                           if(disp.type=='body'){
                             return(
-                              <div key={index}>
+                              <div key={index} style={{width: 'calc(100% - 10px)', marginLeft: '5px', marginRight: '5px'}}>
                                 <div style={{marginBottom: '5px'}}>
                                   Enter Paragraph Below
                                 </div>
                                 <textarea
+                                value={disp.value}
                                 style={{height: '20vh', width: 'calc(100% - 5px)', marginBottom:'5px'}}
                                 onChange={(e)=>{
                                   var tempArr = this.state.displayArr;
@@ -114,15 +159,61 @@ class FAQ extends Component{
                                 }}
                                 >  
                                 </textarea>
+                                <div style={{marginBottom: '5px'}} className='button' onClick={()=>{
+                                  var tempArr = this.state.displayArr;
+                                  let newTemp = tempArr.filter(temp=>{
+                                    return temp!=disp
+                                  })
+                                  console.log('value of tempArr: ', newTemp)
+                                  this.setState({displayArr: newTemp}, ()=>{console.log('after setstate and value of displayArr; ', this.state.displayArr)})
+                                }}>
+                                  REMOVE
+                                </div>
                               </div>
                             )
                           }else if(disp.type=='picURL'){
                             return(
-                              <div key={index}>
+                              <div key={index} style={{width: 'calc(100% - 10px)', marginLeft: '5px', marginRight: '5px'}}>
+                                <div style={{marginBottom: '5px'}}>
+                                  Enter Picture URL Below
+                                </div>
+                                <input
+                                value={disp.value}
+                                onChange={(e)=>{
+                                  var tempArr = this.state.displayArr;
+                                  tempArr[index]['value'] = e.target.value
+                                  this.setState({displayArr: tempArr})
+                                }}
+                                >
+                                </input>
+                                <br style={{marginBottom: '5px'}}/>
+                                <div style={{marginBottom: '5px'}}>
+                                  Give Your Picture a Name!
+                                </div>
+                                <input
+                                value={disp.name}
+                                onChange={(e)=>{
+                                  var tempArr = this.state.displayArr;
+                                  tempArr[index]['name'] = e.target.value
+                                  this.setState({displayArr: tempArr})
+                                }}
+                                >
+                                </input>
+                                <br style={{marginBottom: '5px'}}/>
+                                <div style={{marginBottom: '5px'}} className='button' onClick={()=>{
+                                  var tempArr = this.state.displayArr;
+                                  let newTemp = tempArr.filter(temp=>{
+                                    return temp!=disp
+                                  })
+                                  console.log('value of tempArr: ', newTemp)
+                                  this.setState({displayArr: newTemp}, ()=>{console.log('after setstate and value of displayArr; ', this.state.displayArr)})
+                                }}>
+                                  REMOVE
+                                </div>
                               </div>
                             )
                           }else if(disp.type=='picFILE'){
-                            return(null)//implment later if need be - not sure worth it atm
+                            return(null)//implement later if need be - not sure worth it atm
                           }
                         })}
                       </div>
@@ -138,17 +229,17 @@ class FAQ extends Component{
                         >
                           Append Pic (URL)
                         </div>
-                        <div 
+                        {/* <div 
                         className='button'
                         style={{float: 'left', marginTop: '5px', marginBottom: '5px', marginRight: '5px'}}
                         onClick={()=>{
-                          let tempArr = this.state.displayArr;
-                          tempArr.push({type: 'picFILE', value: ''})
-                          this.setState({displayArr: tempArr})
+                          // let tempArr = this.state.displayArr;
+                          // tempArr.push({type: 'picFILE', value: ''})
+                          // this.setState({displayArr: tempArr})
                         }}
                         >
                           Append Pic (FILE)
-                        </div>
+                        </div> */}
                         <div 
                         className='button'
                         style={{float: 'left', marginTop: '5px', marginBottom: '5px'}}
@@ -162,7 +253,11 @@ class FAQ extends Component{
                         </div>
                         <div 
                         className='button'
-                        style={{float: 'right', marginTop: '5px', marginBottom: '5px'}}>
+                        style={{float: 'right', marginTop: '5px', marginBottom: '5px'}}
+                        onClick={()=>{
+                          this.handleSubmitBlog()
+                        }}
+                        >
                           Submit
                         </div>
                         <div 

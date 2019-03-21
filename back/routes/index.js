@@ -7,7 +7,7 @@ var model = require('../models/model');
 const sharp = require('sharp');
 var sha256 = require('js-sha256');
 var names = require('../utilities/names')
-// var axios = require('axios');
+var axios = require('axios');
 // var getDirName = require('path').dirname;
 
 /* GET home page. */
@@ -303,6 +303,106 @@ router.post('/confirmPass', (req, res, next)=>{
     res.json({'confirmed': true})
   }else{
     res.json({'confirmed': false})
+  }
+})
+
+router.post('/sumbitBlogPost', (req, res, next)=>{
+  console.log('inside /submitBlogPost')
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+
+  const saveBlog = () => {
+    console.log('inside saveBlog')
+
+    let blogReq = req.body.payload.blogArr;
+    let indexedBlogArr = blogReq.map((item, index)=>{
+      item['index'] = index
+      return item
+    })
+
+    console.log('value of indexedBlogArr: ', indexedBlogArr)
+
+    let bodyArr = indexedBlogArr.filter((item, index)=>{
+      if(item.type=='body')
+      return {value: item.value, index: item.index}
+    })
+
+    console.log('value of bodyArr: ', bodyArr)
+
+    var blog = {
+      title: req.body.payload.title,
+      dateText: req.body.payload.dateText,
+      bodyArr: bodyArr,
+      created: Date.now(),
+      fileArr: [],
+      comments: [],
+    }
+
+    const writeSaveBlog = () => {
+      let blogInstance = new model.Blog(blog)
+    
+      console.log('value of blogInstance: ', blogInstance)
+  
+      blogInstance.save().then(blog=>{
+        console.log('value of blog in save: ', blog)
+        res.json({submitted: 'success'})
+      }).catch((e) => {
+        console.log('There was an error', e.message);
+        res.json({error: e.message})
+      });
+    }
+
+    let files = indexedBlogArr.filter(item=>item.type=='picURL')
+
+    console.log('value of blog: ', blog)
+    console.log('value of files: ', files)
+
+    if (files.length>0){
+      const asyncFunc = async()=>{
+        await asyncForEach(files, async (file) => {
+          axios.get(file.value)
+          .then(response=>{
+            // console.log('value of response: ', response)
+            let fileName = file.name+Date.now();
+            let dest = __dirname+'/../picFolder/blog/'+fileName
+            fs.writeFile(dest, response.data, function(err, data) {
+              if (err) console.log(err);
+              console.log("Successfully Written to File.");
+              blog.fileArr.push({fileName: fileName, index: file.index})
+              if(blog.fileArr.length==files.length){
+                writeSaveBlog()
+              }
+            });
+          })
+          .catch(error=>{
+            console.log('value of error: ', error)
+          })
+        })
+      }
+      asyncFunc();
+    }else{
+      writeSaveBlog()
+    }
+  }
+  saveBlog()
+})
+
+router.post('/getBlogPost', (req,res,next)=>{
+  console.log('inside getBlogPost')
+  console.log('value of req.body: ', req.body)
+  if (req.body.navTitle=='N/A'){
+    model.Blog.find({}).sort({created: -1}).exec((err, posts)=>{
+      if(err){
+        console.log("there was an error: ", err)
+        res.json({error: 'there was an error'})
+      }
+      res.json({post: posts[0]});
+    })
+  }else{
+    res.json({'placeholder': {}})
   }
 })
 

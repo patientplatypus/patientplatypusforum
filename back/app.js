@@ -43,7 +43,7 @@ io.sockets.on('connection', function (socket) {
   })
 });
 
-mongoose.connect("mongodb://localhost:27017/anotherDB7");
+mongoose.connect("mongodb://localhost:27017/anotherDB14");
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));

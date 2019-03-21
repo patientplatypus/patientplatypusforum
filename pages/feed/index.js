@@ -25,8 +25,11 @@ class FeedPage extends Component{
         </Head>
         <div className='middleView'>
         <Feed/>
-        <div style={{height: '5vh'}}>
-        </div>
+        <div style={{height: '5vh', textAlign: 'center'}}>
+            <div className='titleFont' style={{fontSize: '4vh'}}>
+              Feed
+            </div>
+          </div>
         <div className='feedPage'>
           <div style={{fontWeight: 'bold'}}>
             Welcome to the Feed Inputter

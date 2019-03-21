@@ -11,14 +11,36 @@ import '../../styles/root.css'
 import NavMenu from '../../components/NavMenu'
 import Chat from '../../components/Chat'
 import {VerticalCenter} from '../../components/FlexCenter'
+import axios from 'axios';
 
 class Blog extends Component{
+  static async getInitialProps({req, query}){
+    console.log('inside getInitialProps')
+    let url = 'http://localhost:5000/getBlogPost'
+    console.log('value of navTitle: ', query.navTitle)
+    var postReturn = await axios.post(url, {
+      navTitle: query.navTitle==undefined?'N/A':query.navTitle
+    })
+    .then(response=>{
+      console.log('value of response.data: ', response.data)
+      return response.data.post
+    })
+    .catch(error=>{
+      console.log('error from Node: ', error)
+      return({})
+    })
+    console.log('value of postReturn: ', postReturn)
+    return({postData: postReturn})
+  }
   state = {
     componentMounted: false
   }
+
   componentDidMount(){
+    console.log('component mounted and value of this.props.postData; ', this.props.postData)
     this.setState({componentMounted: true})
   }
+
   render(){
     return(
       <div className='main'>

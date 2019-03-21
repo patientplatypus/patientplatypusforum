@@ -81,7 +81,7 @@ class Submit extends Component{
     return(
       <div className='submitPostContainer'>
         <textarea
-          style={{height: '20vh', width: '55vw', marginBottom:'5px'}}
+          style={{height: '20vh', width: 'calc(100% - 5px)', marginBottom:'5px'}}
           value={this.state.textVal}
           onChange={(e)=>{this.setState({textVal: e.target.value})}}
         ></textarea>
