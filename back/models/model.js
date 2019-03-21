@@ -29,10 +29,21 @@ var PostSchema = new Schema({
   }  
 });
 
+var BlogSchema = new Schema({
+  title: {type: String},
+  bodyArr: [{type: String}],
+  fileArr: [{type: String}],
+  created: {type: Date, default: Date.now()},
+}, {
+  writeConcern: {
+    w: 0,
+    j: false,
+    wtimeout: 200
+  }  
+})
+
 var Post =  mongoose.model('Post', PostSchema);
 var Comment = mongoose.model('Comment', CommentSchema)
+var Blog = mongoose.model('Blog', BlogSchema)
 
-module.exports = {
-  Post: Post,
-  Comment: Comment
-} 
+module.exports = {Post, Comment, Blog} 

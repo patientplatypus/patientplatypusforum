@@ -10,6 +10,7 @@ import '../../styles/root.css'
 
 import NavMenu from '../../components/NavMenu'
 import Chat from '../../components/Chat'
+import {VerticalCenter} from '../../components/FlexCenter'
 
 class Blog extends Component{
   state = {
@@ -24,20 +25,40 @@ class Blog extends Component{
         <Head>
           <title>patientplatypus</title>
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
         </Head>
         <Feed/>
-        <div style={{height: '5vh'}}>
+        <div style={{height: '0vh'}}>
         </div>
         <div className='blog'> 
-          <img src={'/static/deskof.svg'} style={{width: '30vw', position: 'fixed', top: '5vh', left: '15vw'}}/>
-          <div style={{marginLeft: '20vw', fontWeight: 'bold'}}>
-            <h1>
-              The Great and Majestic Blog
-            </h1>
-            <h2>
-              All Things Under the Sun and Then Some
-            </h2>
+          <div className='flexContainerRow' style={{height: '20vh', width: '55vw'}}>
+            <div style={{flex: 1}}>
+              <img src={'/static/deskof.svg'} style={{maxWidth: '100%', maxHeight: '100%'}}/>
+            </div>
+            <div style={{flex: 2, textAlign: 'center'}}>
+              <div className='flexContainerColumn' style={{width: '100%'}}>
+                <div style={{flex: 1}}/>
+                <div style={{flex: 3}}>
+                  <div>
+                    <span style={{fontWeight: 'bold'}}>Welcome to the Blog</span>
+                  </div>
+                  <div>
+                    I have strong opinions, held loosely, and I often say more than I know.
+                  </div>
+                  <div>
+                    If you're offended, I don't care, go away - the Internet is a big place.
+                  </div>
+                  <div>
+                    The fools have given me a keyboard and a place to write ~ Fear me!
+                  </div>
+                </div>
+                <div style={{flex: 1}}/>
+              </div>
+            </div>
           </div>
+          <hr/>
+          <hr/>
+          <div style={{clear: 'both'}}/>
         </div>
         <div className='rightItemContainer'>
           <NavMenu/>
@@ -46,6 +67,9 @@ class Blog extends Component{
         <div className='leftItemContainer'>
           <div style={{width: '15vw', marginLeft: '2.5vw'}}>
             <img src='/static/patientplatypus777.svg' style={{width: '100%'}}/>
+            <div className='titleFont' style={{fontSize: '1.7vw'}}>
+              Patient Platypus
+            </div>
           </div>
         </div>
       </div>

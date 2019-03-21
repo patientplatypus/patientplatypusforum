@@ -1,3 +1,4 @@
+require('dotenv').config()
 var express = require('express');
 var router = express.Router();
 const fs = require('fs');
@@ -13,7 +14,7 @@ var names = require('../utilities/names')
 
 
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.json({'hello': 'there sailor'});
 });
 
 router.get('/getNumPages/:boardType', (req, res, next)=>{
@@ -291,6 +292,18 @@ router.post('/getChatName', (req, res, next)=>{
   var chatName = names.adjectives[remainder1]+names.animals[remainder2] + Date.now().toString().substring(10, 13);
   console.log('value of chatName: ', chatName)
   res.json({chatName})
+})
+
+router.post('/confirmPass', (req, res, next)=>{
+  console.log('inside /confirmPass')
+  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  console.log(ip)
+  var ipWhitelist = ['67.198.78.26']
+  if(ipWhitelist.includes(req.body.payload.ip)&&req.body.payload.pass==process.env.adminPass){
+    res.json({'confirmed': true})
+  }else{
+    res.json({'confirmed': false})
+  }
 })
 
 module.exports = router;

@@ -161,6 +161,7 @@ class Home extends Component{
         <Head>
           <title>patientplatypus</title>
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
         </Head>
         <Feed/>
         <div style={{height: '5vh'}}>
@@ -219,6 +220,9 @@ class Home extends Component{
         <div className='leftItemContainer'>
           <div style={{width: '15vw', marginLeft: '2.5vw'}}>
             <img src='/static/patientplatypus777.svg' style={{width: '100%'}}/>
+            <div className='titleFont' style={{fontSize: '1.7vw'}}>
+              Patient Platypus
+            </div>
           </div>
         </div>
       </div>

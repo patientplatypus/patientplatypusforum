@@ -56,6 +56,14 @@ app.prepare().then(() => {
     return app.render(req, res, '/FAQ', req.query)
   })
 
+  server.get('/blog', (req, res) => {
+    return app.render(req, res, '/blog', req.query)
+  })
+
+  server.get('/admin', (req, res) => {
+    return app.render(req, res, '/admin', req.query)
+  })
+
 
   // server.get('/archive', (req, res) => {
   //   return app.render(req, res, '/archive', req.query)
