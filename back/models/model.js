@@ -32,7 +32,7 @@ var PostSchema = new Schema({
 var BlogSchema = new Schema({
   title: {type: String},
   bodyArr: [{value: {type:String}, index: {type:Number}}],
-  fileArr: [{fileName: {type:String}, index: {type:Number}}],
+  fileArr: [{fileName: {type:String}, index: {type:Number}, data: {type:Buffer}}],
   dateText: {type: String},
   created: { type: Date, default: Date.now },
 }, {

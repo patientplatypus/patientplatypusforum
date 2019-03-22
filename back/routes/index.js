@@ -365,7 +365,6 @@ router.post('/sumbitBlogPost', (req, res, next)=>{
         await asyncForEach(files, async (file) => {
           axios.get(file.value)
           .then(response=>{
-            // console.log('value of response: ', response)
             let fileName = file.name+Date.now();
             let dest = __dirname+'/../picFolder/blog/'+fileName
             fs.writeFile(dest, response.data, function(err, data) {
@@ -393,13 +392,37 @@ router.post('/sumbitBlogPost', (req, res, next)=>{
 router.post('/getBlogPost', (req,res,next)=>{
   console.log('inside getBlogPost')
   console.log('value of req.body: ', req.body)
+
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+
   if (req.body.navTitle=='N/A'){
-    model.Blog.find({}).sort({created: -1}).exec((err, posts)=>{
+    console.log('inside first if statement')
+    model.Blog.findOne({}).sort({created: -1}).exec((err, post)=>{
       if(err){
         console.log("there was an error: ", err)
         res.json({error: 'there was an error'})
       }
-      res.json({post: posts[0]});
+      if (post.fileArr.length>0){
+        console.log('inside second if statement')
+        const asyncFunc = async () => {
+          await asyncForEach(post.fileArr, async (item, index) => {
+            console.log('inside async for each and value of item: ', item, ' index: ', index, ' and value of post.fileArr.length : ', post.fileArr.length)
+            post.fileArr[index]['data'] =  await fsPromise.readFile(__dirname+'/../picFolder/blog/'+item.fileName)
+            console.log('value of post.fileArr[index]: ', post.fileArr[index])
+            console.log('after getting fileData and value of post: ', post)
+            if(index==post.fileArr.length-1){
+              res.json({post: post})
+            }
+          })
+        }
+        asyncFunc()
+      }else{
+        res.json({post: post})
+      }
     })
   }else{
     res.json({'placeholder': {}})
