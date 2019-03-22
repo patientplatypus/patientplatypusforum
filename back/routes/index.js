@@ -269,7 +269,6 @@ router.post('/getPost', (req, res, next)=>{
       res.json({post: post, postObj: fileObj, commentArr: commentArr})
     }
     asyncFunc()
-
   })
 })
 
@@ -370,7 +369,7 @@ router.post('/sumbitBlogPost', (req, res, next)=>{
             fs.writeFile(dest, response.data, function(err, data) {
               if (err) console.log(err);
               console.log("Successfully Written to File.");
-              blog.fileArr.push({fileName: fileName, index: file.index})
+              blog.fileArr.push({fileName: fileName, index: file.index, ext: file.value.match(/\.[0-9a-z]+$/i)[0]})
               if(blog.fileArr.length==files.length){
                 writeSaveBlog()
               }
@@ -406,16 +405,19 @@ router.post('/getBlogPost', (req,res,next)=>{
         console.log("there was an error: ", err)
         res.json({error: 'there was an error'})
       }
-      if (post.fileArr.length>0){
+      let returnPost = post;
+      console.log('value of post: ', post)
+      if (returnPost.fileArr.length>0){
         console.log('inside second if statement')
         const asyncFunc = async () => {
-          await asyncForEach(post.fileArr, async (item, index) => {
-            console.log('inside async for each and value of item: ', item, ' index: ', index, ' and value of post.fileArr.length : ', post.fileArr.length)
-            post.fileArr[index]['data'] =  await fsPromise.readFile(__dirname+'/../picFolder/blog/'+item.fileName)
-            console.log('value of post.fileArr[index]: ', post.fileArr[index])
-            console.log('after getting fileData and value of post: ', post)
+          await asyncForEach(returnPost.fileArr, async (item, index) => {
+            // console.log('inside async for each and value of item: ', item, ' index: ', index, ' and value of post.fileArr.length : ', post.fileArr.length)
+            let fileData =  await fsPromise.readFile(__dirname+'/../picFolder/blog/'+item.fileName)
+            returnPost.fileArr[index]['data'] = fileData.toString('base64')
+            // console.log('value of post.fileArr[index]: ', returnPost.fileArr[index])
+            // console.log('after getting fileData and value of post: ', returnPost)
             if(index==post.fileArr.length-1){
-              res.json({post: post})
+              res.json({post: returnPost})
             }
           })
         }

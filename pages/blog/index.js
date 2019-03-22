@@ -33,11 +33,18 @@ class Blog extends Component{
     return({postData: postReturn})
   }
   state = {
-    componentMounted: false
+    componentMounted: false, 
+    displayArr: []
   }
 
   componentDidMount(){
     console.log('component mounted and value of this.props.postData; ', this.props.postData)
+    let masterArr = this.props.postData.fileArr.concat(this.props.postData.bodyArr);
+    let sortedMaster = masterArr.sort((a, b)=>{
+      console.log('value of a.index: ', a.index, ' value of b.index: ', b.index)
+      return a.index - b.index
+    })
+    console.log('value of sortedMaster: ', sortedMaster);
     this.setState({componentMounted: true})
   }
 
