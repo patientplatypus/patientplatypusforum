@@ -13,7 +13,7 @@ import axios from 'axios'
 import NavMenu from '../../components/NavMenu'
 import Chat from '../../components/Chat'
 
-class FAQ extends Component{
+class Admin extends Component{
   state = {
     componentMounted: false, 
     passText: '',
@@ -71,20 +71,20 @@ class FAQ extends Component{
 
   render(){
     return(
-      <div className='main'>
+      <div className='gridContainer'>
         <Head>
           <title>patientplatypus</title>
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
         </Head>
-        <div className='middleView'>
+        <div className='mainView'>
           <Feed/>
           <div style={{height: '5vh', textAlign: 'center'}}>
             <div className='titleFont' style={{fontSize: '4vh'}}>
               Administration
             </div>
           </div>
-          <div className='faq'> 
+          <div className='admin'> 
             <div style={{fontWeight: 'bold'}}>
               Welcome to the Admin Page
             </div>
@@ -276,11 +276,11 @@ class FAQ extends Component{
             )}
           </div>
         </div>
-        <div className='rightItemContainer'>
+        <div className='rightContainer'>
           <NavMenu/>
           <Chat/>
         </div>
-        <div className='leftItemContainer'>
+        <div className='leftContainer'>
           <div style={{width: '15vw', marginLeft: '2.5vw'}}>
             <img src='/static/patientplatypus777.svg' style={{width: '100%'}}/>
             <div className='titleFont' style={{fontSize: '1.7vw'}}>
@@ -293,4 +293,4 @@ class FAQ extends Component{
   }
 }
 
-export default FAQ
+export default Admin

@@ -5,6 +5,10 @@
   --button_color:#af6500;
 }
 
+a{
+  color: #aa6800;
+}
+
 textarea{
   resize: none;
   white-space: pre-line;
@@ -51,20 +55,22 @@ textarea{
 }
 
 .submitPostContainer{
-  margin-left: 1vw;
-  width: calc(55vw - 20px);
   margin-bottom: 10px;
   padding: 10px;
   text-align: right;
-  background: var(--card_background)
+  background: var(--card_background);
+  width: calc(53vw - 10px);
+  margin-left: calc(1vw - 5px);
 }
 
 .card{
   background: var(--card_background);
   color: var(--text_color);
-  width: calc(55vw - 10px);
+  /* width: calc(55vw - 10px); */
   padding: 5px;
-  margin-left: 1vw;
+  /* margin-left: 1vw; */
+  width: 53vw;
+  margin-left: calc(1vw - 5px);
   border-radius: 5px;
 }
 
@@ -72,9 +78,9 @@ textarea{
   background: var(--card_background);
   color: var(--text_color);
   margin-left: 5vw;
-  width: calc(50vw - 10px);
+  width: 50vw;
   padding: 5px;
-  margin-left: 6vw;
+  margin-left: calc(3vw + 10px);
   border-radius: 5px;
 }
 
@@ -82,46 +88,91 @@ textarea{
   background: var(--card_background);
   color: var(--text_color);
   margin-bottom: 5px;
-  width: calc(55vw - 10px);
+  /* width: calc(55vw - 10px); */
+  width: 53vw;
+  margin-left: calc(1vw - 5px);
   padding: 5px;
   border-radius: 5px;
-  margin-left: 1vw;
+  /* margin-left: 1vw; */
   text-align: center;
 }
 
-.faq{
-  margin-left: calc(1vw - 5px);
-  width: 55vw;
-  background: var(--card_background);
-  padding: 5px;
-}
-
-.blogHeader{
-  margin-left: calc(1vw - 5px);
-  width: 55vw;
-  background: rgb(111, 153, 123);
-  padding: 5px;
-}
 
 .feedPage{
+  /* margin-left: calc(1vw - 5px); */
+  width: 53vw;
   margin-left: calc(1vw - 5px);
-  width: 55vw;
   background: var(--card_background);
   padding: 5px;
 }
 
 .feed{
-  width: 57vw;
+  width: 55vw;
   background: black;
   color: white;
   font-size: 30pt;
   overflow: hidden;
 }
 
+
+.faq{
+  width: 53vw;
+  margin-left: calc(1vw - 5px);
+  background: var(--card_background);
+  padding: 5px;
+}
+
+.admin{
+  width: 53vw;
+  margin-left: calc(1vw - 5px);
+  background: var(--card_background);
+  padding: 5px;
+}
+
+
+.blogHeader{
+  width: 53vw;
+  margin-left: calc(1vw - 5px);
+  background: rgb(111, 153, 123);
+  padding: 5px;
+}
+
+.gridContainer {
+  display: grid;
+  grid-gap: 0px;
+  grid-template-columns: 20vw  55vw  25vw;
+  grid-template-rows: 100vh;
+  overflow: hidden;
+  overflow-y: auto;
+  grid-template-areas:
+         "leftContainer mainView rightContainer";
+  background-color: var(--background_main)
+}
+
+.leftContainer{
+  margin-top: 2.5vh;
+  grid-area: leftContainer;
+}
+
+.mainView{
+  grid-area: mainView;
+  background-image: url(/static/pattern.png);
+  background-repeat: repeat; 
+  overflow: hidden;
+}
+
+.rightContainer{
+  grid-area: rightContainer;
+  margin-top: 2.5vh
+}
+
 .rightItemContainer{
   position: absolute;
-  top: 5vh;
-  right: 1vw;
+  top: 2.5vh;
+  /* right: 1vw; */
+  right: 0vw;
+  width: 24vw;
+  /* background: purple; */
 }
 
 .leftItemContainer{
@@ -133,7 +184,10 @@ textarea{
 }
 
 .nav{
-  width: calc(20vw + 10px);
+  width: calc(22vw - 20px);
+  max-height: 30vh;
+  margin-left: calc(1vw + 10px);
+  margin-right: calc(1vw - 10px);
   text-align: right;
   /* padding: 5px; */
   border-width: 5px;
@@ -141,23 +195,29 @@ textarea{
   border-style: solid;
   margin-bottom: 20px;
   position: relative;
+  background: #71481b;
 }
 
 .chat{
-  width: 20vw;
-  /* height: 60vh; */
+  width: calc(22vw - 30px);
+  margin-left: calc(1vw + 10px);
+  margin-right: calc(1vw - 10px);
+  height: 50vh;
+  /* max-height: 65vh; */
   text-align: right;
   padding: 5px;
   border-width: 5px;
   border-color: #71481b;
   border-style: solid;
   position: relative;
+  background: #71481b;
 }
 
 
 html, body{
   margin: 0;
   padding: 0;
+  overflow-x: hidden
 }
 
 .example-enter {
@@ -197,3 +257,4 @@ html, body{
   justify-content: center; 
   align-items: stretch;
 }
+

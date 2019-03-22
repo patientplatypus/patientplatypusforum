@@ -33,11 +33,11 @@ class ChatContext extends Component{
   render(){
     return(
       <div className='chat'>
-        <div style={{width: 'calc(100% + 10px)', border: '10px dotted #aa6800', marginTop: '-15px', marginLeft: '-15px', marginBottom: '-15px'}}>
+        <div style={{height: 'calc(100% + 10px)', width: 'calc(100% + 10px)', border: '10px dotted #aa6800', marginTop: '-15px', marginLeft: '-15px', marginBottom: '-10px'}}>
           <div style={{height: '1rem', width: '100%', margin: 'auto', textAlign: 'center', fontWeight: 'bold', marginTop: '5px', marginBottom: '5px'}}>
             Chat
           </div>
-          <div style={{height: 'calc(60vh)', background: 'rgb(123, 146, 180)', padding: '5px'}}>
+          <div style={{height: 'calc(100% - 1rem - 10px - 1.5rem - 10px)', background: 'rgb(123, 146, 180)', padding: '5px'}}>
             <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%', position: 'relative'}}>
               <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflow: 'hidden', overflowY: 'auto'}}>
                 {this.props.context.state.chatArr.map((chatItem, index)=>{
@@ -51,9 +51,9 @@ class ChatContext extends Component{
               </div>
             </div>
           </div>
-          <div style={{width: '100%', background: '#71481b'}}>
+          <div style={{width: '100%', background: ''}}>
             <div style={{display: 'flex', flexDirection: 'row'}}>
-              <div style={{flex: 1, fontWeight: 'bold', marginLeft: '5px', textAlign: 'left', marginTop: '5px', fontSize: '0.75rem'}}>
+              <div style={{flex: 1, fontWeight: 'bold', marginLeft: '5px', textAlign: 'left', marginTop: '5px', fontSize: '0.75rem', color: '#aa6800'}}>
                 {this.props.context.state.chatName}
               </div>
               <div style={{flex: 2}}>
