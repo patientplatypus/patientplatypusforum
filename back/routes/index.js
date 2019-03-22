@@ -297,7 +297,7 @@ router.post('/confirmPass', (req, res, next)=>{
   console.log('inside /confirmPass')
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   console.log(ip)
-  var ipWhitelist = ['67.198.78.26', '70.118.40.114']
+  var ipWhitelist = ['67.198.78.26', '70.118.40.114', '70.114.195.161']
   if(ipWhitelist.includes(req.body.payload.ip)&&req.body.payload.pass==process.env.adminPass){
     res.json({'confirmed': true})
   }else{
@@ -362,11 +362,14 @@ router.post('/sumbitBlogPost', (req, res, next)=>{
     if (files.length>0){
       const asyncFunc = async()=>{
         await asyncForEach(files, async (file) => {
-          axios.get(file.value)
+          axios.get(file.value, {
+            responseType: 'arraybuffer'
+          })
           .then(response=>{
+            let writeData = new Buffer(response.data, 'binary').toString('base64')
             let fileName = file.name+Date.now();
             let dest = __dirname+'/../picFolder/blog/'+fileName
-            fs.writeFile(dest, response.data, function(err, data) {
+            fs.writeFile(dest, writeData, function(err, data) {
               if (err) console.log(err);
               console.log("Successfully Written to File.");
               blog.fileArr.push({fileName: fileName, index: file.index, ext: file.value.match(/\.[0-9a-z]+$/i)[0]})
@@ -413,7 +416,8 @@ router.post('/getBlogPost', (req,res,next)=>{
           await asyncForEach(returnPost.fileArr, async (item, index) => {
             // console.log('inside async for each and value of item: ', item, ' index: ', index, ' and value of post.fileArr.length : ', post.fileArr.length)
             let fileData =  await fsPromise.readFile(__dirname+'/../picFolder/blog/'+item.fileName)
-            returnPost.fileArr[index]['data'] = fileData.toString('base64')
+            // console.log('value of fileData.toString(base64): ', fileData.toString('base64'))
+            returnPost.fileArr[index]['data'] = fileData//.toString('base64')
             // console.log('value of post.fileArr[index]: ', returnPost.fileArr[index])
             // console.log('after getting fileData and value of post: ', returnPost)
             if(index==post.fileArr.length-1){

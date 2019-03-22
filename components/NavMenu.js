@@ -9,8 +9,8 @@ class NavMenu extends Component{
     return(
       <div className='nav'>
         <div style={{width: 'calc(100%)', maxHeight: '30vh', border: '10px dotted #aa6800', marginTop: '-10px', marginLeft: '-10px', marginBottom: '-10px'}}>
-            <div style={{fontWeight:'bold', textAlign: 'center', width: '100%', marginTop: '5px', marginBottom: '5px'}}>
-              Navigation
+            <div className='titleFont' style={{fontWeight:'bold', textAlign: 'center', width: '100%', marginTop: '5px', marginBottom: '5px'}}>
+              navigation
             </div>
             <div style={{marginRight: '10px', marginBottom: '5px'}}>
               <div style={{display: 'block'}}>

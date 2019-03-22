@@ -137,6 +137,21 @@ textarea{
   padding: 5px;
 }
 
+.blogTitleBar{
+  background: rgb(111, 153, 123);
+  padding: 5px;
+  width: calc(100% - 10px);
+  margin-top: 10px;
+}
+
+.blogBodyItem{
+  background: rgb(111, 153, 123);
+  padding: 5px;
+  margin-top: 1vh;
+  width: calc(90% - 10px);
+  margin-left: 5%;
+}
+
 .gridContainer {
   display: grid;
   grid-gap: 0px;

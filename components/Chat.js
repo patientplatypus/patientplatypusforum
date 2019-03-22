@@ -34,8 +34,8 @@ class ChatContext extends Component{
     return(
       <div className='chat'>
         <div style={{height: 'calc(100% + 10px)', width: 'calc(100% + 10px)', border: '10px dotted #aa6800', marginTop: '-15px', marginLeft: '-15px', marginBottom: '-10px'}}>
-          <div style={{height: '1rem', width: '100%', margin: 'auto', textAlign: 'center', fontWeight: 'bold', marginTop: '5px', marginBottom: '5px'}}>
-            Chat
+          <div className='titleFont' style={{height: '1rem', width: '100%', margin: 'auto', textAlign: 'center', fontWeight: 'bold', marginTop: '5px', marginBottom: '5px'}}>
+            chat
           </div>
           <div style={{height: 'calc(100% - 1rem - 10px - 1.5rem - 10px)', background: 'rgb(123, 146, 180)', padding: '5px'}}>
             <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%', position: 'relative'}}>

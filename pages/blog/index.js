@@ -34,7 +34,8 @@ class Blog extends Component{
   }
   state = {
     componentMounted: false, 
-    displayArr: []
+    displayArr: [], 
+    masterArr: []
   }
 
   componentDidMount(){
@@ -45,7 +46,7 @@ class Blog extends Component{
       return a.index - b.index
     })
     console.log('value of sortedMaster: ', sortedMaster);
-    this.setState({componentMounted: true})
+    this.setState({componentMounted: true, masterArr: sortedMaster})
   }
 
   render(){
@@ -90,9 +91,36 @@ class Blog extends Component{
             <hr/>
             <div style={{clear: 'both'}}/>
           </div>
+          <div className='blogTitleBar'>
+            <div style={{display: 'inline-block', marginRight: '10px'}}>
+              <span style={{fontWeight: 'bold'}}>{this.props.postData.title}</span> 
+            </div>
+            <div style={{display: 'inline-block', marginRight: '10px'}}>
+              <span style={{fontWeight: 'bold'}}>{this.props.postData.dateText}</span> 
+            </div>
+            <hr/>
+          </div>
+          <div style={{}}>
+            {this.state.masterArr.map((item, index)=>{
+              console.log('value of item type: ', item.type=='body')
+              console.log('value of item.value: ', item.value)
+              if(item.type=='body'){
+                return(
+                  <div className='blogBodyItem' key={index} style={{marginTop: '1vh'}}>
+                    {item.value}
+                  </div>
+                )
+              }else if (item.type=='file'){
+                return(
+                  <div key={index} style={{marginLeft: '5%', width: '90%', maxHeight: '25vh'}}>
+                    <img src={`${`data:image/`+item.ext+`;base64,`+item.data}`} style={{height: '100%', width: '100%'}}/>
+                  </div>
+                )
+              }
+            })}
+          </div>
         </div>
-        
-        <div className='rightontainer'>
+        <div className='rightContainer'>
           <NavMenu/>
           <Chat/>
         </div>
