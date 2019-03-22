@@ -112,7 +112,9 @@ class Blog extends Component{
                 )
               }else if (item.type=='file'){
                 return(
-                  <div key={index} style={{marginLeft: '5%', width: '90%', maxHeight: '25vh'}}>
+                  <div key={index} style={{marginLeft: '5%', width: '90%', marginTop: '1vh'}}>
+                    <img src={`${`data:image/`+item.ext+`;base64,`+item.data}`} style={{height: '100%', width: '100%'}}/>
+                    <img src={`${`data:image/`+item.ext+`;base64,`+item.data}`} style={{height: '100%', width: '100%'}}/>
                     <img src={`${`data:image/`+item.ext+`;base64,`+item.data}`} style={{height: '100%', width: '100%'}}/>
                   </div>
                 )

@@ -155,12 +155,12 @@ textarea{
 .gridContainer {
   display: grid;
   grid-gap: 0px;
-  grid-template-columns: 20vw  55vw  25vw;
-  grid-template-rows: 100vh;
   overflow: hidden;
   overflow-y: auto;
   grid-template-areas:
          "leftContainer mainView rightContainer";
+  grid-template-columns: 20vw  55vw  25vw;
+  grid-template-rows: auto;
   background-color: var(--background_main)
 }
 
@@ -173,7 +173,12 @@ textarea{
   grid-area: mainView;
   background-image: url(/static/pattern.png);
   background-repeat: repeat; 
-  overflow: hidden;
+  min-height: 100vh;
+  height: 100%;
+  display: block;
+  /* overflow: visible; */
+  /* overflow: hidden;
+  overflow-y: auto; */
 }
 
 .rightContainer{
