@@ -37,9 +37,10 @@ class ChatContext extends Component{
           <div className='titleFont' style={{height: '1rem', width: '100%', margin: 'auto', textAlign: 'center', fontWeight: 'bold', marginTop: '5px', marginBottom: '5px'}}>
             chat
           </div>
-          <div style={{height: 'calc(100% - 1rem - 10px - 1.5rem - 10px)', background: 'rgb(123, 146, 180)', padding: '5px'}}>
+          <div style={{height: 'calc(100% - 1rem - 10px - 1.5rem - 15px)', position: 'relative', padding: '5px'}}>
+            <div style={{position: 'absolute', backgroundImage: 'url("/static/paisley_floral.svg")', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', zIndex: '1', opacity: '0.1', top: 0, left: 0, bottom: '0px', right: 0}}/>
             <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%', position: 'relative'}}>
-              <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflow: 'hidden', overflowY: 'auto'}}>
+              <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflow: 'hidden', overflowY: 'auto', color: '#e68b04'}}>
                 {this.props.context.state.chatArr.map((chatItem, index)=>{
                   return(
                     <div key={index} style={{textAlign: 'left', wordBreak: 'break-all'}}>
@@ -51,7 +52,7 @@ class ChatContext extends Component{
               </div>
             </div>
           </div>
-          <div style={{width: '100%', background: ''}}>
+          <div style={{width: '100%', background: '', marginTop: '5px'}}>
             <div style={{display: 'flex', flexDirection: 'row'}}>
               <div style={{flex: 1, fontWeight: 'bold', marginLeft: '5px', textAlign: 'left', marginTop: '5px', fontSize: '0.75rem', color: '#aa6800'}}>
                 {this.props.context.state.chatName}
