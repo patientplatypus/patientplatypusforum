@@ -56,8 +56,12 @@ app.prepare().then(() => {
     return app.render(req, res, '/FAQ', req.query)
   })
 
-  server.get('/blog/:navTitle', (req, res) => {
-    return app.render(req, res, '/blog',  { navTitle: req.params.navTitle })
+  server.get('/blog/archive', (req, res) => {
+    return app.render(req, res, '/blog/archive')
+  })
+
+  server.get('/blog/:navID', (req, res) => {
+    return app.render(req, res, '/blog',  { navID: req.params.navID })
   })
 
   server.get('/admin', (req, res) => {

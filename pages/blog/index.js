@@ -17,9 +17,9 @@ class Blog extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
     let url = 'http://localhost:5000/getBlogPost'
-    console.log('value of navTitle: ', query.navTitle)
+    console.log('value of navTitle: ', query.navID)
     var postReturn = await axios.post(url, {
-      navTitle: query.navTitle==undefined?'N/A':query.navTitle
+      navID: query.navID==undefined?'N/A':query.navID
     })
     .then(response=>{
       console.log('value of response.data: ', response.data)
@@ -47,6 +47,9 @@ class Blog extends Component{
     })
     console.log('value of sortedMaster: ', sortedMaster);
     this.setState({componentMounted: true, masterArr: sortedMaster})
+    setTimeout(() => {
+      window.scrollTo(0,0)
+    }, 500);//if first image overflow 100vh -- need?
   }
 
   render(){
@@ -92,11 +95,18 @@ class Blog extends Component{
             <div style={{clear: 'both'}}/>
           </div>
           <div className='blogTitleBar'>
-            <div style={{display: 'inline-block', marginRight: '10px'}}>
+            <div style={{display: 'inline-block', marginRight: '10px', marginBottom: '5px', background: 'rgb(70, 117, 84)', padding: '5px'}}>
               <span style={{fontWeight: 'bold'}}>{this.props.postData.title}</span> 
             </div>
-            <div style={{display: 'inline-block', marginRight: '10px'}}>
+            <div style={{display: 'inline-block', marginRight: '10px', background: 'rgb(70, 117, 84)', padding: '5px'}}>
               <span style={{fontWeight: 'bold'}}>{this.props.postData.dateText}</span> 
+            </div>
+            <div style={{display: 'inline-block', float: 'right', background: 'rgb(70, 117, 84)', padding: '5px'}}>
+              <Link href='/blog/archive'> 
+                <a href='' style={{cursor: 'pointer', textDecoration:'underline'}}>
+                  archive
+                </a>
+              </Link>
             </div>
             <hr/>
           </div>
@@ -113,8 +123,6 @@ class Blog extends Component{
               }else if (item.type=='file'){
                 return(
                   <div key={index} style={{marginLeft: '5%', width: '90%', marginTop: '1vh'}}>
-                    <img src={`${`data:image/`+item.ext+`;base64,`+item.data}`} style={{height: '100%', width: '100%'}}/>
-                    <img src={`${`data:image/`+item.ext+`;base64,`+item.data}`} style={{height: '100%', width: '100%'}}/>
                     <img src={`${`data:image/`+item.ext+`;base64,`+item.data}`} style={{height: '100%', width: '100%'}}/>
                   </div>
                 )

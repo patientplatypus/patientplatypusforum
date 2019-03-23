@@ -400,14 +400,21 @@ router.post('/getBlogPost', (req,res,next)=>{
       await callback(array[index], index, array);
     }
   }
+  var findId = null
+  if (req.body.navID=='N/A'){
+    findId = {}
+  }else{
+    findId = {_id: req.body.navID}
+  }
 
-  if (req.body.navTitle=='N/A'){
-    console.log('inside first if statement')
-    model.Blog.findOne({}).sort({created: -1}).exec((err, post)=>{
-      if(err){
-        console.log("there was an error: ", err)
-        res.json({error: 'there was an error'})
-      }
+  model.Blog.findOne(findId).sort({created: -1}).exec((err, post)=>{
+    if(err){
+      console.log("there was an error: ", err)
+      res.json({error: 'there was an error'})
+    }
+    if(post==null){
+      res.json({post: {}})
+    }else{
       let returnPost = post;
       console.log('value of post: ', post)
       if (returnPost.fileArr.length>0){
@@ -429,10 +436,23 @@ router.post('/getBlogPost', (req,res,next)=>{
       }else{
         res.json({post: post})
       }
+    }
+  })
+})
+
+router.post('/getBlogArchive', (req, res, next)=>{
+  console.log('inside /getBlogArchive')
+  model.Blog.find({}).sort({created: -1}).exec((err, posts)=>{
+    if(err){
+      console.log("there was an error: ", err)
+      res.json({error: 'there was an error'})
+    }
+    let returnPosts = posts.map(post=>{
+      return {title: post.title, id: post._id}
     })
-  }else{
-    res.json({'placeholder': {}})
-  }
+    console.log('value of returnPosts: ', returnPosts)
+    res.json({posts: returnPosts})
+  })
 })
 
 module.exports = router;
