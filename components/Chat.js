@@ -38,7 +38,7 @@ class ChatContext extends Component{
             chat
           </div>
           <div style={{height: 'calc(100% - 1rem - 10px - 1.5rem - 15px)', position: 'relative', padding: '5px'}}>
-            <div style={{position: 'absolute', backgroundImage: 'url("/static/paisley_floral.svg")', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', zIndex: '1', opacity: '0.1', top: 0, left: 0, bottom: '0px', right: 0}}/>
+            <div style={{position: 'absolute', backgroundImage: 'url("/static/paisley_floral.svg")', backgroundSize: 'contain', backgroundRepeat: 'no-repeat', zIndex: '1', opacity: '0.1', top: 0, left: 0, bottom: 0, right: 0, pointerEvents: 'none'}}/>
             <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%', position: 'relative'}}>
               <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, overflow: 'hidden', overflowY: 'auto', color: '#e68b04'}}>
                 {this.props.context.state.chatArr.map((chatItem, index)=>{

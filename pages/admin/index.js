@@ -155,19 +155,45 @@ class Admin extends Component{
                                 onChange={(e)=>{
                                   var tempArr = this.state.displayArr;
                                   tempArr[index]['value'] = e.target.value
-                                  this.setState({displayArr: tempArr})
+                                  this.setState({displayArr: tempArr}, ()=>{
+                                    console.log('after setting textarea and value of this.state.displayArr: ', this.state.displayArr)
+                                  })
                                 }}
                                 >  
                                 </textarea>
-                                <div style={{marginBottom: '5px'}} className='button' onClick={()=>{
-                                  var tempArr = this.state.displayArr;
-                                  let newTemp = tempArr.filter(temp=>{
-                                    return temp!=disp
-                                  })
-                                  console.log('value of tempArr: ', newTemp)
-                                  this.setState({displayArr: newTemp}, ()=>{console.log('after setstate and value of displayArr; ', this.state.displayArr)})
-                                }}>
-                                  REMOVE
+                                <div style={{marginBottom: '5px'}}>
+                                  <div style={{display: 'inline-block'}} className='button' onClick={()=>{
+                                    var tempArr = this.state.displayArr;
+                                    let newTemp = tempArr.filter(temp=>{
+                                      return temp!=disp
+                                    })
+                                    console.log('value of tempArr: ', newTemp)
+                                    this.setState({displayArr: newTemp}, ()=>{console.log('after setstate and value of displayArr; ', this.state.displayArr)})
+                                  }}>
+                                    REMOVE
+                                  </div>
+                                  {renderIf(index!=0)(
+                                    <div style={{display: 'inline-block', marginLeft: '5px'}} className='button' onClick={()=>{
+                                      let tempArr = JSON.parse(JSON.stringify(this.state.displayArr));
+                                      tempArr[index-1] = this.state.displayArr[index];
+                                      tempArr[index] = this.state.displayArr[index-1];
+                                      this.setState({displayArr: tempArr}, ()=>this.forceUpdate())
+                                    }}>
+                                      MOVE UP
+                                    </div>
+                                  )}
+                                  {renderIf(index!=this.state.displayArr.length-1)(
+                                    <div style={{display: 'inline-block', marginLeft: '5px'}} className='button' onClick={()=>{
+                                      console.log('value of this.state.displayArr: ',  this.state.displayArr)
+                                      let tempArr = JSON.parse(JSON.stringify(this.state.displayArr));
+                                      tempArr[index+1] = this.state.displayArr[index];
+                                      tempArr[index] = this.state.displayArr[index+1];
+                                      console.log('value of tempArr: ', tempArr)
+                                      this.setState({displayArr: tempArr})
+                                    }}>
+                                      MOVE DOWN
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             )
@@ -200,15 +226,37 @@ class Admin extends Component{
                                 >
                                 </input>
                                 <br style={{marginBottom: '5px'}}/>
-                                <div style={{marginBottom: '5px'}} className='button' onClick={()=>{
-                                  var tempArr = this.state.displayArr;
-                                  let newTemp = tempArr.filter(temp=>{
-                                    return temp!=disp
-                                  })
-                                  console.log('value of tempArr: ', newTemp)
-                                  this.setState({displayArr: newTemp}, ()=>{console.log('after setstate and value of displayArr; ', this.state.displayArr)})
-                                }}>
-                                  REMOVE
+                                <div style={{marginBottom: '5px'}}>
+                                  <div className='button' onClick={()=>{
+                                    var tempArr = this.state.displayArr;
+                                    let newTemp = tempArr.filter(temp=>{
+                                      return temp!=disp
+                                    })
+                                    console.log('value of tempArr: ', newTemp)
+                                    this.setState({displayArr: newTemp}, ()=>{console.log('after setstate and value of displayArr; ', this.state.displayArr)})
+                                  }}>
+                                    REMOVE
+                                  </div>
+                                  {renderIf(index!=0)(
+                                    <div style={{display: 'inline-block', marginLeft: '5px'}} className='button' onClick={()=>{
+                                      let tempArr = JSON.parse(JSON.stringify(this.state.displayArr));
+                                      tempArr[index-1] = this.state.displayArr[index];
+                                      tempArr[index] = this.state.displayArr[index-1];
+                                      this.setState({displayArr: tempArr})
+                                    }}>
+                                      MOVE UP
+                                    </div>
+                                  )}
+                                  {renderIf(index!=this.state.displayArr.length-1)(
+                                    <div style={{display: 'inline-block', marginLeft: '5px'}} className='button' onClick={()=>{
+                                      let tempArr = JSON.parse(JSON.stringify(this.state.displayArr));
+                                      tempArr[index+1] = this.state.displayArr[index];
+                                      tempArr[index] = this.state.displayArr[index+1];
+                                      this.setState({displayArr: tempArr})
+                                    }}>
+                                      MOVE DOWN
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             )
