@@ -393,6 +393,15 @@ router.post('/submitBlogPost', (req, res, next)=>{
 
 router.post('/updateBlogPost', (req, res, next)=>{
   console.log('inside updateBlogPost')
+  let findId = {_id: req.body.payload.id};
+  model.Blog.findOne(findId).sort({created: -1}).exec((err, post)=>{
+    if(err){
+      console.log("there was an error: ", err)
+      res.json({error: 'there was an error'})
+    }
+    console.log('value of post: ', post)
+    console.log('value of payload: ', req.body.payload)
+  })
   res.json({dummy: 'dummy'})
 })
 
@@ -412,7 +421,7 @@ router.post('/getBlogPost', (req,res,next)=>{
     findId = {_id: req.body.navID}
   }
 
-  model.Blog.findOne(findId).sort({created: -1}).exec((err, post)=>{
+  model.Blog.findOne(findId).exec((err, post)=>{
     if(err){
       console.log("there was an error: ", err)
       res.json({error: 'there was an error'})

@@ -23,7 +23,8 @@ class Admin extends Component{
     archiveArr: {posts:[]},
     displayArr: [], 
     titleText: '', 
-    dateText: ''
+    dateText: '',
+    blogUpdateID: null
   }
   componentDidMount(){
     this.setState({componentMounted: true})
@@ -69,7 +70,8 @@ class Admin extends Component{
     let payload = {
       blogArr: this.state.displayArr,
       title: this.state.titleText,
-      dateText: this.state.dateText
+      dateText: this.state.dateText, 
+      id: this.state.blogUpdateID
     }
     axios.post('http://localhost:5000/submitBlogPost', {payload})
     .then(response=>{
@@ -91,10 +93,13 @@ class Admin extends Component{
         if(item.type=='file'){
           item.data="";
           return(item)
+        }else{
+          return(item)
         }
       }),
       title: this.state.titleText,
-      dateText: this.state.dateText
+      dateText: this.state.dateText, 
+      id: this.state.blogUpdateID
     }
     console.log('value of payload: ', payload)
     axios.post('http://localhost:5000/updateBlogPost', {payload})
@@ -105,7 +110,7 @@ class Admin extends Component{
         titleText: '',
         dateText: '',
         creatingBlogPost: false, 
-        updateBlogPost: false
+        updateBlogPost: false, 
       })
     })
     .catch(error=>{console.log('error on submitting blog post: ', error)})
@@ -113,19 +118,21 @@ class Admin extends Component{
 
   handleGetBlog = (id) => {
     console.log('inside handleGetBlog and id: ', id)
-    axios.post('http://localhost:5000/getBlogPost', {navID: id})
-    .then(response=>{
-      console.log('value of response from getBlogPost, ', response);
-      let masterArr = response.data.post.bodyArr.concat(response.data.post.fileArr);
-      let sortedMaster = masterArr.sort((a, b)=>{
-        console.log('value of a.index: ', a.index, ' value of b.index: ', b.index)
-        return a.index - b.index
+    this.setState({blogUpdateID: id}, ()=>{
+      axios.post('http://localhost:5000/getBlogPost', {navID: id})
+      .then(response=>{
+        console.log('value of response from getBlogPost, ', response);
+        let masterArr = response.data.post.bodyArr.concat(response.data.post.fileArr);
+        let sortedMaster = masterArr.sort((a, b)=>{
+          console.log('value of a.index: ', a.index, ' value of b.index: ', b.index)
+          return a.index - b.index
+        })
+        console.log('value of sortedMaster: ', sortedMaster);
+        this.setState({displayArr: masterArr, creatingBlogPost: true})
       })
-      console.log('value of sortedMaster: ', sortedMaster);
-      this.setState({displayArr: masterArr, creatingBlogPost: true})
-    })
-    .catch(error=>{
-      console.log('value of error from getBlogPost, ', error);
+      .catch(error=>{
+        console.log('value of error from getBlogPost, ', error);
+      })
     })
   }
 
