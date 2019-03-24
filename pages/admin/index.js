@@ -26,9 +26,29 @@ class Admin extends Component{
     dateText: '',
     blogUpdateID: null
   }
+
+  mainRef = React.createRef();
+
   componentDidMount(){
     this.setState({componentMounted: true})
   }
+
+  componentDidUpdate(prevProps, prevState, snapshot){
+    if(prevState!=this.state &&(this.state.creatingBlogPost==prevState.creatingBlogPost && this.state.updateBlogPost==prevState.updateBlogPost)){
+      window.scrollTo(0,document.body.scrollHeight);
+    }
+    if(prevState.updateBlogPost!=this.state.updateBlogPost && this.state.updateBlogPost){
+      axios.post('http://localhost:5000/getBlogArchive')
+      .then(response=>{
+        console.log('value of response from blogArchive: ', response.data)
+        this.setState({archiveArr: response.data})
+      })
+      .catch(error=>{
+        console.log('there was an error in getting Blog Archive: ', error)
+      })
+    }
+  }
+
 
   handlePassSubmit = () => {
     axios.get('https://ipapi.co/json/')
@@ -53,19 +73,6 @@ class Admin extends Component{
     })
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot){
-    if(prevState.updateBlogPost!=this.state.updateBlogPost && this.state.updateBlogPost){
-      axios.post('http://localhost:5000/getBlogArchive')
-      .then(response=>{
-        console.log('value of response from blogArchive: ', response.data)
-        this.setState({archiveArr: response.data})
-      })
-      .catch(error=>{
-        console.log('there was an error in getting Blog Archive: ', error)
-      })
-    }
-  }
-
   handleSubmitBlog = () => {
     let payload = {
       blogArr: this.state.displayArr,
@@ -88,15 +95,31 @@ class Admin extends Component{
 
   handleUpdateBlog = () => {
     console.log('inside handleUpdateBlog')
+    let setIndex = this.state.displayArr.map((item, index)=>{
+      item.index = index;
+      return item;
+    })
+    let displayClean = setIndex.map(item=>{
+      if(item.type=='file'){
+        item.data=''
+        return item;
+      }else{
+        return item;
+      }
+    })
+    var bodyArr = displayClean.filter(item=>{
+      return item.type=='body'
+    })
+    var fileArr = displayClean.filter(item=>{
+      return item.type=='file'
+    })
+    var newFileArr = displayClean.filter(item=>{
+      return item.type=='picURL'
+    })
     let payload = {
-      blogArr: this.state.displayArr.map(item=>{
-        if(item.type=='file'){
-          item.data="";
-          return(item)
-        }else{
-          return(item)
-        }
-      }),
+      bodyArr: bodyArr, 
+      fileArr: fileArr, 
+      newFileArr: newFileArr,
       title: this.state.titleText,
       dateText: this.state.dateText, 
       id: this.state.blogUpdateID
@@ -138,7 +161,7 @@ class Admin extends Component{
 
   render(){
     return(
-      <div className='gridContainer'>
+      <div className='gridContainer' ref={(input)=>this.mainRef = input}>
         <Head>
           <title>patientplatypus</title>
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
@@ -375,6 +398,16 @@ class Admin extends Component{
                                 </div>
                                 <div style={{marginLeft: '5px', marginRight: '5px', width: 'calc(100% - 10px)'}}>
                                   <img src={`${`data:image/`+disp.ext+`;base64,`+disp.data}`} style={{height: '100%', width: '100%'}}/>
+                                </div>
+                                <div style={{display: 'inline-block', marginLeft: '5px'}} className='button' onClick={()=>{
+                                  var tempArr = this.state.displayArr;
+                                  let newTemp = tempArr.filter(temp=>{
+                                    return temp!=disp
+                                  })
+                                  console.log('value of tempArr: ', newTemp)
+                                  this.setState({displayArr: newTemp}, ()=>{console.log('after setstate and value of displayArr; ', this.state.displayArr)})
+                                }}>
+                                  REMOVE
                                 </div>
                                 {renderIf(index!=0)(
                                     <div style={{display: 'inline-block', marginLeft: '5px'}} className='button' onClick={()=>{

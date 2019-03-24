@@ -394,13 +394,73 @@ router.post('/submitBlogPost', (req, res, next)=>{
 router.post('/updateBlogPost', (req, res, next)=>{
   console.log('inside updateBlogPost')
   let findId = {_id: req.body.payload.id};
-  model.Blog.findOne(findId).sort({created: -1}).exec((err, post)=>{
+  model.Blog.findOne(findId).lean().exec((err, post)=>{
     if(err){
       console.log("there was an error: ", err)
       res.json({error: 'there was an error'})
     }
     console.log('value of post: ', post)
     console.log('value of payload: ', req.body.payload)
+
+    let tempPost = post;
+
+    //first delete any items we've deleted on the frontend
+    tempPost.fileArr.filter(item=>{
+      return (req.body.payload.fileArr.filter(fileItem => fileItem == item))
+    })
+    tempPost.bodyArr.filter(item=>{
+      return (req.body.payload.bodyArr.filter(bodyItem=> bodyItem == item))
+    })  
+    console.log('after calcs delete and value of tempPost: ', tempPost)
+
+    //next add in any items that are new
+    req.body.payload.fileArr.forEach((item, index)=>{
+      if(!tempPost.fileArr.filter(tempItem=>tempItem._id==item._id).length>0){
+        console.log('value of tempPost.fileArr: ', tempPost.fileArr)
+        console.log('value of item: ', item)
+        tempPost.fileArr.push(item)
+      }
+    })
+    req.body.payload.bodyArr.forEach((item, index)=>{
+      if(!tempPost.bodyArr.filter(tempItem=>tempItem._id==item._id).length>0){
+        tempPost.bodyArr.push(item)
+      }
+    })
+
+    // let tempPostFileArr = Array.from(new Set([...tempPost.fileArr, ...req.body.payload.fileArr]));
+
+    // console.log('value of tempPostFileArr: ', tempPostFileArr)
+
+    // tempPost.fileArr = tempPostFileArr;
+
+    // let tempPostBodyArr = Array.from(new Set([...tempPost.bodyArr, ...req.body.payload.bodyArr]));
+
+    // console.log('value of tempPostBodyArr: ', tempPostBodyArr)
+
+    // tempPost.bodyArr = tempPostBodyArr;
+
+    console.log('after calcs add and value of tempPost: ', tempPost)
+
+    //finally sort items
+    tempPost.fileArr.map(item=>{
+      if(req.body.payload.fileArr.includes(item.index)){
+        item.index = req.body.payload.fileArr.filter(arrItem=>arrItem==item).index
+        return item;
+      }else{
+        return item
+      }
+    })
+    tempPost.bodyArr.map(item=>{
+      if(req.body.payload.bodyArr.includes(item.index)){
+        item.index = req.body.payload.bodyArr.filter(arrItem=>arrItem==item).index
+        return item;
+      }else{
+        return item
+      } 
+    })
+
+    console.log('after calcs sort and value of tempPost: ', tempPost)
+
   })
   res.json({dummy: 'dummy'})
 })
