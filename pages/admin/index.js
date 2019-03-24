@@ -18,7 +18,9 @@ class Admin extends Component{
     componentMounted: false, 
     passText: '',
     creatingBlogPost: false,
+    updateBlogPost: false,
     passwordVerified: false, 
+    archiveArr: {posts:[]},
     displayArr: [], 
     titleText: '', 
     dateText: ''
@@ -50,13 +52,26 @@ class Admin extends Component{
     })
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot){
+    if(prevState.updateBlogPost!=this.state.updateBlogPost && this.state.updateBlogPost){
+      axios.post('http://localhost:5000/getBlogArchive')
+      .then(response=>{
+        console.log('value of response from blogArchive: ', response.data)
+        this.setState({archiveArr: response.data})
+      })
+      .catch(error=>{
+        console.log('there was an error in getting Blog Archive: ', error)
+      })
+    }
+  }
+
   handleSubmitBlog = () => {
     let payload = {
       blogArr: this.state.displayArr,
       title: this.state.titleText,
       dateText: this.state.dateText
     }
-    axios.post('http://localhost:5000/sumbitBlogPost', {payload})
+    axios.post('http://localhost:5000/submitBlogPost', {payload})
     .then(response=>{
       console.log('response from blog post: ', response)
       this.setState({
@@ -67,6 +82,51 @@ class Admin extends Component{
       })
     })
     .catch(error=>{console.log('error on submitting blog post: ', error)})
+  }
+
+  handleUpdateBlog = () => {
+    console.log('inside handleUpdateBlog')
+    let payload = {
+      blogArr: this.state.displayArr.map(item=>{
+        if(item.type=='file'){
+          item.data="";
+          return(item)
+        }
+      }),
+      title: this.state.titleText,
+      dateText: this.state.dateText
+    }
+    console.log('value of payload: ', payload)
+    axios.post('http://localhost:5000/updateBlogPost', {payload})
+    .then(response=>{
+      console.log('response from blog post: ', response)
+      this.setState({
+        displayArr: [], 
+        titleText: '',
+        dateText: '',
+        creatingBlogPost: false, 
+        updateBlogPost: false
+      })
+    })
+    .catch(error=>{console.log('error on submitting blog post: ', error)})
+  }
+
+  handleGetBlog = (id) => {
+    console.log('inside handleGetBlog and id: ', id)
+    axios.post('http://localhost:5000/getBlogPost', {navID: id})
+    .then(response=>{
+      console.log('value of response from getBlogPost, ', response);
+      let masterArr = response.data.post.bodyArr.concat(response.data.post.fileArr);
+      let sortedMaster = masterArr.sort((a, b)=>{
+        console.log('value of a.index: ', a.index, ' value of b.index: ', b.index)
+        return a.index - b.index
+      })
+      console.log('value of sortedMaster: ', sortedMaster);
+      this.setState({displayArr: masterArr, creatingBlogPost: true})
+    })
+    .catch(error=>{
+      console.log('value of error from getBlogPost, ', error);
+    })
   }
 
   render(){
@@ -110,16 +170,56 @@ class Admin extends Component{
               <div>
                 Welcome Admin!
                 <div>
-                  <div className='button'
-                    style={{marginTop: '5px'}}
-                    onClick={()=>{this.setState({creatingBlogPost: true})}}
-                  >
-                    Create Blog Post
+                  <div style={{marginTop: '5px'}}>
+                    <div className='button'
+                      style={{display: 'inline-block'}}
+                      onClick={()=>{this.setState({creatingBlogPost: true, updateBlogPost: false, displayArr: []})}}
+                    >
+                      Create Blog Post
+                    </div>
+                    <div className='button'
+                      style={{display: 'inline-block', marginLeft: '5px'}}
+                      onClick={()=>{this.setState({updateBlogPost: true, creatingBlogPost: false, displayArr: []})}}
+                    >
+                      Update Blog Post
+                    </div>
                   </div>
+                  {renderIf(this.state.updateBlogPost)(
+                    <div style={{border: '5px solid black', width: 'calc(100% - 10px)', marginTop: '5px'}}>
+                      <div style={{marginLeft: '5px', marginTop: '5px', fontWeight: 'bold'}}>
+                        Select Blog Post To Update
+                      </div>
+                      <div style={{marginLeft: '5px', marginBottom: '5px'}}>
+                        <select style={{minWidth: '20vw'}}
+                          onChange={(e)=>{this.handleGetBlog(e.target.value)}}
+                        >
+                          <option  value="" selected="selected" hidden="hidden">
+                            Choose Previous Blog By Title
+                          </option>
+                          {this.state.archiveArr.posts.map((item, index)=>{
+                            return(
+                              <option key={index} value={item.id}>
+                                {item.title}
+                              </option>
+                            )
+                          })}
+                        </select>
+                      </div>
+                    </div>
+                  )}
                   {renderIf(this.state.creatingBlogPost)(
                     <div style={{border: '5px solid black', width: 'calc(100% - 10px)', marginTop: '5px'}}>
                       <div style={{marginLeft: '5px', marginTop: '5px', fontWeight: 'bold'}}>
-                        Let's Create A Blog Post!
+                        {renderIf(this.state.updateBlogPost==false)(
+                          <div>
+                            Let's Create A Blog Post!
+                          </div>
+                        )}
+                        {renderIf(this.state.updateBlogPost)(
+                          <div>
+                            Select Update Values
+                          </div>
+                        )}
                       </div>
                       <div style={{marginBottom: '5px', marginLeft: '5px'}}>
                         <span style={{marginRight: '5px'}}>Title:</span>
@@ -260,8 +360,39 @@ class Admin extends Component{
                                 </div>
                               </div>
                             )
-                          }else if(disp.type=='picFILE'){
-                            return(null)//implement later if need be - not sure worth it atm
+                          }else if(disp.type=='file'){
+                            return(
+                              <div key={index} style={{marginBottom: '5px'}}>
+                                <div style={{marginBottom: '5px', marginLeft: '5px'}}>
+                                  Image stored in DB: 
+                                </div>
+                                <div style={{marginLeft: '5px', marginRight: '5px', width: 'calc(100% - 10px)'}}>
+                                  <img src={`${`data:image/`+disp.ext+`;base64,`+disp.data}`} style={{height: '100%', width: '100%'}}/>
+                                </div>
+                                {renderIf(index!=0)(
+                                    <div style={{display: 'inline-block', marginLeft: '5px'}} className='button' onClick={()=>{
+                                      let tempArr = JSON.parse(JSON.stringify(this.state.displayArr));
+                                      tempArr[index-1] = this.state.displayArr[index];
+                                      tempArr[index] = this.state.displayArr[index-1];
+                                      this.setState({displayArr: tempArr}, ()=>this.forceUpdate())
+                                    }}>
+                                      MOVE UP
+                                    </div>
+                                  )}
+                                {renderIf(index!=this.state.displayArr.length-1)(
+                                  <div style={{display: 'inline-block', marginLeft: '5px'}} className='button' onClick={()=>{
+                                    console.log('value of this.state.displayArr: ',  this.state.displayArr)
+                                    let tempArr = JSON.parse(JSON.stringify(this.state.displayArr));
+                                    tempArr[index+1] = this.state.displayArr[index];
+                                    tempArr[index] = this.state.displayArr[index+1];
+                                    console.log('value of tempArr: ', tempArr)
+                                    this.setState({displayArr: tempArr})
+                                  }}>
+                                    MOVE DOWN
+                                  </div>
+                                )}
+                              </div>
+                            )
                           }
                         })}
                       </div>
@@ -277,17 +408,6 @@ class Admin extends Component{
                         >
                           Append Pic (URL)
                         </div>
-                        {/* <div 
-                        className='button'
-                        style={{float: 'left', marginTop: '5px', marginBottom: '5px', marginRight: '5px'}}
-                        onClick={()=>{
-                          // let tempArr = this.state.displayArr;
-                          // tempArr.push({type: 'picFILE', value: ''})
-                          // this.setState({displayArr: tempArr})
-                        }}
-                        >
-                          Append Pic (FILE)
-                        </div> */}
                         <div 
                         className='button'
                         style={{float: 'left', marginTop: '5px', marginBottom: '5px'}}
@@ -299,15 +419,28 @@ class Admin extends Component{
                         >
                           Append Body
                         </div>
-                        <div 
-                        className='button'
-                        style={{float: 'right', marginTop: '5px', marginBottom: '5px'}}
-                        onClick={()=>{
-                          this.handleSubmitBlog()
-                        }}
-                        >
-                          Submit
-                        </div>
+                        {renderIf(this.state.updateBlogPost==false)(
+                          <div 
+                          className='button'
+                          style={{float: 'right', marginTop: '5px', marginBottom: '5px'}}
+                          onClick={()=>{
+                            this.handleSubmitBlog()
+                          }}
+                          >
+                            Submit
+                          </div>
+                        )}
+                        {renderIf(this.state.updateBlogPost)(
+                          <div 
+                          className='button'
+                          style={{float: 'right', marginTop: '5px', marginBottom: '5px'}}
+                          onClick={()=>{
+                            this.handleUpdateBlog()
+                          }}
+                          >
+                            Update
+                          </div>
+                        )}
                         <div 
                         className='button'
                         style={{float: 'right', marginTop: '5px', marginBottom: '5px', marginRight: '5px'}}

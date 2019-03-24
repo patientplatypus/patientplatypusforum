@@ -305,7 +305,7 @@ router.post('/confirmPass', (req, res, next)=>{
   }
 })
 
-router.post('/sumbitBlogPost', (req, res, next)=>{
+router.post('/submitBlogPost', (req, res, next)=>{
   console.log('inside /submitBlogPost')
   async function asyncForEach(array, callback) {
     for (let index = 0; index < array.length; index++) {
@@ -389,6 +389,11 @@ router.post('/sumbitBlogPost', (req, res, next)=>{
     }
   }
   saveBlog()
+})
+
+router.post('/updateBlogPost', (req, res, next)=>{
+  console.log('inside updateBlogPost')
+  res.json({dummy: 'dummy'})
 })
 
 router.post('/getBlogPost', (req,res,next)=>{
