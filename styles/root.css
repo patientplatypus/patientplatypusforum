@@ -183,12 +183,12 @@ textarea{
 
 .rightContainer{
   grid-area: rightContainer;
-  margin-top: 2.5vh
+  /* margin-top: 2.5vh */
 }
 
 .rightItemContainer{
   position: absolute;
-  top: 2.5vh;
+  /* top: 2.5vh; */
   /* right: 1vw; */
   right: 0vw;
   width: 24vw;
@@ -244,6 +244,15 @@ html, body{
 
 .example-enter {
   opacity: 0.01;
+}
+
+.allWhoCome{
+  font-family: 'Germania One', cursive;
+  /* rgb(70, 118, 85) */
+  /* rgb(232, 149, 10) */
+  background: linear-gradient(to right, rgb(235, 167, 21) 0%, #e68b04 100%);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 .example-enter.example-enter-active {
