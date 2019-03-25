@@ -413,7 +413,7 @@ router.post('/updateBlogPost', (req, res, next)=>{
 
     const updateBlog = (tempPost) => {
       console.log('inside updateBlog() and value of tempPost: ', tempPost)
-      model.Blog.findOneAndUpdate({_id: tempPost._id}, {"$set":{title: tempPost.title, dateText: tempPost.dateText, bodyArr: tempPost.bodyArr, fileArr: tempPost.fileArr, created: Date.now()}}, (err, doc)=>{
+      model.Blog.findOneAndUpdate({_id: tempPost._id}, {"$set":{title: tempPost.title, dateText: tempPost.dateText, bodyArr: tempPost.bodyArr, fileArr: tempPost.fileArr}}, (err, doc)=>{
         if(err){
           console.log('there was an error: ', err)
         }
@@ -425,23 +425,23 @@ router.post('/updateBlogPost', (req, res, next)=>{
     let tempPost = JSON.parse(JSON.stringify(post));
 
     tempPost.fileArr = tempPost.fileArr.filter(item=>{
-      return req.body.payload.fileArr.filter(fileItem => fileItem._id == item._id).length>0
+      return req.body.payload.fileArr.filter(fileItem => (fileItem._id == item._id && fileItem.index == item.index)).length>0
     })
     tempPost.bodyArr = tempPost.bodyArr.filter(item=>{
-      return req.body.payload.bodyArr.filter(bodyItem=> bodyItem._id == item._id).length>0
+      return req.body.payload.bodyArr.filter(bodyItem=> (bodyItem._id == item._id && bodyItem.index == item.index)).length>0
     })  
     console.log('after calcs delete and value of tempPost: ', tempPost)
 
     //next add in any items that are new
     req.body.payload.fileArr.forEach((item, index)=>{
-      if(!tempPost.fileArr.filter(tempItem=>tempItem._id==item._id).length>0){
+      if(!tempPost.fileArr.filter(tempItem=>(tempItem._id==item._id && tempItem.index==item.index)).length>0){
         console.log('value of tempPost.fileArr: ', tempPost.fileArr)
         console.log('value of item: ', item)
         tempPost.fileArr.push(item)
       }
     })
     req.body.payload.bodyArr.forEach((item, index)=>{
-      if(!tempPost.bodyArr.filter(tempItem=>tempItem._id==item._id).length>0){
+      if(!tempPost.bodyArr.filter(tempItem=>(tempItem._id==item._id && tempItem.index==item.index)).length>0){
         tempPost.bodyArr.push(item)
       }
     })
@@ -469,8 +469,12 @@ router.post('/updateBlogPost', (req, res, next)=>{
     //handle deleting files no longer used;
     let dest = __dirname+'/../picFolder/blog/'
     var deleteArr = post.fileArr.filter(item=>{
-      return !tempPost.fileArr.includes(item)
+      return tempPost.fileArr.filter(itemTemp=>itemTemp.id!=item.id).length>0
     });
+
+    console.log('value of deleteArr: ', deleteArr)
+    console.log('value of post.fileArr: ', post.fileArr)
+    console.log('value of tempPost.fileArr: ', tempPost.fileArr)
 
     const asyncFunc = async () => {
       await asyncForEach(deleteArr, async (item, index) => {
@@ -484,28 +488,35 @@ router.post('/updateBlogPost', (req, res, next)=>{
           console.log('inside finally')
         }
       })
-      await asyncForEach(req.body.payload.newFileArr, async (item, index) => {
-        try{
+      if(req.body.payload.newFileArr.length>0){
+        await asyncForEach(req.body.payload.newFileArr, async (item, index) => {
           console.log('inside try of asyncAdd;')
-          axios.get(file.value, {
+          axios.get(item.value, {
             responseType: 'arraybuffer'
           })
           .then(response=>{
             let writeData = new Buffer(response.data, 'binary').toString('base64')
-            let fileName = file.name+Date.now();
+            let fileName = item.name+Date.now();
             let dest = __dirname+'/../picFolder/blog/'+fileName
             fs.writeFile(dest, writeData, function(err, data) {
               if (err) console.log(err);
               console.log("Successfully Written to File.");
-              blog.fileArr.push({fileName: fileName, index: file.index, ext: file.value.match(/\.[0-9a-z]+$/i)[0]})
+              let fileObj = {fileName: fileName, index: item.index, ext: item.value.match(/\.[0-9a-z]+$/i)[0]}
+              console.log('value of fileObj: ', fileObj)
+              tempPost.fileArr.push(fileObj)
+              console.log('value of index: ', index)
+              console.log('value of req.body.payload.fileArr.length: ', req.body.payload.fileArr.length)
+              console.log('')
+              if(index==req.body.payload.newFileArr.length-1){
+                console.log('inside if statement')
+                updateBlog(tempPost)
+              }
             });
           })
-        }
-        catch(e){
-          console.log('there was an error attempting to delete the file: ', e)
-        }
-      })
-      updateBlog(tempPost)
+        })
+      }else{
+        updateBlog(tempPost)
+      }
     }
     asyncFunc()
   })
