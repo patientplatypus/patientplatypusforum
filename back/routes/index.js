@@ -393,8 +393,17 @@ router.post('/submitBlogPost', (req, res, next)=>{
 
 router.post('/updateBlogPost', (req, res, next)=>{
   console.log('inside updateBlogPost')
+  
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+  
   let findId = {_id: req.body.payload.id};
+
   model.Blog.findOne(findId).lean().exec((err, post)=>{
+    
     if(err){
       console.log("there was an error: ", err)
       res.json({error: 'there was an error'})
@@ -402,14 +411,24 @@ router.post('/updateBlogPost', (req, res, next)=>{
     console.log('value of post: ', post)
     console.log('value of payload: ', req.body.payload)
 
+    const updateFunc = () => {
+
+    }
+
+    updateFunc()
+
     let tempPost = post;
 
     //first delete any items we've deleted on the frontend
-    tempPost.fileArr.filter(item=>{
-      return (req.body.payload.fileArr.filter(fileItem => fileItem == item))
+    // console.log('req.body.payload.fileArr.filter(fileItem => fileItem._id == item._id), ', req.body.payload.fileArr.filter(fileItem => {
+    //   fileItem._id == item._id
+    // }))
+    // console.log('value of req.body.payload.fileArr: ', req.body.payload.fileArr)
+    tempPost.fileArr = tempPost.fileArr.filter(item=>{
+      return req.body.payload.fileArr.filter(fileItem => fileItem._id == item._id).length>0
     })
-    tempPost.bodyArr.filter(item=>{
-      return (req.body.payload.bodyArr.filter(bodyItem=> bodyItem == item))
+    tempPost.bodyArr = tempPost.bodyArr.filter(item=>{
+      return req.body.payload.bodyArr.filter(bodyItem=> bodyItem._id == item._id).length>0
     })  
     console.log('after calcs delete and value of tempPost: ', tempPost)
 
@@ -426,19 +445,6 @@ router.post('/updateBlogPost', (req, res, next)=>{
         tempPost.bodyArr.push(item)
       }
     })
-
-    // let tempPostFileArr = Array.from(new Set([...tempPost.fileArr, ...req.body.payload.fileArr]));
-
-    // console.log('value of tempPostFileArr: ', tempPostFileArr)
-
-    // tempPost.fileArr = tempPostFileArr;
-
-    // let tempPostBodyArr = Array.from(new Set([...tempPost.bodyArr, ...req.body.payload.bodyArr]));
-
-    // console.log('value of tempPostBodyArr: ', tempPostBodyArr)
-
-    // tempPost.bodyArr = tempPostBodyArr;
-
     console.log('after calcs add and value of tempPost: ', tempPost)
 
     //finally sort items
@@ -458,8 +464,32 @@ router.post('/updateBlogPost', (req, res, next)=>{
         return item
       } 
     })
-
     console.log('after calcs sort and value of tempPost: ', tempPost)
+
+    //handle deleting files no longer used;
+    let dest = __dirname+'/../picFolder/blog/'
+
+    console.log('value of post.fileArr: ', post.fileArr)
+    console.log('value of tempPost.fileArr: ', tempPost.fileArr)
+    var deleteArr = post.fileArr.filter(item=>!tempPost.fileArr.includes(item));
+    console.log('value of deleteArr: ', deleteArr)
+
+    const asyncDel = async () => {
+      await asyncForEach(deleteArr, async (item, index) => {
+        await fs.unlink(dest+item.fileName, (err) => {
+          if (err) {
+              console.log("failed to delete local image:"+err);
+          } else {
+              console.log('successfully deleted local image');                                
+          }
+        });
+      })
+    }
+
+    asyncDel()
+
+
+    //handle adding files that are new;
 
   })
   res.json({dummy: 'dummy'})
