@@ -411,19 +411,12 @@ router.post('/updateBlogPost', (req, res, next)=>{
     console.log('value of post: ', post)
     console.log('value of payload: ', req.body.payload)
 
-    const updateFunc = () => {
-
+    const updateBlog = () => {
+      console.log('inside updateBlog()')
     }
 
-    updateFunc()
+    let tempPost = JSON.parse(JSON.stringify(post));
 
-    let tempPost = post;
-
-    //first delete any items we've deleted on the frontend
-    // console.log('req.body.payload.fileArr.filter(fileItem => fileItem._id == item._id), ', req.body.payload.fileArr.filter(fileItem => {
-    //   fileItem._id == item._id
-    // }))
-    // console.log('value of req.body.payload.fileArr: ', req.body.payload.fileArr)
     tempPost.fileArr = tempPost.fileArr.filter(item=>{
       return req.body.payload.fileArr.filter(fileItem => fileItem._id == item._id).length>0
     })
@@ -448,7 +441,7 @@ router.post('/updateBlogPost', (req, res, next)=>{
     console.log('after calcs add and value of tempPost: ', tempPost)
 
     //finally sort items
-    tempPost.fileArr.map(item=>{
+    tempPost.fileArr = tempPost.fileArr.map(item=>{
       if(req.body.payload.fileArr.includes(item.index)){
         item.index = req.body.payload.fileArr.filter(arrItem=>arrItem==item).index
         return item;
@@ -456,7 +449,7 @@ router.post('/updateBlogPost', (req, res, next)=>{
         return item
       }
     })
-    tempPost.bodyArr.map(item=>{
+    tempPost.bodyArr = tempPost.bodyArr.map(item=>{
       if(req.body.payload.bodyArr.includes(item.index)){
         item.index = req.body.payload.bodyArr.filter(arrItem=>arrItem==item).index
         return item;
@@ -468,28 +461,47 @@ router.post('/updateBlogPost', (req, res, next)=>{
 
     //handle deleting files no longer used;
     let dest = __dirname+'/../picFolder/blog/'
+    var deleteArr = post.fileArr.filter(item=>{
+      return !tempPost.fileArr.includes(item)
+    });
 
-    console.log('value of post.fileArr: ', post.fileArr)
-    console.log('value of tempPost.fileArr: ', tempPost.fileArr)
-    var deleteArr = post.fileArr.filter(item=>!tempPost.fileArr.includes(item));
-    console.log('value of deleteArr: ', deleteArr)
-
-    const asyncDel = async () => {
+    const asyncFunc = async () => {
       await asyncForEach(deleteArr, async (item, index) => {
-        await fs.unlink(dest+item.fileName, (err) => {
-          if (err) {
-              console.log("failed to delete local image:"+err);
-          } else {
-              console.log('successfully deleted local image');                                
-          }
-        });
+        try{
+          await fsPromise.unlink(dest+item.fileName)
+        }
+        catch(e){
+          console.log('there was an error attempting to delete the file: ', e)
+        }
+        finally{
+          console.log('inside finally')
+        }
       })
+      await asyncForEach(req.body.payload.newFileArr, async (item, index) => {
+        try{
+          console.log('inside try of asyncAdd;')
+          axios.get(file.value, {
+            responseType: 'arraybuffer'
+          })
+          .then(response=>{
+            let writeData = new Buffer(response.data, 'binary').toString('base64')
+            let fileName = file.name+Date.now();
+            let dest = __dirname+'/../picFolder/blog/'+fileName
+            fs.writeFile(dest, writeData, function(err, data) {
+              if (err) console.log(err);
+              console.log("Successfully Written to File.");
+              blog.fileArr.push({fileName: fileName, index: file.index, ext: file.value.match(/\.[0-9a-z]+$/i)[0]})
+            });
+          })
+        }
+        catch(e){
+          console.log('there was an error attempting to delete the file: ', e)
+        }
+      })
+      updateBlog()
     }
 
-    asyncDel()
-
-
-    //handle adding files that are new;
+    asyncFunc()
 
   })
   res.json({dummy: 'dummy'})
@@ -525,12 +537,20 @@ router.post('/getBlogPost', (req,res,next)=>{
         console.log('inside second if statement')
         const asyncFunc = async () => {
           await asyncForEach(returnPost.fileArr, async (item, index) => {
-            // console.log('inside async for each and value of item: ', item, ' index: ', index, ' and value of post.fileArr.length : ', post.fileArr.length)
-            let fileData =  await fsPromise.readFile(__dirname+'/../picFolder/blog/'+item.fileName)
-            // console.log('value of fileData.toString(base64): ', fileData.toString('base64'))
+            let fileData;
+            try{
+              fileData =  await fsPromise.readFile(__dirname+'/../picFolder/blog/'+item.fileName)
+            }
+            catch(e){
+              console.log('there was an error attempting to read the file: ', e)
+              if (e.code=='ENOENT'){
+                console.log('in if statement in try catch')
+                fileData = await fsPromise.readFile(__dirname+'/../picFolder/utility/noimageavailable.jpg')
+                fileData = await fileData.toString('base64')
+              }
+            }
+            console.log('after try catch')
             returnPost.fileArr[index]['data'] = fileData//.toString('base64')
-            // console.log('value of post.fileArr[index]: ', returnPost.fileArr[index])
-            // console.log('after getting fileData and value of post: ', returnPost)
             if(index==post.fileArr.length-1){
               res.json({post: returnPost})
             }
