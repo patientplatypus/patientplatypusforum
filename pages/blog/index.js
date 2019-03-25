@@ -40,13 +40,19 @@ class Blog extends Component{
 
   componentDidMount(){
     console.log('component mounted and value of this.props.postData; ', this.props.postData)
-    let masterArr = this.props.postData.fileArr.concat(this.props.postData.bodyArr);
-    let sortedMaster = masterArr.sort((a, b)=>{
-      console.log('value of a.index: ', a.index, ' value of b.index: ', b.index)
-      return a.index - b.index
-    })
-    console.log('value of sortedMaster: ', sortedMaster);
-    this.setState({componentMounted: true, masterArr: sortedMaster})
+    if(this.props.postData!={} && this.props.postData.fileArr!=undefined){
+      let masterArr = this.props.postData.fileArr.concat(this.props.postData.bodyArr);
+      let sortedMaster = masterArr.sort((a, b)=>{
+        console.log('value of a.index: ', a.index, ' value of b.index: ', b.index)
+        return a.index - b.index
+      })
+      console.log('value of sortedMaster: ', sortedMaster);
+      this.setState({componentMounted: true, masterArr: sortedMaster})
+    }else{
+      this.setState({componentMounted: true})
+    }
+
+
     setTimeout(() => {
       window.scrollTo(0,0)
     }, 500);//if first image overflow 100vh -- need?
@@ -112,23 +118,27 @@ class Blog extends Component{
             <hr/>
           </div>
           <div style={{}}>
-            {this.state.masterArr.map((item, index)=>{
-              console.log('value of item type: ', item.type=='body')
-              console.log('value of item.value: ', item.value)
-              if(item.type=='body'){
-                return(
-                  <div className='blogBodyItem' key={index} style={{marginTop: '1vh'}}>
-                    {item.value}
-                  </div>
-                )
-              }else if (item.type=='file'){
-                return(
-                  <div key={index} style={{marginLeft: '5%', width: '90%', marginTop: '1vh'}}>
-                    <img src={`${`data:image/`+item.ext+`;base64,`+item.data}`} style={{height: '100%', width: '100%'}}/>
-                  </div>
-                )
-              }
-            })}
+            {renderIf(this.state.masterArr!=[])(
+              <div>
+                {this.state.masterArr.map((item, index)=>{
+                  console.log('value of item type: ', item.type=='body')
+                  console.log('value of item.value: ', item.value)
+                  if(item.type=='body'){
+                    return(
+                      <div className='blogBodyItem' key={index} style={{marginTop: '1vh'}}>
+                        {item.value}
+                      </div>
+                    )
+                  }else if (item.type=='file'){
+                    return(
+                      <div key={index} style={{marginLeft: '5%', width: '90%', marginTop: '1vh'}}>
+                        <img src={`${`data:image/`+item.ext+`;base64,`+item.data}`} style={{height: '100%', width: '100%'}}/>
+                      </div>
+                    )
+                  }
+                })}
+              </div>
+            )}
           </div>
         </div>
         <div className='rightContainer'>
