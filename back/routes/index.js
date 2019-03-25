@@ -62,7 +62,19 @@ router.post('/uploadPost', (req, res, next)=>{
   
     postInstance.save().then(post=>{
       console.log('value of post in save: ', post)
-      res.json({post: 'saved!'})
+      model.Post.find({}).sort({created: -1}).skip(300).exec((err, posts)=>{
+        if(err){
+          console.log('value of err: ', err)
+        }
+        let postIDs = [] 
+        postIDs = posts.map(post=>post._id)
+        model.Post.deleteMany({_id: {$in: postIDs}}, (err, posts)=>{
+          if (err){
+            console.log('there was an error in find: ', err)
+          }
+          res.json({post: 'saved!'})
+        })    
+      })
     }).catch( (e) => {
       console.log('There was an error', e.message);
     });
@@ -101,6 +113,13 @@ router.post('/uploadPost', (req, res, next)=>{
 router.post('/uploadComment', (req, res, next)=>{
   console.log('inside /uploadComment')
   console.log('value of req.body: ', req.body)
+
+  async function asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+
   var fileName = ''
 
   const uploadComment = () => {
@@ -117,14 +136,70 @@ router.post('/uploadComment', (req, res, next)=>{
     let commentInstance = new model.Comment(comment)
   
     commentInstance.save().then(comment=>{
-      model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }, created: Date.now()}, {new: true}, (err, post)=>{
+      model.Post.findOne({_id: req.body.postID}).populate('comments').exec((err, post)=>{
         if(err){
-          console.log('there was an error: ', err)
+          console.log('there was an error in retrieving post: ', err)
         }
-        console.log('value of post after updating: ', post)     
-        res.json({'success': 'success'})   
+        console.log('value of post: ', post)
+        if(post==null){
+          res.json({'success': 'success'})
+        }else{
+          if (post.comments.length>5){
+            console.log('inside delete if statement')
+            console.log('value of post; ', post)
+            console.log('value of comments: ', post.comments)
+            const asyncFunc = async () => {
+              if (post.fileName!=''){
+                try{
+                  let dest = __dirname+'/../picFolder/sharp/'+post.fileName
+                  await fsPromise.unlink(dest)
+                  dest = __dirname+'/../picFolder/'+post.fileName
+                  await fsPromise.unlink(dest)
+                }
+                catch(e){
+                  console.log('there was an error deleting file: ', e)
+                }
+              }
+              await asyncForEach(post.comments, async (item, index) => {
+                try{
+                  let dest = __dirname+'/../picFolder/sharp/'+item.fileName
+                  await fsPromise.unlink(dest)
+                  dest = __dirname+'/../picFolder/'+item.fileName
+                  await fsPromise.unlink(dest)
+                }
+                catch(e){
+                  console.log('there was an error attempting to delete the file: ', e)
+                }
+              })
+            }
+            asyncFunc()
+            model.Post.deleteOne({_id: req.body.postID}).exec((err)=>{
+              if(err){
+                console.log('there was an error deleting: ', err)
+              }
+              console.log('inside deleteOne')
+              res.json({'success': 'success'})
+            })
+          }else if(post.comments.length>3){
+            model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }}, {new: true}, (err, post)=>{
+              if(err){
+                console.log('there was an error: ', err)
+              }
+              console.log('value of post after updating: ', post)     
+              res.json({'success': 'success'})   
+            })
+          }else{
+            model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }, $set: {created: Date.now()}}, {new: true}, (err, post)=>{
+              if(err){
+                console.log('there was an error: ', err)
+              }
+              console.log('value of post after updating: ', post)     
+              res.json({'success': 'success'})   
+            })
+          }
+        }
       })
-    }).catch( (e) => {
+    }).catch((e) => {
       console.log('there was an error: ', e)
     });
   }

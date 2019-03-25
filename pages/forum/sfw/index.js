@@ -194,16 +194,9 @@ class Home extends Component{
                       </div>
                     </div>
                     <div style={{width: '100%'}}>
-                      <div className='button' style={{float: 'right'}}
-                      onClick={()=>{
-                        Router.push({
-                          pathname: '/reply',
-                          query: { post: post._id }
-                        })
-                      }}
-                      >
+                      <a className='button' style={{color: 'black', float: 'right', textDecoration: 'none'}} href={`/reply?post=${post._id}`}>
                         REPLY
-                      </div>
+                      </a>
                       <div style={{float: 'right', marginRight: '5px'}}>
                         Images: {post.comments.filter(comment=>comment.fileName!='').length}
                       </div>

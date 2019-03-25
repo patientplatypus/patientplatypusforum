@@ -82,7 +82,9 @@ class Reply extends Component{
         style={{cursor: 'pointer', height: '100%', width: '100%'}}
         onClick={()=>{this.flipPic(picVal, picType)}}
         >
-          <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+          <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
+            <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+          </a>
         </div>
       )
     }
@@ -101,7 +103,10 @@ class Reply extends Component{
         </Head>
         <div className='mainView'>
           <Feed/>
-          <div style={{height: '5vh'}}>
+          <div style={{height: '5vh', textAlign: 'center'}}>
+            <div className='titleFont' style={{fontSize: '4vh'}}>
+              Reply
+            </div>
           </div>
           <Submit 
           reloadPage={()=>this.reloadPage()}

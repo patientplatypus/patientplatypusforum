@@ -96,7 +96,9 @@ class Home extends Component{
         style={{cursor: 'pointer', height: '100%', width: '100%'}}
         onClick={()=>{this.flipPic(picVal)}}
         >
-          <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+            <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
+              <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+            </a>
         </div>
       )
     }
@@ -184,16 +186,9 @@ class Home extends Component{
                       </div>
                     </div>
                     <div style={{width: '100%'}}>
-                      <div className='button' style={{float: 'right'}}
-                      onClick={()=>{
-                        Router.push({
-                          pathname: '/reply',
-                          query: { post: post._id }
-                        })
-                      }}
-                      >
+                      <a className='button' style={{color: 'black', float: 'right', textDecoration: 'none'}} href={`/reply?post=${post._id}`}>
                         REPLY
-                      </div>
+                      </a>
                       <div style={{float: 'right', marginRight: '5px'}}>
                         Images: {post.comments.filter(comment=>comment.fileName!='').length}
                       </div>
