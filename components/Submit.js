@@ -12,7 +12,8 @@ class Submit extends Component{
     this.fileRef = React.createRef();
     this.state = {
       selectedFile: null, 
-      textVal: ''
+      textVal: '', 
+      errorText: ''
     }
   }
 
@@ -23,56 +24,63 @@ class Submit extends Component{
   }
 
   handlePost = () => {
-    console.log('inside handlePost')
-    console.log('value of this.props: ', this.props)
+    console.log('234234234324234234234234242 inside handlePost YODAWG')
     const uploadData = new FormData()
     uploadData.append('pic', this.state.selectedFile)
     uploadData.append('boardType', this.props.boardType)
-    if(this.props.submitType=='post'){
-      uploadData.append('post', this.state.textVal)
-      axios({
-        method: 'post',
-        url: 'http://localhost:5000/uploadPost',
-        data: uploadData,
-        config: { headers: {'Content-Type': 'multipart/form-data' }}
-      })
-      .then((response)=>{
-        //handle success
-        console.log(response);
-        this.setState({
-          selectedFile: null, 
-          textVal: ''
+
+    if(this.state.textVal==''){
+      this.setState({errorText: 'Post text cannot be empty!'})
+    }else if(this.state.selectedFile.size>5000000){
+      this.setState({errorText: 'Image size must be less than 5mb!'})
+    }else{
+      if(this.props.submitType=='post'){
+        uploadData.append('post', this.state.textVal)
+
+        axios({
+          method: 'post',
+          url: 'http://localhost:5000/uploadPost',
+          data: uploadData,
+          config: { headers: {'Content-Type': 'multipart/form-data' }}
         })
-        this.props.reloadPage();
-      })
-      .catch((response)=>{
-        //handle error
-        console.log(response);
-      });
-    }else if(this.props.submitType=='comment'){
-      console.log('inside if statement for comment')
-      uploadData.append('comment', this.state.textVal)
-      uploadData.append('postID', this.props.postID)
-      axios({
-        method: 'post',
-        url: 'http://localhost:5000/uploadComment',
-        data: uploadData,
-        config: { headers: {'Content-Type': 'multipart/form-data' }}
-      })
-      .then((response)=>{
-        console.log('inside axios return for submitType comment')
-        //handle success
-        console.log(response);
-        this.setState({
-          selectedFile: null, 
-          textVal: ''
+        .then((response)=>{
+          //handle success
+          console.log(response);
+          this.setState({
+            selectedFile: null, 
+            textVal: ''
+          })
+          this.props.reloadPage();
         })
-        this.props.reloadPage();
-      })
-      .catch((response)=>{
-        //handle error
-        console.log(response);
-      });
+        .catch((response)=>{
+          //handle error
+          console.log(response);
+        });
+      }else if(this.props.submitType=='comment'){
+        console.log('inside if statement for comment')
+        uploadData.append('comment', this.state.textVal)
+        uploadData.append('postID', this.props.postID)
+        axios({
+          method: 'post',
+          url: 'http://localhost:5000/uploadComment',
+          data: uploadData,
+          config: { headers: {'Content-Type': 'multipart/form-data' }}
+        })
+        .then((response)=>{
+          console.log('inside axios return for submitType comment')
+          //handle success
+          console.log(response);
+          this.setState({
+            selectedFile: null, 
+            textVal: ''
+          })
+          this.props.reloadPage();
+        })
+        .catch((response)=>{
+          //handle error
+          console.log(response);
+        });
+      }
     }
   }
 
@@ -86,6 +94,11 @@ class Submit extends Component{
           onChange={(e)=>{this.setState({textVal: e.target.value})}}
         ></textarea>
         <div>
+          {renderIf(this.state.errorText!='')(
+            <div style={{fontStyle: 'italic', display: 'inline-block', marginLeft: '5px', float: 'left', color: 'rgb(141, 57, 34)'}}>
+              {this.state.errorText}
+            </div>
+          )}
           {renderIf(name!=null)(
             <div style={{fontStyle: 'italic', display: 'inline-block', marginRight: '5px'}}>
               chosen file: {name}

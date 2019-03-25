@@ -144,7 +144,7 @@ router.post('/uploadComment', (req, res, next)=>{
         if(post==null){
           res.json({'success': 'success'})
         }else{
-          if (post.comments.length>5){
+          if (post.comments.length>250){
             console.log('inside delete if statement')
             console.log('value of post; ', post)
             console.log('value of comments: ', post.comments)
@@ -180,7 +180,7 @@ router.post('/uploadComment', (req, res, next)=>{
               console.log('inside deleteOne')
               res.json({'success': 'success'})
             })
-          }else if(post.comments.length>3){
+          }else if(post.comments.length>200){
             model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }}, {new: true}, (err, post)=>{
               if(err){
                 console.log('there was an error: ', err)
