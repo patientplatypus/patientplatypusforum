@@ -16,6 +16,7 @@ var mongoose = require('mongoose');
 var app = express();
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 
+
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server, { origins: '*:*'}); 
 
@@ -67,7 +68,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(fileUpload());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'picFolder')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

@@ -88,6 +88,7 @@ class Home extends Component{
   }
 
   picHandler = (picVal) => {
+    console.log('inside picHandler and value of picVal: ', picVal)
     if(picVal==undefined){
       return null
     }else{
@@ -96,7 +97,9 @@ class Home extends Component{
         style={{cursor: 'pointer', height: '100%', width: '100%'}}
         onClick={()=>{this.flipPic(picVal)}}
         >
-          <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+            <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
+              <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+            </a>
         </div>
       )
     }
