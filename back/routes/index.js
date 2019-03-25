@@ -411,8 +411,15 @@ router.post('/updateBlogPost', (req, res, next)=>{
     console.log('value of post: ', post)
     console.log('value of payload: ', req.body.payload)
 
-    const updateBlog = () => {
-      console.log('inside updateBlog()')
+    const updateBlog = (tempPost) => {
+      console.log('inside updateBlog() and value of tempPost: ', tempPost)
+      model.Blog.findOneAndUpdate({_id: tempPost._id}, {"$set":{title: tempPost.title, dateText: tempPost.dateText, bodyArr: tempPost.bodyArr, fileArr: tempPost.fileArr, created: Date.now()}}, (err, doc)=>{
+        if(err){
+          console.log('there was an error: ', err)
+        }
+        console.log('inside callback for findOneAndUpdate')
+        res.json({updated: "updated!"})
+      })
     }
 
     let tempPost = JSON.parse(JSON.stringify(post));
@@ -498,13 +505,10 @@ router.post('/updateBlogPost', (req, res, next)=>{
           console.log('there was an error attempting to delete the file: ', e)
         }
       })
-      updateBlog()
+      updateBlog(tempPost)
     }
-
     asyncFunc()
-
   })
-  res.json({dummy: 'dummy'})
 })
 
 router.post('/getBlogPost', (req,res,next)=>{
