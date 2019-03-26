@@ -17,7 +17,7 @@ import '../../../styles/root.css'
 class Home extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = "http://localhost:5000/getNavPage"
+    let url = "http://localhost:5000/forum/getNavPage"
     console.log('value of url: ', url)
     console.log('value of query: ', query)
     var postReturn = await axios.post(url, {
@@ -49,7 +49,7 @@ class Home extends Component{
   componentDidMount(){
     axios({
       method: 'get',
-      url: 'http://localhost:5000/getNumPages/nsfw',
+      url: 'http://localhost:5000/forum/getNumPages/nsfw',
     })
     .then((response)=>{
       //handle success
@@ -72,7 +72,7 @@ class Home extends Component{
 
   flipPic = (picVal) => { 
     picVal.data = "" //in order to prevent sending the entire buffer in request
-    axios.post('http://localhost:5000/flipPic', {picVal})
+    axios.post('http://localhost:5000/forum/flipPic', {picVal})
     .then(response=>{
       let tempArr = this.state.postData.dataArr;
       let indexVal = tempArr.indexOf(tempArr.find((datum)=>{return datum.post == picVal.post}))

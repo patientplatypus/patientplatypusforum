@@ -11,7 +11,7 @@ import '../../styles/root.css'
 class Reply extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = "http://localhost:5000/getPost"
+    let url = "http://localhost:5000/forum/getPost"
     console.log('value of url: ', url)
     var postReturn = await axios.post(url, {postID: query.post})
     .then(response=>{
@@ -36,7 +36,7 @@ class Reply extends Component{
 
   reloadPage = () => {
     console.log("inside reloadPage")
-    let url = "http://localhost:5000/getPost"
+    let url = "http://localhost:5000/forum/getPost"
     axios.post(url, {postID: this.state.postID})
     .then(response=>{
       console.log('value of response: ', response)
@@ -51,7 +51,7 @@ class Reply extends Component{
 
   flipPic = (picVal, picType) => { 
     picVal.data = "" //in order to prevent sending the entire buffer in request
-    axios.post('http://localhost:5000/flipPic', {picVal})
+    axios.post('http://localhost:5000/forum/flipPic', {picVal})
     .then(response=>{
       if(picType=='post'){
         let tempPostData = this.state.postData;

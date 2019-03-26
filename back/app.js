@@ -9,7 +9,12 @@ const fileUpload = require('express-fileupload')
 // var feed = require('../feed/feed')
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+
+var adminRouter = require('./routes/admin');
+var blogRouter = require('./routes/blog');
+var chatRouter = require('./routes/chat');
+var forumRouter = require('./routes/forum');
+
 var cors = require('cors')
 var mongoose = require('mongoose');
 
@@ -71,7 +76,11 @@ app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'picFolder')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
+app.use('/admin', adminRouter);
+app.use('/blog', blogRouter);
+app.use('/chat', chatRouter);
+app.use('/forum', forumRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -14,7 +14,7 @@ import axios from 'axios';
 class BlogArchive extends Component{
   static async getInitialProps({req, query}){
     // console.log('inside getInitialProps')
-    let url = 'http://localhost:5000/getBlogArchive'
+    let url = 'http://localhost:5000/blog/getBlogArchive'
     // console.log('value of navTitle: ', query.navTitle)
     var postReturn = await axios.post(url)
     .then(response=>{

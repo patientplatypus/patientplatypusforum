@@ -15,8 +15,8 @@
 - newspaper (snooze new)
 - radio (iheartradio api)
 - testing
-- break routes file up into (blog etc)
-- make utility function folder and deagg multi-use functions in routes
+- break routes file up into (blog etc) (DONE for now)
+- make utility function folder and deagg multi-use functions in routes (DONE for now)
 - get rid of console logs where unnecessary or may crash (heartbeat especially)
 - when does if error mean we need to send res response?
 - clean up css and deagg file if needbe

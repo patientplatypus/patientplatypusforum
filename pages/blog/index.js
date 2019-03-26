@@ -16,7 +16,7 @@ import axios from 'axios';
 class Blog extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = 'http://localhost:5000/getBlogPost'
+    let url = 'http://localhost:5000/blog/getBlogPost'
     console.log('value of navTitle: ', query.navID)
     var postReturn = await axios.post(url, {
       navID: query.navID==undefined?'N/A':query.navID

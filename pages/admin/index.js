@@ -57,7 +57,7 @@ class Admin extends Component{
         ip: response.data.ip,
         pass: this.state.passText
       }
-      axios.post('http://localhost:5000/confirmPass', {payload})
+      axios.post('http://localhost:5000/admin/confirmPass', {payload})
       .then(response=>{
         console.log('value from confirmPass; ', response.data)
         this.setState({
@@ -80,7 +80,7 @@ class Admin extends Component{
       dateText: this.state.dateText, 
       id: this.state.blogUpdateID
     }
-    axios.post('http://localhost:5000/submitBlogPost', {payload})
+    axios.post('http://localhost:5000/admin/submitBlogPost', {payload})
     .then(response=>{
       console.log('response from blog post: ', response)
       this.setState({
@@ -125,7 +125,7 @@ class Admin extends Component{
       id: this.state.blogUpdateID
     }
     console.log('value of payload: ', payload)
-    axios.post('http://localhost:5000/updateBlogPost', {payload})
+    axios.post('http://localhost:5000/admin/updateBlogPost', {payload})
     .then(response=>{
       console.log('response from blog post: ', response)
       this.setState({
@@ -142,7 +142,7 @@ class Admin extends Component{
   handleGetBlog = (id) => {
     console.log('inside handleGetBlog and id: ', id)
     this.setState({blogUpdateID: id}, ()=>{
-      axios.post('http://localhost:5000/getBlogPost', {navID: id})
+      axios.post('http://localhost:5000/blog/getBlogPost', {navID: id})
       .then(response=>{
         console.log('value of response from getBlogPost, ', response);
         let masterArr = response.data.post.bodyArr.concat(response.data.post.fileArr);
