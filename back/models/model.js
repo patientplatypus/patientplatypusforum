@@ -5,6 +5,7 @@ var CommentSchema = new Schema({
   body: {type: String, required: true, max: 2000},
   created: { type: Date, default: Date.now },
   flags: {type: Number, default: 0},
+  lastFlag: {type: Date, default: Date.now()},
   fileName: {type: String, default: ""}
 }, {
   writeConcern: {
@@ -18,6 +19,7 @@ var PostSchema = new Schema({
   body: {type: String, required: true, max: 2000},
   created: { type: Date, default: Date.now },
   flags: {type: Number, default: 0},
+  lastFlag: {type: Date, default: Date.now()},
   fileName: {type: String, default: ""},
   board: {type: String, default: ""},
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]

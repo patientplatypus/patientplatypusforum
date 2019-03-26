@@ -8,6 +8,8 @@
   "dependencies": {
     "@zeit/next-css": "^1.0.1",
     "axios": "^0.18.0",
+    "body-scroll-lock": "^2.6.1",
+    "disable-scroll": "^0.4.1",
     "dotenv-webpack": "^1.7.0",
     "express": "^4.16.4",
     "net": "^1.0.2",

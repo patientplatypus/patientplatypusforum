@@ -39,6 +39,7 @@ router.post('/uploadPost', (req, res, next)=>{
       body: req.body.post, 
       created: Date.now(),
       flags: 0, 
+      lastFlag: Date.now(),
       comments: [],
       fileName: fileName, 
       board: req.body.boardType
@@ -89,6 +90,7 @@ router.post('/uploadComment', (req, res, next)=>{
       body: req.body.comment, 
       created: Date.now(),
       flags: 0, 
+      lastFlag: Date.now(),
       fileName: fileName,
     }
 
@@ -267,6 +269,33 @@ router.post('/getPost', (req, res, next)=>{
     }
     asyncFunc()
   })
+})
+
+router.post('/flagPost', (req, res, next)=>{
+  console.log('inside /flagPost')
+  model.Post.findOne({_id: req.body.id}).exec((err, post)=>{
+    if(err){
+      console.log('there was an error : ', error)
+    }else{
+      console.log('value of post: ', post)
+      let timeDif = new Date().getTime()-new Date(post.lastFlag).getTime();
+      if(timeDif>300000){
+        model.Post.findOneAndUpdate({_id: req.body.id}, {$inc: {flags: 1}, $set:{lastFlag: Date.now()}}, {new: true}, (err, post)=>{
+          if(err){
+            console.log('there was an error : ', error)
+          }else{
+            res.json({status: "success"})
+          }
+        })
+      }else{
+        res.json({status: 'wait'})
+      } 
+    }
+  })
+})
+
+router.post('/flagComment', (req, res, next)=>{
+  console.log('inside /flagComment')
 })
 
 module.exports = router;

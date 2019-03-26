@@ -95,7 +95,11 @@ class Home extends Component{
       return (
         <div
         style={{cursor: 'pointer', height: '100%', width: '100%'}}
-        onClick={()=>{this.flipPic(picVal)}}
+        onClick={()=>{
+          if(picVal.fileName!='gross.svg'&&picVal.fileName!='noimageavailable.jpg'){
+            this.flipPic(picVal)
+          }
+        }}
         >
           <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
             <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>

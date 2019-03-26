@@ -31,6 +31,8 @@ class Submit extends Component{
 
     if(this.state.textVal==''){
       this.setState({errorText: 'Post text cannot be empty!'})
+    }else if(this.state.selectedFile=='null'){
+      this.setState({errorText: 'You must post a picture DAWG'})
     }else if(this.state.selectedFile.size>5000000){
       this.setState({errorText: 'Image size must be less than 5mb!'})
     }else{
@@ -39,7 +41,7 @@ class Submit extends Component{
 
         axios({
           method: 'post',
-          url: 'http://localhost:5000/uploadPost',
+          url: 'http://localhost:5000/forum/uploadPost',
           data: uploadData,
           config: { headers: {'Content-Type': 'multipart/form-data' }}
         })
@@ -62,7 +64,7 @@ class Submit extends Component{
         uploadData.append('postID', this.props.postID)
         axios({
           method: 'post',
-          url: 'http://localhost:5000/uploadComment',
+          url: 'http://localhost:5000/forum/uploadComment',
           data: uploadData,
           config: { headers: {'Content-Type': 'multipart/form-data' }}
         })

@@ -11,6 +11,7 @@ import Chat from '../../../components/Chat'
 import renderIf from 'render-if';
 
 import Head from 'next/head'
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 import '../../../styles/root.css'
 
@@ -41,9 +42,9 @@ class Home extends Component{
       numPages: 1, 
       currentPage: this.props.currentPage==undefined?0:this.props.currentPage,
       posts: [], 
-      files: []
+      files: [], 
+      flagWarning: [],
     }
-    this.mainRef = React.createRef();
   }
 
   componentDidMount(){
@@ -63,6 +64,13 @@ class Home extends Component{
       //handle error
       console.log(response);
     });
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot){
+    // console.log('value of window.pageYOffset: ', window.pageYOffset)
+    // if(prevState != this.state){
+    //   window.pageYOffset = 0
+    // }  
   }
 
   reloadPage = () => {
@@ -94,11 +102,15 @@ class Home extends Component{
       return (
         <div
         style={{cursor: 'pointer', height: '100%', width: '100%'}}
-        onClick={()=>{this.flipPic(picVal)}}
+        onClick={()=>{
+          if(picVal.fileName!='gross.svg'&&picVal.fileName!='noimageavailable.jpg'){
+            this.flipPic(picVal)
+          }
+        }}
         >
-            <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
-              <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
-            </a>
+          <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
+            <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+          </a>
         </div>
       )
     }
@@ -149,9 +161,56 @@ class Home extends Component{
     )
   }
 
+  handleFlag = (type, index, post) => {
+    console.log('inside handleFlag')
+    console.log('value of post: ', new Date(post.lastFlag).getTime())
+    let timeDif = new Date().getTime()-new Date(post.lastFlag).getTime();
+    console.log('value of timeDif: ', timeDif);
+    if(timeDif<300000){
+      console.log('inside if statement')
+      var tempWarning = this.state.flagWarning;
+      if (tempWarning.indexOf(post._id) == -1){
+        tempWarning.push(post._id)
+        this.setState({flagWarning: tempWarning}, ()=>{
+          console.log('after setstate and value of flagwarning: ', this.state.flagWarning)
+        })
+      }
+    }else{
+      var tempWarning = this.state.flagWarning;
+      let flagIndex = tempWarning.indexOf(post._id);
+      if (flagIndex > -1) {
+        tempWarning.splice(flagIndex, 1);
+      }
+      this.setState({flagWarning: tempWarning}, ()=>{
+        let url = '';
+        if(type=='post'){
+          url = 'http://localhost:5000/forum/flagPost'
+        }else if(type=='comment'){
+          url = 'http://localhost:5000/flagComment'
+        }
+        axios.post(url, {id: post._id})
+        .then(response=>{
+          console.log('value of response: ', response)
+          if(response.data.status=='success'){
+            let tempPostData = this.state.postData
+            console.log('value of tempPostData')
+            tempPostData.posts[index].flags = tempPostData.posts[index].flags + 1
+            tempPostData.posts[index].lastFlag = Date.now()
+            this.setState({postData: tempPostData}, ()=>{
+              console.log('after setState and value of postData: ', this.state.postData)
+            })
+          }
+        })
+        .catch(error=>{
+          console.log('value of error: ', error)
+        })
+      })
+    }
+  }
+
   render(){
     return(
-      <div className='gridContainer' ref={(input)=>this.mainRef = input}>
+      <div className='gridContainer'>
         <Head>
           <title>patientplatypus</title>
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
@@ -185,6 +244,32 @@ class Home extends Component{
                         {post.body}
                       </div>
                     </div>
+                    <div style={{width: '100%'}}>
+                      <div style={{float: 'left'}}>
+                        Flags: {post.flags}
+                      </div>
+                      <div style={{float: 'left', marginLeft: '5px', marginRight: '5px'}}>
+                        <div className='button'
+                          onClick={(e)=>{
+                            e.preventDefault()
+                            this.handleFlag('post', index, post)
+                          }}
+                        >
+                          FLAG
+                        </div>
+                      </div>
+                      {renderIf(this.state.flagWarning.includes(post._id))(
+                        <div style={{fontSize: '1vw', color: 'rgb(141, 57, 34)'}}>
+                          Post has recently been posted or flagged. Please wait a few moments.
+                        </div>
+                      )}
+                      {renderIf(!this.state.flagWarning.includes(post._id))(
+                        <div style={{fontSize: '1vw', color: 'transparent'}}>
+                        Post has recently been posted or flagged. Please wait a few moments.
+                        </div>
+                      )}
+                    </div>
+                    <br/>
                     <div style={{width: '100%'}}>
                       <a className='button' style={{color: 'black', float: 'right', textDecoration: 'none'}} href={`/reply?post=${post._id}`}>
                         REPLY

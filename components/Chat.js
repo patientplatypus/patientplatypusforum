@@ -20,14 +20,16 @@ class ChatContext extends Component{
 
   componentDidMount(){
     console.log('inside componentDidMount in ChatContext')
-    setTimeout(() => {
-      this.scrollToBottom()
-    }, 0);
+    // setTimeout(() => {
+    //   this.scrollToBottom()
+    // }, 0);
    
   }
 
   componentDidUpdate(prevProps, prevState, snapshot){
-    this.scrollToBottom() //cant get diff between current and prevprops atm, will always scrolltobottom on ANY context change...hmm...
+    if(prevState!=this.state){
+      this.scrollToBottom() //cant get diff between current and prevprops atm, will always scrolltobottom on ANY context change...hmm...
+    }
   }
 
   render(){
