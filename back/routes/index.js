@@ -8,6 +8,7 @@ const sharp = require('sharp');
 var sha256 = require('js-sha256');
 var names = require('../utilities/names')
 var axios = require('axios');
+var logos = require('../utilities/logos')
 // var getDirName = require('path').dirname;
 
 /* GET home page. */
@@ -38,10 +39,8 @@ router.post('/uploadPost', (req, res, next)=>{
   console.log('value of req.files: ', req.files)
   console.log('value of req.body: ', req.body)
 
-  var fileName = ''
 
-
-  const savePost = () => {
+  const savePost = (fileName) => {
 
     console.log('inside savePost')
 
@@ -81,30 +80,7 @@ router.post('/uploadPost', (req, res, next)=>{
   }
 
   if(req.files!=null){
-    let tempFileName = Date.now().toString() + '&&' + req.files.pic.name
-    console.log('value of tempFileName: ', tempFileName)
-    console.log('inside req.Files != null')
-    let dest = __dirname+'/../picFolder/sharp/'+tempFileName
-    console.log('value of dest: ', dest)
-    console.log('value of data:  ', req.files.pic.data)
-    sharp(req.files.pic.data)
-    .resize(200, 300, {
-      fit: 'inside',
-      background: { r: 255, g: 255, b: 255, alpha: 0 }
-    })
-    .toFile(dest)
-    .then(() => {
-      console.log('inside .then for sharp')
-      let dest = __dirname+'/../picFolder/'+tempFileName
-      console.log('value of dest: ', dest)
-      console.log('req.files.pic.data: ', req.files.pic.data)
-      fs.writeFile(dest, req.files.pic.data, function(err, data) {
-        if (err) console.log(err);
-        console.log("Successfully Written to File.");
-        fileName = tempFileName;
-        savePost()
-      });
-    });
+    logos.writePic(req.files.pic.name, req.files.pic.data, (fileName)=>savePost(fileName))
   }else{
     savePost()
   }
@@ -114,15 +90,7 @@ router.post('/uploadComment', (req, res, next)=>{
   console.log('inside /uploadComment')
   console.log('value of req.body: ', req.body)
 
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  }
-
-  var fileName = ''
-
-  const uploadComment = () => {
+  const uploadComment = (fileName) => {
 
     console.log('inside uploadComment')
 
@@ -160,7 +128,7 @@ router.post('/uploadComment', (req, res, next)=>{
                   console.log('there was an error deleting file: ', e)
                 }
               }
-              await asyncForEach(post.comments, async (item, index) => {
+              await logos.asyncForEach(post.comments, async (item, index) => {
                 try{
                   let dest = __dirname+'/../picFolder/sharp/'+item.fileName
                   await fsPromise.unlink(dest)
@@ -207,30 +175,7 @@ router.post('/uploadComment', (req, res, next)=>{
   console.log('value of req.files: ', req.files)
 
   if(req.files!=null){
-    let tempFileName = Date.now().toString() + '&&' + req.files.pic.name
-    console.log('value of tempFileName: ', tempFileName)
-    console.log('inside req.Files != null')
-    let dest = __dirname+'/../picFolder/sharp/'+tempFileName
-    console.log('value of dest: ', dest)
-    console.log('value of data:  ', req.files.pic.data)
-    sharp(req.files.pic.data)
-    .resize(200, 300, {
-      fit: 'inside',
-      background: { r: 255, g: 255, b: 255, alpha: 0 }
-    })
-    .toFile(dest)
-    .then(() => {
-      console.log('inside .then for sharp')
-      let dest = __dirname+'/../picFolder/'+tempFileName
-      console.log('value of dest: ', dest)
-      console.log('req.files.pic.data: ', req.files.pic.data)
-      fs.writeFile(dest, req.files.pic.data, function(err, data) {
-        if (err) console.log(err);
-        console.log("Successfully Written to File.");
-        fileName = tempFileName;
-        uploadComment()
-      });
-    });
+    logos.writePic(req.files.pic.name, req.files.pic.data, (fileName)=>uploadComment(fileName))
   }else{
     uploadComment()
   }
@@ -260,20 +205,12 @@ router.post('/flipPic', (req, res, next)=>{
     console.log('value of picVal: ', picVal)
     res.json({picVal: picVal})
   }
-
   asyncFunc()
-
 })
 
 router.post('/getNavPage', (req, res, next)=>{
   console.log('inside /getNavPage')
   console.log('value of req.body.navPage: ', req.body.navPage)
-
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  }
 
   model.Post.find({board: req.body.boardType}).sort({created: -1}).skip(15*req.body.navPage).limit(15).populate('comments').exec((err, posts)=>{
     if(err){
@@ -286,7 +223,7 @@ router.post('/getNavPage', (req, res, next)=>{
     var dataArr = [];
 
     const asyncFunc = async () => {
-      await asyncForEach(tempPosts, async (tempPost) => {
+      await logos.asyncForEach(tempPosts, async (tempPost) => {
         if (tempPost.fileName!=''){
           var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+tempPost.fileName)
           dataArr.push({post: tempPost._id, data: fileData.toString('base64'), extension: tempPost.fileName.match(/\.[0-9a-z]+$/i)[0], fileType: 'preview', fileName: tempPost.fileName})
@@ -296,7 +233,7 @@ router.post('/getNavPage', (req, res, next)=>{
         }else{
           var lastThreeComments = tempPost.comments
         }
-        await asyncForEach(lastThreeComments, async (comment) => {
+        await logos.asyncForEach(lastThreeComments, async (comment) => {
           if (comment.fileName!=''){
             var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+comment.fileName)
             dataArr.push({post: comment._id, data: fileData.toString('base64'), extension: comment.fileName.match(/\.[0-9a-z]+$/i)[0], fileType: 'preview', fileName: tempPost.fileName})
@@ -315,12 +252,6 @@ router.post('/getNavPage', (req, res, next)=>{
 router.post('/getPost', (req, res, next)=>{
   console.log('inside /getPost')
 
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  }
-
   model.Post.findOne({_id: req.body.postID}).populate('comments').exec((err, post)=>{
 
     commentArr = [];
@@ -332,7 +263,7 @@ router.post('/getPost', (req, res, next)=>{
       }
       if(post.comments.length>0){
         console.log('inside second if statement and post.comments; ', post.comments)
-        await asyncForEach(post.comments, async (comment) => {
+        await logos.asyncForEach(post.comments, async (comment) => {
           console.log('inside asyncForEach')
           if (comment.fileName!=''){
             var commentData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+comment.fileName)
@@ -382,11 +313,6 @@ router.post('/confirmPass', (req, res, next)=>{
 
 router.post('/submitBlogPost', (req, res, next)=>{
   console.log('inside /submitBlogPost')
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  }
 
   const saveBlog = () => {
     console.log('inside saveBlog')
@@ -436,7 +362,7 @@ router.post('/submitBlogPost', (req, res, next)=>{
 
     if (files.length>0){
       const asyncFunc = async()=>{
-        await asyncForEach(files, async (file) => {
+        await logos.asyncForEach(files, async (file) => {
           axios.get(file.value, {
             responseType: 'arraybuffer'
           })
@@ -468,12 +394,6 @@ router.post('/submitBlogPost', (req, res, next)=>{
 
 router.post('/updateBlogPost', (req, res, next)=>{
   console.log('inside updateBlogPost')
-  
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  }
   
   let findId = {_id: req.body.payload.id};
 
@@ -552,7 +472,7 @@ router.post('/updateBlogPost', (req, res, next)=>{
     console.log('value of tempPost.fileArr: ', tempPost.fileArr)
 
     const asyncFunc = async () => {
-      await asyncForEach(deleteArr, async (item, index) => {
+      await logos.asyncForEach(deleteArr, async (item, index) => {
         try{
           await fsPromise.unlink(dest+item.fileName)
         }
@@ -564,7 +484,7 @@ router.post('/updateBlogPost', (req, res, next)=>{
         }
       })
       if(req.body.payload.newFileArr.length>0){
-        await asyncForEach(req.body.payload.newFileArr, async (item, index) => {
+        await logos.asyncForEach(req.body.payload.newFileArr, async (item, index) => {
           console.log('inside try of asyncAdd;')
           axios.get(item.value, {
             responseType: 'arraybuffer'
@@ -601,11 +521,6 @@ router.post('/getBlogPost', (req,res,next)=>{
   console.log('inside getBlogPost')
   console.log('value of req.body: ', req.body)
 
-  async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  }
   var findId = null
   if (req.body.navID=='N/A'){
     findId = {}
@@ -626,7 +541,7 @@ router.post('/getBlogPost', (req,res,next)=>{
       if (returnPost.fileArr.length>0){
         console.log('inside second if statement')
         const asyncFunc = async () => {
-          await asyncForEach(returnPost.fileArr, async (item, index) => {
+          await logos.asyncForEach(returnPost.fileArr, async (item, index) => {
             let fileData;
             try{
               fileData =  await fsPromise.readFile(__dirname+'/../picFolder/blog/'+item.fileName)
