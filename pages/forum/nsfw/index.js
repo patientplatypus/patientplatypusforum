@@ -144,6 +144,7 @@ class Home extends Component{
     }
     return(
       lastThreeComments.map((comment, index)=>{
+        console.log('value of comment: ', comment)
         let commentPicVal = this.state.postData.dataArr.find((datum)=>{return datum.post == comment._id});
         return(
           <div className='cardComment' key={index} style={{marginBottom: '5px'}}>
@@ -153,60 +154,63 @@ class Home extends Component{
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
               {comment.body}
             </div>
+            <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
+              {renderIf(comment.imageBanned==false)(
+                <div style={{float: 'left', marginLeft: '5px', marginRight: '5px'}}>
+                  <div className='button'
+                    onClick={(e)=>{
+                      e.preventDefault()
+                      this.handleFlag('comment', index, comment, post._id)
+                    }}
+                  >
+                    FLAG
+                  </div>
+                </div>
+              )}
+              {renderIf(this.state.flagWarning.filter(warn=>warn.id==comment._id)[0]!=undefined)(
+                <div style={{color: 'rgb(141, 57, 34)'}}>
+                  {this.state.flagWarning.filter(warn=>warn.id==comment._id)[0]!=undefined?this.state.flagWarning.filter(warn=>warn.id==comment._id)[0].msg:''}
+                </div>
+              )}
+            </div>
           </div>
         )
       })
     )
   }
 
-  handleFlag = (type, index, post) => {
-    console.log('inside handleFlag')
-    console.log('value of post: ', new Date(post.lastFlag).getTime())
-    let timeDif = new Date().getTime()-new Date(post.lastFlag).getTime();
-    console.log('value of timeDif: ', timeDif);
-    if(timeDif<300000){
-      console.log('inside if statement')
-      var tempWarning = this.state.flagWarning;
-      if (tempWarning.indexOf(post._id) == -1){
-        tempWarning.push(post._id)
-        this.setState({flagWarning: tempWarning}, ()=>{
-          console.log('after setstate and value of flagwarning: ', this.state.flagWarning)
-        })
-      }
-    }else{
-      var tempWarning = this.state.flagWarning;
-      let flagIndex = tempWarning.indexOf(post._id);
-      if (flagIndex > -1) {
-        tempWarning.splice(flagIndex, 1);
-      }
-      this.setState({flagWarning: tempWarning}, ()=>{
-        let url = '';
-        if(type=='post'){
-          url = 'http://localhost:5000/forum/flagPost'
-        }else if(type=='comment'){
-          url = 'http://localhost:5000/flagComment'
-        }
-        axios.post(url, {id: post._id})
-        .then(response=>{
-          console.log('value of response: ', response)
-          if(response.data.status=='success'){
-            let tempPostData = this.state.postData
-            console.log('value of tempPostData')
-            tempPostData.posts[index].flags = tempPostData.posts[index].flags + 1
-            tempPostData.posts[index].lastFlag = Date.now()
-            this.setState({postData: tempPostData}, ()=>{
-              console.log('after setState and value of postData: ', this.state.postData)
-            })
-          }
-          if(response.data.status=='deleted'){
-            this.reloadPage()
-          }
-        })
-        .catch(error=>{
-          console.log('value of error: ', error)
-        })
-      })
+  handleFlag = (type, index, post, secondID) => {
+    let tempWarning = this.state.flagWarning;
+    let url = '';
+    let setMsg = '';
+    if(type=='post'){
+      url = 'http://localhost:5000/forum/flagPost'
+    }else if(type=='comment'){
+      url = 'http://localhost:5000/forum/flagComment'
     }
+    axios.post(url, {id: post._id, secondID: secondID})
+    .then(response=>{
+      console.log('value of response.data: ', response.data)
+      if(response.data.status=='wait'){
+        setMsg = 'Post has recently been posted or flagged. Please wait a few moments.'
+      }else if(response.data.status=='success'){
+        setMsg = 'Flagged!'
+      }else if(response.data.status=='deleted'){
+        setMsg = 'Image has been deleted. Refresh page to hide picture.'
+      }
+
+      let tempIndex = tempWarning.indexOf(tempWarning.filter(warn=>warn.id==post._id)[0])
+      if(tempIndex==-1){
+        tempWarning.push({id: post._id, msg: setMsg})
+      }else{
+        tempWarning[tempIndex].msg = setMsg
+      }
+
+      this.setState({flagWarning: tempWarning}, ()=>{
+        console.log('after setState and value of flagWarning: ', this.state.flagWarning)
+      })
+
+    })
   }
 
   render(){
@@ -245,31 +249,25 @@ class Home extends Component{
                         {post.body}
                       </div>
                     </div>
-                    <div style={{width: '100%'}}>
+                    <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
                       {renderIf(post.imageBanned==false)(
                         <div style={{float: 'left', marginLeft: '5px', marginRight: '5px'}}>
                           <div className='button'
                             onClick={(e)=>{
                               e.preventDefault()
-                              this.handleFlag('post', index, post)
+                              this.handleFlag('post', index, post, null)
                             }}
                           >
                             FLAG
                           </div>
                         </div>
                       )}
-                      {renderIf(this.state.flagWarning.includes(post._id))(
-                        <div style={{fontSize: '1vw', color: 'rgb(141, 57, 34)'}}>
-                          Post has recently been posted or flagged. Please wait a few moments.
-                        </div>
-                      )}
-                      {renderIf(!this.state.flagWarning.includes(post._id))(
-                        <div style={{fontSize: '1vw', color: 'transparent'}}>
-                          Post has recently been posted or flagged. Please wait a few moments.
+                      {renderIf(this.state.flagWarning.filter(warn=>warn.id==post._id)[0]!=undefined)(
+                        <div style={{color: 'rgb(141, 57, 34)'}}>
+                          {this.state.flagWarning.filter(warn=>warn.id==post._id)[0]!=undefined?this.state.flagWarning.filter(warn=>warn.id==post._id)[0].msg:''}
                         </div>
                       )}
                     </div>
-                    <br/>
                     <div style={{width: '100%'}}>
                       <a className='button' style={{color: 'black', float: 'right', textDecoration: 'none'}} href={`/reply?post=${post._id}`}>
                         REPLY

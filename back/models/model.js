@@ -6,6 +6,7 @@ var CommentSchema = new Schema({
   created: { type: Date, default: Date.now },
   flags: {type: Number, default: 0},
   lastFlag: {type: Date, default: Date.now()},
+  imageBanned: {type: Boolean, default: false},
   fileName: {type: String, default: ""}
 }, {
   writeConcern: {

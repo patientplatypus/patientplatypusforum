@@ -41,7 +41,8 @@ class Home extends Component{
       numPages: 1, 
       currentPage: this.props.currentPage==undefined?0:this.props.currentPage,
       posts: [], 
-      files: []
+      files: [],
+      flagWarning: [],
     }
     this.mainRef = React.createRef();
   }
@@ -156,10 +157,38 @@ class Home extends Component{
     )
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot){
-    if(prevState!=this.state){
-      console.log('~~~~~~there was a state change~~~~~~')
+  handleFlag = (type, index, post) => {
+    let tempWarning = this.state.flagWarning;
+    let url = '';
+    let setMsg = '';
+    if(type=='post'){
+      url = 'http://localhost:5000/forum/flagPost'
+    }else if(type=='comment'){
+      url = 'http://localhost:5000/flagComment'
     }
+    axios.post(url, {id: post._id})
+    .then(response=>{
+      console.log('value of response.data: ', response.data)
+      if(response.data.status=='wait'){
+        setMsg = 'Post has recently been posted or flagged. Please wait a few moments.'
+      }else if(response.data.status=='success'){
+        setMsg = 'Flagged!'
+      }else if(response.data.status=='deleted'){
+        setMsg = 'Image has been deleted. Refresh page to hide picture.'
+      }
+
+      let tempIndex = tempWarning.indexOf(tempWarning.filter(warn=>warn.id==post._id)[0])
+      if(tempIndex==-1){
+        tempWarning.push({id: post._id, msg: setMsg})
+      }else{
+        tempWarning[tempIndex].msg = setMsg
+      }
+
+      this.setState({flagWarning: tempWarning}, ()=>{
+        console.log('after setState and value of flagWarning: ', this.state.flagWarning)
+      })
+
+    })
   }
 
   render(){
@@ -196,6 +225,25 @@ class Home extends Component{
                       <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                         {post.body}
                       </div>
+                    </div>
+                    <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
+                      {renderIf(post.imageBanned==false)(
+                        <div style={{float: 'left', marginLeft: '5px', marginRight: '5px'}}>
+                          <div className='button'
+                            onClick={(e)=>{
+                              e.preventDefault()
+                              this.handleFlag('post', index, post)
+                            }}
+                          >
+                            FLAG
+                          </div>
+                        </div>
+                      )}
+                      {renderIf(this.state.flagWarning.filter(warn=>warn.id==post._id)[0]!=undefined)(
+                        <div style={{color: 'rgb(141, 57, 34)'}}>
+                          {this.state.flagWarning.filter(warn=>warn.id==post._id)[0]!=undefined?this.state.flagWarning.filter(warn=>warn.id==post._id)[0].msg:''}
+                        </div>
+                      )}
                     </div>
                     <div style={{width: '100%'}}>
                       <a className='button' style={{color: 'black', float: 'right', textDecoration: 'none'}} href={`/reply?post=${post._id}`}>

@@ -15,7 +15,7 @@ class ChatContext extends Component{
   scrollToBottom = () => {
     console.log('inside scrollToBottom')
     console.log('value of this.chatRef: ', this.chatRef)
-    this.chatRef.scrollIntoView({ behavior: "smooth" });
+    this.chatRef.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
   }
 
   componentDidMount(){
@@ -27,7 +27,7 @@ class ChatContext extends Component{
   }
 
   componentDidUpdate(prevProps, prevState, snapshot){
-    if(prevState!=this.state){
+    if(prevProps.context.state!=this.props.context.state){
       this.scrollToBottom() //cant get diff between current and prevprops atm, will always scrolltobottom on ANY context change...hmm...
     }
   }

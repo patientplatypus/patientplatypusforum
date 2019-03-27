@@ -8,6 +8,7 @@ var sha256 = require('js-sha256');
 var names = require('../utilities/names')
 var axios = require('axios');
 var logos = require('../utilities/logos')
+var ObjectId = require('mongoose').Types.ObjectId; 
 
 router.get('/getNumPages/:boardType', (req, res, next)=>{
   console.log('inside /getNumPages')
@@ -321,6 +322,64 @@ router.post('/flagPost', (req, res, next)=>{
 
 router.post('/flagComment', (req, res, next)=>{
   console.log('inside /flagComment')
+  console.log('value of req.body: ', req.body)
+  console.log('value of objid req id : ',  ObjectId(req.body.id))
+  // model.Post.findOne({"comment._id": ObjectId(req.body.id)}).exec((err, doc)=>{
+  //   if(err){
+  //     console.log('there was an error: ', err)
+  //   }
+  //   console.log('the value of the found doc: ', doc)
+  //   res.json({dummy: 'dummy'})
+  // })
+
+  model.Post.findOne({_id:req.body.secondID})
+  .populate({
+    path  : 'comments',
+    match : { _id : ObjectId(req.body.id) }
+  })
+  .exec((err, doc)=>{
+    if(err){
+      console.log('there was an error: ', err)
+    }
+    console.log('the value of the found doc: ', doc.comments[0])
+    let comment = doc.comments[0]
+    let timeDif = new Date().getTime()-new Date(comment.lastFlag).getTime();
+    if(timeDif>300000){
+      if(comment.flags>=10 && comment.imageBanned!=true){
+        let oldFileName = comment.fileName;
+        model.Comment.findOneAndUpdate({_id:req.body.id}, {$set: {fileName: 'noimageavailable.jpg', imageBanned: true}}).exec((err, comment)=>{
+          if(err){
+            console.log('there was an error: ', error)
+          }
+          const asyncFunc = async () => {
+            try{
+              let dest = __dirname+'/../picFolder/sharp/'+oldFileName
+              await fsPromise.unlink(dest)
+              dest = __dirname+'/../picFolder/'+oldFileName
+              await fsPromise.unlink(dest)
+            }
+            catch(e){
+              console.log('there was an error deleting file: ', e)
+            }
+          }
+          asyncFunc()
+          res.json({status: 'deleted'})
+        })
+      }else{
+        model.Comment.findOneAndUpdate({_id: req.body.id}, {$inc: {flags: 1}, $set:{lastFlag: Date.now()}}, {new: true}, (err, post)=>{
+          if(err){
+            console.log('there was an error : ', error)
+          }else{
+            res.json({status: "success"})
+          }
+        })
+      }
+    }else{
+      res.json({status: 'wait'})
+    }
+  });
+
+
 })
 
 module.exports = router;
