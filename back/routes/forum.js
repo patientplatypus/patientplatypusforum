@@ -277,19 +277,44 @@ router.post('/flagPost', (req, res, next)=>{
     if(err){
       console.log('there was an error : ', error)
     }else{
-      console.log('value of post: ', post)
-      let timeDif = new Date().getTime()-new Date(post.lastFlag).getTime();
-      if(timeDif>300000){
-        model.Post.findOneAndUpdate({_id: req.body.id}, {$inc: {flags: 1}, $set:{lastFlag: Date.now()}}, {new: true}, (err, post)=>{
-          if(err){
-            console.log('there was an error : ', error)
-          }else{
-            res.json({status: "success"})
-          }
-        })
+      if(post==null){
+        res.json({status: 'deleted'})
       }else{
-        res.json({status: 'wait'})
-      } 
+        let timeDif = new Date().getTime()-new Date(post.lastFlag).getTime();
+        if(timeDif>300000){
+          if(post.flags>=10 && post.imageBanned!=true){
+            let oldFileName = post.fileName;
+            model.Post.findOneAndUpdate({_id:req.body.id}, {$set: {fileName: 'noimageavailable.jpg', imageBanned: true}}).exec((err, post)=>{
+              if(err){
+                console.log('there was an error: ', error)
+              }
+              const asyncFunc = async () => {
+                try{
+                  let dest = __dirname+'/../picFolder/sharp/'+oldFileName
+                  await fsPromise.unlink(dest)
+                  dest = __dirname+'/../picFolder/'+oldFileName
+                  await fsPromise.unlink(dest)
+                }
+                catch(e){
+                  console.log('there was an error deleting file: ', e)
+                }
+              }
+              asyncFunc()
+              res.json({status: 'deleted'})
+            })
+          }else{
+            model.Post.findOneAndUpdate({_id: req.body.id}, {$inc: {flags: 1}, $set:{lastFlag: Date.now()}}, {new: true}, (err, post)=>{
+              if(err){
+                console.log('there was an error : ', error)
+              }else{
+                res.json({status: "success"})
+              }
+            })
+          }
+        }else{
+          res.json({status: 'wait'})
+        }
+      }
     }
   })
 })

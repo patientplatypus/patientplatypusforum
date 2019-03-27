@@ -14,6 +14,7 @@ import Head from 'next/head'
 import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 import '../../../styles/root.css'
+import { runInThisContext } from 'vm';
 
 class Home extends Component{
   static async getInitialProps({req, query}){
@@ -67,10 +68,7 @@ class Home extends Component{
   }
 
   componentDidUpdate(prevProps, prevState, snapshot){
-    // console.log('value of window.pageYOffset: ', window.pageYOffset)
-    // if(prevState != this.state){
-    //   window.pageYOffset = 0
-    // }  
+
   }
 
   reloadPage = () => {
@@ -200,6 +198,9 @@ class Home extends Component{
               console.log('after setState and value of postData: ', this.state.postData)
             })
           }
+          if(response.data.status=='deleted'){
+            this.reloadPage()
+          }
         })
         .catch(error=>{
           console.log('value of error: ', error)
@@ -245,19 +246,18 @@ class Home extends Component{
                       </div>
                     </div>
                     <div style={{width: '100%'}}>
-                      <div style={{float: 'left'}}>
-                        Flags: {post.flags}
-                      </div>
-                      <div style={{float: 'left', marginLeft: '5px', marginRight: '5px'}}>
-                        <div className='button'
-                          onClick={(e)=>{
-                            e.preventDefault()
-                            this.handleFlag('post', index, post)
-                          }}
-                        >
-                          FLAG
+                      {renderIf(post.imageBanned==false)(
+                        <div style={{float: 'left', marginLeft: '5px', marginRight: '5px'}}>
+                          <div className='button'
+                            onClick={(e)=>{
+                              e.preventDefault()
+                              this.handleFlag('post', index, post)
+                            }}
+                          >
+                            FLAG
+                          </div>
                         </div>
-                      </div>
+                      )}
                       {renderIf(this.state.flagWarning.includes(post._id))(
                         <div style={{fontSize: '1vw', color: 'rgb(141, 57, 34)'}}>
                           Post has recently been posted or flagged. Please wait a few moments.
@@ -265,7 +265,7 @@ class Home extends Component{
                       )}
                       {renderIf(!this.state.flagWarning.includes(post._id))(
                         <div style={{fontSize: '1vw', color: 'transparent'}}>
-                        Post has recently been posted or flagged. Please wait a few moments.
+                          Post has recently been posted or flagged. Please wait a few moments.
                         </div>
                       )}
                     </div>
