@@ -6,6 +6,7 @@ import Feed from '../../components/Feed';
 import NavMenu from '../../components/NavMenu';
 import Chat from '../../components/Chat'
 import Head from 'next/head'
+import renderIf from 'render-if';
 import '../../styles/root.css'
 
 class Reply extends Component{
@@ -27,7 +28,8 @@ class Reply extends Component{
 
   state = {
     postData: this.props.postData,
-    postID: this.props.postID
+    postID: this.props.postID, 
+    flagWarning: []
   }
 
   componentDidMount(){
@@ -90,6 +92,39 @@ class Reply extends Component{
     }
   }
 
+  handleFlag = (type, post, secondID) => {
+    let tempWarning = this.state.flagWarning;
+    let url = '';
+    let setMsg = '';
+    if(type=='post'){
+      url = 'http://localhost:5000/forum/flagPost'
+    }else if(type=='comment'){
+      url = 'http://localhost:5000/forum/flagComment'
+    }
+    axios.post(url, {id: post._id, secondID: secondID})
+    .then(response=>{
+      console.log('value of response.data: ', response.data)
+      if(response.data.status=='wait'){
+        setMsg = 'Post has recently been posted or flagged. Please wait a few moments.'
+      }else if(response.data.status=='success'){
+        setMsg = 'Flagged!'
+      }else if(response.data.status=='deleted'){
+        setMsg = 'Image has been deleted. Refresh page to hide picture.'
+      }
+
+      let tempIndex = tempWarning.indexOf(tempWarning.filter(warn=>warn.id==post._id)[0])
+      if(tempIndex==-1){
+        tempWarning.push({id: post._id, msg: setMsg})
+      }else{
+        tempWarning[tempIndex].msg = setMsg
+      }
+
+      this.setState({flagWarning: tempWarning}, ()=>{
+        console.log('after setState and value of flagWarning: ', this.state.flagWarning)
+      })
+
+    })
+  }
 
   render(){
     let postPicVal = this.state.postData.postObj == null?-1:this.state.postData.postObj;
@@ -120,6 +155,25 @@ class Reply extends Component{
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
               {this.state.postData.post.body}
             </div>
+            <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
+              {renderIf(this.state.postData.post.imageBanned==false)(
+                <div style={{float: 'left', marginLeft: '5px', marginRight: '5px'}}>
+                  <div className='button'
+                    onClick={(e)=>{
+                      e.preventDefault()
+                      this.handleFlag('post', this.state.postData.post, null)
+                    }}
+                  >
+                    FLAG
+                  </div>
+                </div>
+              )}
+              {renderIf(this.state.flagWarning.filter(warn=>warn.id==this.state.postData.post._id)[0]!=undefined)(
+                <div style={{color: 'rgb(141, 57, 34)'}}>
+                  {this.state.flagWarning.filter(warn=>warn.id==this.state.postData.post._id)[0]!=undefined?this.state.flagWarning.filter(warn=>warn.id==this.state.postData.post._id)[0].msg:''}
+                </div>
+              )}
+            </div>
             <div style={{width: '100%'}}>
               <div style={{float: 'right', marginRight: '5px'}}>
                 Images: {this.state.postData.post.comments.filter(comment=>comment.fileName!='').length}
@@ -140,6 +194,25 @@ class Reply extends Component{
                   </div>
                   <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                     {comment.body}
+                  </div>
+                  <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
+                    {renderIf(comment.imageBanned==false)(
+                      <div style={{float: 'left', marginLeft: '5px', marginRight: '5px'}}>
+                        <div className='button'
+                          onClick={(e)=>{
+                            e.preventDefault()
+                            this.handleFlag('comment', comment, this.state.postData.post._id)
+                          }}
+                        >
+                          FLAG
+                        </div>
+                      </div>
+                    )}
+                    {renderIf(this.state.flagWarning.filter(warn=>warn.id==comment._id)[0]!=undefined)(
+                      <div style={{color: 'rgb(141, 57, 34)'}}>
+                        {this.state.flagWarning.filter(warn=>warn.id==comment._id)[0]!=undefined?this.state.flagWarning.filter(warn=>warn.id==comment._id)[0].msg:''}
+                      </div>
+                    )}
                   </div>
                 </div>
               )

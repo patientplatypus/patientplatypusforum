@@ -324,13 +324,6 @@ router.post('/flagComment', (req, res, next)=>{
   console.log('inside /flagComment')
   console.log('value of req.body: ', req.body)
   console.log('value of objid req id : ',  ObjectId(req.body.id))
-  // model.Post.findOne({"comment._id": ObjectId(req.body.id)}).exec((err, doc)=>{
-  //   if(err){
-  //     console.log('there was an error: ', err)
-  //   }
-  //   console.log('the value of the found doc: ', doc)
-  //   res.json({dummy: 'dummy'})
-  // })
 
   model.Post.findOne({_id:req.body.secondID})
   .populate({
@@ -378,8 +371,6 @@ router.post('/flagComment', (req, res, next)=>{
       res.json({status: 'wait'})
     }
   });
-
-
 })
 
 module.exports = router;

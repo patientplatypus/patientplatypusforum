@@ -160,7 +160,7 @@ class Home extends Component{
                   <div className='button'
                     onClick={(e)=>{
                       e.preventDefault()
-                      this.handleFlag('comment', index, comment, post._id)
+                      this.handleFlag('comment', comment, post._id)
                     }}
                   >
                     FLAG
@@ -179,7 +179,7 @@ class Home extends Component{
     )
   }
 
-  handleFlag = (type, index, post, secondID) => {
+  handleFlag = (type, post, secondID) => {
     let tempWarning = this.state.flagWarning;
     let url = '';
     let setMsg = '';
@@ -255,7 +255,7 @@ class Home extends Component{
                           <div className='button'
                             onClick={(e)=>{
                               e.preventDefault()
-                              this.handleFlag('post', index, post, null)
+                              this.handleFlag('post', post, null)
                             }}
                           >
                             FLAG

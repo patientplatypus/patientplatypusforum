@@ -151,22 +151,41 @@ class Home extends Component{
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
               {comment.body}
             </div>
+            <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
+              {renderIf(comment.imageBanned==false)(
+                <div style={{float: 'left', marginLeft: '5px', marginRight: '5px'}}>
+                  <div className='button'
+                    onClick={(e)=>{
+                      e.preventDefault()
+                      this.handleFlag('comment', comment, post._id)
+                    }}
+                  >   
+                    FLAG
+                  </div>
+                </div>
+              )}
+              {renderIf(this.state.flagWarning.filter(warn=>warn.id==comment._id)[0]!=undefined)(
+                <div style={{color: 'rgb(141, 57, 34)'}}>
+                  {this.state.flagWarning.filter(warn=>warn.id==comment._id)[0]!=undefined?this.state.flagWarning.filter(warn=>warn.id==comment._id)[0].msg:''}
+                </div>
+              )}
+            </div>
           </div>
         )
       })
     )
   }
 
-  handleFlag = (type, index, post) => {
+  handleFlag = (type, post, secondID) => {
     let tempWarning = this.state.flagWarning;
     let url = '';
     let setMsg = '';
     if(type=='post'){
       url = 'http://localhost:5000/forum/flagPost'
     }else if(type=='comment'){
-      url = 'http://localhost:5000/flagComment'
+      url = 'http://localhost:5000/forum/flagComment'
     }
-    axios.post(url, {id: post._id})
+    axios.post(url, {id: post._id, secondID: secondID})
     .then(response=>{
       console.log('value of response.data: ', response.data)
       if(response.data.status=='wait'){
@@ -232,7 +251,7 @@ class Home extends Component{
                           <div className='button'
                             onClick={(e)=>{
                               e.preventDefault()
-                              this.handleFlag('post', index, post)
+                              this.handleFlag('post', post, null)
                             }}
                           >
                             FLAG
