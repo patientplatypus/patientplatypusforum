@@ -8,9 +8,9 @@
 - all devops
 - google recaptcha (for EVERYTHING)
 - buy DNS and server
-- set up a contact form page (to email me)
+- set up a contact form page (to email me) (DONE)
 - ask a platypus page?
-- front page splash
+- front page splash w/SVG (DONE)
 - admin delete blog picture handler (DONE)
 - newspaper (snooze news)
 - radio (iheartradio api)
@@ -24,4 +24,4 @@
 - agg functions in forums to logos
 - agg render in forums to logos
 - limit feed characters to input
-- fix blog header overflow
+- fix blog header overflow (DONE)
