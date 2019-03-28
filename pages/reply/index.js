@@ -153,6 +153,12 @@ class Reply extends Component{
               {this.picHandler(postPicVal, 'post')}
             </div>
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
+              <div style={{fontStyle: 'italic'}}>
+                ID: <span style={{textDecoration: 'underline', cursor: 'pointer'}}>{this.state.postData.post._id}</span>
+              </div>
+              <div style={{fontStyle: 'italic'}}>
+                {this.state.postData.post.created}
+              </div>
               {this.state.postData.post.body}
             </div>
             <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
@@ -193,6 +199,12 @@ class Reply extends Component{
                     {this.picHandler(commentPicVal, 'comment')}
                   </div>
                   <div style={{display: 'inline-block', verticalAlign: 'top'}}>
+                    <div style={{fontStyle: 'italic'}}>
+                      ID: <span style={{textDecoration: 'underline', cursor: 'pointer'}}>{comment._id}</span>
+                    </div>
+                    <div style={{fontStyle: 'italic'}}>
+                      {comment.created}
+                    </div>
                     {comment.body}
                   </div>
                   <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>

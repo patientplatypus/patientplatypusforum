@@ -228,4 +228,27 @@ router.post('/updateBlogPost', (req, res, next)=>{
   })
 })
 
+router.post('/banImage', (req, res, next)=>{
+  console.log('inside /banImage')
+  model.Post.findOneAndUpdate({_id: req.body.id}, {$set: {fileName: 'noimageavailable.jpg', imageBanned: true}}).exec((err, post)=>{
+    if(err){
+      console.log('there was an error: ', err)
+      res.json({'banned': 'error'})
+    }else{
+      if(post==null){
+        model.Comment.findOneAndUpdate({_id: req.body.id}, {$set: {fileName: 'noimageavailable.jpg', imageBanned: true}}).exec((err, comment)=>{
+          if(err){
+            console.log('there was an error: ', err)
+            res.json({'banned': 'error'})
+          }else{
+            res.json({'banned': 'comment'})
+          }
+        })
+      }else{
+        res.json({'banned': 'post'})
+      }
+    }
+  })
+})
+
 module.exports = router;

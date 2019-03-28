@@ -149,6 +149,12 @@ class Home extends Component{
               {this.picHandler(commentPicVal)}
             </div>
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
+              <div style={{fontStyle: 'italic'}}>
+                ID: <span style={{textDecoration: 'underline', cursor: 'pointer'}}>{comment._id}</span>
+              </div>
+              <div style={{fontStyle: 'italic'}}>
+                {comment.created}
+              </div>
               {comment.body}
             </div>
             <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
@@ -242,6 +248,12 @@ class Home extends Component{
                         {this.picHandler(picVal)}
                       </div>
                       <div style={{display: 'inline-block', verticalAlign: 'top'}}>
+                        <div style={{fontStyle: 'italic'}}>
+                          ID: <span style={{textDecoration: 'underline', cursor: 'pointer'}}>{post._id}</span>
+                        </div>
+                        <div style={{fontStyle: 'italic'}}>
+                          {post.created}
+                        </div>
                         {post.body}
                       </div>
                     </div>

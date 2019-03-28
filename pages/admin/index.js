@@ -20,11 +20,14 @@ class Admin extends Component{
     creatingBlogPost: false,
     updateBlogPost: false,
     passwordVerified: false, 
+    banningImage: false,
     archiveArr: {posts:[]},
     displayArr: [], 
     titleText: '', 
     dateText: '',
-    blogUpdateID: null
+    blogUpdateID: null, 
+    imageIDinput: '', 
+    bannedReturn: ''
   }
 
   mainRef = React.createRef();
@@ -87,7 +90,7 @@ class Admin extends Component{
         displayArr: [], 
         titleText: '',
         dateText: '',
-        creatingBlogPost: false
+        creatingBlogPost: false, 
       })
     })
     .catch(error=>{console.log('error on submitting blog post: ', error)})
@@ -159,6 +162,25 @@ class Admin extends Component{
     })
   }
 
+  handleBanImage = () => {
+    axios.post('http://localhost:5000/admin/banImage', {id: this.state.imageIDinput})
+    .then(response=>{
+      if(response.data.banned=='comment'||response.data.banned=='post'){
+        let bannedReturn = "A "+response.data.banned+" image was successfully banned."
+        this.setState({
+          imageIDinput: '', 
+          bannedReturn: bannedReturn
+        })
+      }else if(response.data.banned=='error'){
+        this.setState({
+          imageIDinput: '', 
+          bannedReturn: "There was an error banning the image associated with this ID"
+        })
+      }
+    })
+    .catch(error=>{})
+  }
+
   render(){
     return(
       <div className='gridContainer' ref={(input)=>this.mainRef = input}>
@@ -214,7 +236,36 @@ class Admin extends Component{
                     >
                       Update Blog Post
                     </div>
+                    <div className='button'
+                      style={{display: 'inline-block', marginLeft: '5px'}}
+                      onClick={()=>{this.setState({banningImage: true})}}
+                    >
+                      Ban Forum Image
+                    </div>
                   </div>
+                  {renderIf(this.state.banningImage)(
+                    <div style={{border: '5px solid black', width: 'calc(100% - 10px)', marginTop: '5px'}}>
+                      <div style={{marginLeft: '5px', marginTop: '5px', fontWeight: 'bold'}}>
+                        Input ID of Post/Comment to Ban Image
+                      </div>
+                      <div style={{marginBottom: '5px'}}>
+                        <input
+                        style={{width: '20vw', marginLeft: '5px', marginRight: '5px'}}
+                        onChange={(e)=>{this.setState({imageIDinput: e.target.value})}}
+                        >
+                        </input>
+                        <div className='button'
+                        onClick={()=>this.handleBanImage()}
+                        style={{display: 'inline-block', marginRight: '5px'}}
+                        >
+                          DELETE
+                        </div>
+                        <div style={{display: 'inline-block', color: 'rgb(141, 57, 34)'}}>
+                          {this.state.bannedReturn}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   {renderIf(this.state.updateBlogPost)(
                     <div style={{border: '5px solid black', width: 'calc(100% - 10px)', marginTop: '5px'}}>
                       <div style={{marginLeft: '5px', marginTop: '5px', fontWeight: 'bold'}}>
