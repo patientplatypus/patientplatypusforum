@@ -21,13 +21,17 @@ class Admin extends Component{
     updateBlogPost: false,
     passwordVerified: false, 
     banningImage: false,
+    deletingBlog: false,
     archiveArr: {posts:[]},
     displayArr: [], 
     titleText: '', 
     dateText: '',
     blogUpdateID: null, 
     imageIDinput: '', 
-    bannedReturn: ''
+    blogIDinput: '',
+    bannedReturn: '', 
+    deletedBlogReturn: '', 
+    blogPosts: []
   }
 
   mainRef = React.createRef();
@@ -166,7 +170,7 @@ class Admin extends Component{
     axios.post('http://localhost:5000/admin/banImage', {id: this.state.imageIDinput})
     .then(response=>{
       if(response.data.banned=='comment'||response.data.banned=='post'){
-        let bannedReturn = "A "+response.data.banned+" image was successfully banned."
+        let deletedBlogReturn = "A "+response.data.banned+" image was successfully banned."
         this.setState({
           imageIDinput: '', 
           bannedReturn: bannedReturn
@@ -175,6 +179,41 @@ class Admin extends Component{
         this.setState({
           imageIDinput: '', 
           bannedReturn: "There was an error banning the image associated with this ID"
+        })
+      }
+    })
+    .catch(error=>{})
+  }
+
+  handleShowBlogDelete = () => {
+    console.log('inside handleShowBlogDelete')
+    axios.post('http://localhost:5000/blog/getBlogArchive')
+    .then(response=>{
+      this.setState({
+        blogPosts: response.data.posts,
+        deletingBlog: true
+      })
+    })
+    .catch(error=>{})
+  }
+
+  handleDeleteBlog = () => {
+    console.log('inside handleDeleteBlog')
+    axios.post('http://localhost:5000/admin/deleteBlogPost', {id: this.state.blogIDinput})
+    .then(response=>{
+      if(response.data.deleted=='success'){
+        let deletedBlogReturn = 'Blog was successfully deleted.'
+        this.setState({
+          imageIDinput: '', 
+          deletedBlogReturn
+        })
+      }else if(response.data.deleted=='error'){
+        this.setState({
+          deletedBlogReturn: "There was an error banning the image associated with this ID"
+        })
+      }else if(response.data.deleted=='not found'){
+        this.setState({
+          deletedBlogReturn: "No blog post with that ID was found"
         })
       }
     })
@@ -242,6 +281,12 @@ class Admin extends Component{
                     >
                       Ban Forum Image
                     </div>
+                    <div className='button'
+                      style={{display: 'inline-block', marginLeft: '5px'}}
+                      onClick={()=>{this.handleShowBlogDelete()}}
+                    >
+                      Delete Blog Post
+                    </div>
                   </div>
                   {renderIf(this.state.banningImage)(
                     <div style={{border: '5px solid black', width: 'calc(100% - 10px)', marginTop: '5px'}}>
@@ -256,12 +301,64 @@ class Admin extends Component{
                         </input>
                         <div className='button'
                         onClick={()=>this.handleBanImage()}
-                        style={{display: 'inline-block', marginRight: '5px'}}
+                        style={{display: 'inline-block'}}
                         >
                           DELETE
                         </div>
-                        <div style={{display: 'inline-block', color: 'rgb(141, 57, 34)'}}>
+                        <div className='button'
+                        onClick={()=>this.setState({banningImage: false})}
+                        style={{display: 'inline-block', marginLeft: '5px'}}
+                        >
+                          Cancel
+                        </div>
+                        <div style={{display: 'inline-block', color: 'rgb(141, 57, 34)', marginLeft: '5px'}}>
                           {this.state.bannedReturn}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {renderIf(this.state.deletingBlog)(
+                    <div style={{border: '5px solid black', width: 'calc(100% - 10px)', marginTop: '5px'}}>
+                      <div style={{marginLeft: '5px', marginTop: '5px', fontWeight: 'bold'}}>
+                        Input ID of Blog to Delete
+                      </div>
+                      <div style={{marginLeft: '5px', marginTop: '5px', fontWeight: 'bold'}}>
+                        Blog Posts: 
+                      </div>
+                      <div>
+                        {this.state.blogPosts.map((post, index)=>{
+                          return(
+                            <div key={index} style={{marginLeft: '5px', marginRight: '5px', border: '1px solid black', marginBottom: '5px'}}>
+                              <div style={{display: 'inline-block', marginRight: '5px'}}>
+                                Title: {post.title}
+                              </div>
+                              <div>
+                                ID: {post.id} 
+                              </div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                      <div style={{marginBottom: '5px'}}>
+                        <input
+                        style={{width: '20vw', marginLeft: '5px', marginRight: '5px'}}
+                        onChange={(e)=>{this.setState({blogIDinput: e.target.value})}}
+                        >
+                        </input>
+                        <div className='button'
+                        onClick={()=>this.handleDeleteBlog()}
+                        style={{display: 'inline-block'}}
+                        >
+                          DELETE
+                        </div>
+                        <div className='button'
+                        onClick={()=>this.setState({deletingBlog: false})}
+                        style={{display: 'inline-block', marginLeft: '5px'}}
+                        >
+                          Cancel
+                        </div>
+                        <div style={{display: 'inline-block', color: 'rgb(141, 57, 34)', marginLeft: '5px'}}>
+                          {this.state.deletedBlogReturn}
                         </div>
                       </div>
                     </div>

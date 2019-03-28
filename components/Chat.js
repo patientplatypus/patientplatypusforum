@@ -69,7 +69,7 @@ class ChatContext extends Component{
                     }
                   }}
                   onChange={(e)=>{this.setState({textVal: e.target.value})}}
-                  style={{width: 'calc(100% - 20px)', height: 'calc(100% - 10px)'}}
+                  style={{width: 'calc(100% - 20px)', height: 'calc(100% - 5px)', marginRight: '5px', background: '#aa6800', color: '#ffa44a', outline: 'none', border: 'none'}}
                 >
                 </input>
               </div>

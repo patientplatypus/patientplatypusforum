@@ -53,7 +53,7 @@ class BlogArchive extends Component{
           <div style={{height: '0vh'}}>
           </div>
           <div className='blogHeader'> 
-            <div className='flexContainerRow' style={{height: '20vh', width: '55vw'}}>
+            <div className='flexContainerRow' style={{height: '20vh', width: '100%'}}>
               <div style={{flex: 1}}>
                 <img src={'/static/deskof.svg'} style={{maxWidth: '100%', maxHeight: '100%'}}/>
               </div>
@@ -82,13 +82,20 @@ class BlogArchive extends Component{
             <hr/>
             <div style={{clear: 'both'}}/>
           </div>
-          <div>
+          <div style={{width: '100%', textAlign: 'center', marginTop: '5px', fontWeight: 'bold'}}>
+            <div style={{display: 'inline-block', paddingLeft: '5px', paddingRight: '5px', background: 'rgb(111, 153, 123)'}}>
+              Archive Post Links
+            </div>
+          </div>
+          <div style={{marginTop: '5px'}}>
             {this.props.postData.posts.map((item, index)=>{
               return(
-                <div key={index}>
-                  <Link href={`/blog/${item.id}`}>
-                    {item.title}
-                  </Link>
+                <div key={index} style={{marginLeft: '30%', textAlign: 'left', width: '40%', background: 'rgb(111, 153, 123)'}}>
+                  <div style={{display: 'inline-block', paddingLeft: '5px', paddingRight: '5px'}}>
+                    <Link href={`/blog/${item.id}`}>
+                      <a style={{color: 'rgb(113, 72, 27)'}}>{item.title}</a>
+                    </Link>
+                  </div>
                 </div>
               )
             })}

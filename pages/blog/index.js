@@ -72,7 +72,7 @@ class Blog extends Component{
           <div style={{height: '0vh'}}>
           </div>
           <div className='blogHeader'> 
-            <div className='flexContainerRow' style={{height: '20vh', width: '55vw'}}>
+            <div className='flexContainerRow' style={{height: '20vh', width: '100%'}}>
               <div style={{flex: 1}}>
                 <img src={'/static/deskof.svg'} style={{maxWidth: '100%', maxHeight: '100%'}}/>
               </div>

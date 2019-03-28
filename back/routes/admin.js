@@ -251,4 +251,20 @@ router.post('/banImage', (req, res, next)=>{
   })
 })
 
+router.post('/deleteBlogPost', (req, res, next)=>{
+  console.log('inside /deleteBlogPost')
+  model.Blog.findOneAndDelete({_id: req.body.id}).exec((err, post)=>{
+    if(err){
+      console.log('there was an error deleting the post: ', err)
+      res.json({deleted: 'error'})
+    }else{
+      if(post==null){
+        res.json({deleted: 'not found'})
+      }else{
+        res.json({deleted: 'success'})
+      }
+    }
+  })
+})
+
 module.exports = router;

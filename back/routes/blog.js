@@ -9,7 +9,6 @@ var names = require('../utilities/names')
 var axios = require('axios');
 var logos = require('../utilities/logos')
 
-
 router.post('/getBlogPost', (req,res,next)=>{
   console.log('inside getBlogPost')
   console.log('value of req.body: ', req.body)
@@ -21,7 +20,7 @@ router.post('/getBlogPost', (req,res,next)=>{
     findId = {_id: req.body.navID}
   }
 
-  model.Blog.findOne(findId).exec((err, post)=>{
+  model.Blog.findOne(findId).sort({created: -1}).exec((err, post)=>{
     if(err){
       console.log("there was an error: ", err)
       res.json({error: 'there was an error'})
