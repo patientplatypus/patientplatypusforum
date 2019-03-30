@@ -127,6 +127,11 @@ class FeedPage extends Component{
   }
 
   map = () => {  
+    var pinArray = this.state.pinData;
+    // pinArray.push({lat: 43.0760, lng: -107.2903})
+    console.log('value of pinArray: ', pinArray)
+    var starCoord = [30.2672, -97.7431]
+    var threadArray = [];
     if(Object.entries(this.state.bounds).length === 0){
       return(
         <Map 
@@ -145,14 +150,10 @@ class FeedPage extends Component{
         ></Map>
       )
     }else{
-      let pinArray = this.state.pinData;
-      pinArray.push({lat: 43.0760, lng: -107.2903})
-      console.log('value of pinArray: ', pinArray)
-      let starCoord = [30.2672, -97.7431]
-      var threadArray = [];
       threadArray = pinArray.map(pin=>{
         let pinCoord = [pin.lat, pin.lng]
         console.log('value of pinCoord: ', pinCoord)
+        console.log('value of this.state.bounds: ', this.state.bounds)
         let pinHeight = (Math.abs(this.state.bounds.top-pinCoord[0])/Math.abs(this.state.bounds.top-this.state.bounds.bottom))*this.state.pixelWH.height
   
         let pinWidth = (Math.abs(this.state.bounds.right-pinCoord[1])/Math.abs(this.state.bounds.left-this.state.bounds.right))*this.state.pixelWH.width
@@ -209,10 +210,7 @@ class FeedPage extends Component{
           <Overlay anchor={[38.879, -97.6997]} offset={['-100%','-100%']}>
             <img src='/static/paperbackground.jpg' style={{opacity:'0.6'}} alt='' />
           </Overlay>
-          {threadArray.map((pin, index)=>{
-            console.log('value of pin in threadmap: ', pin)
-            console.log('pin.diagDist: ', pin.distance)
-            console.log('pin.tangent: ', pin.tangent)
+          {threadArray.map((pin, index)=>{  
             return(
               <Overlay key={index} anchor={starCoord} offset={[0,0]}>
                 <div style={{border: '2px dashed rgb(176, 45, 48)', width: `${pin.distance}px`, height: '0px', transform: `rotate(${pin.tangent}deg)`, transformOrigin:'left'}}/>
@@ -262,7 +260,7 @@ class FeedPage extends Component{
             </div>
           </div>
           <div className='mapBoard' style={{width: 'calc(100% - 40px)', marginLeft: '10px', height: '50vh', border: '10px solid #2f1d0a', marginTop: '10px'}}>
-            <div style={{display: 'inline-block', height: '45vh',  marginTop: '2.5vh', width: 'calc(0.8 * 55vw', marginRight: '5%', float: 'right', maskImage: "url('/static/mapmask.png')", maskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:"url('/static/mapmask.png')"}}>
+            <div style={{display: 'inline-block', height: '45vh',  marginTop: '2.5vh', width: 'calc(0.8 * 55vw)', marginRight: '5%', float: 'right', maskImage: "url('/static/mapmask.png')", maskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:"url('/static/mapmask.png')"}}>
               {this.map()}
             </div>
           </div>
