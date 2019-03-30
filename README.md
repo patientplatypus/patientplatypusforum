@@ -25,3 +25,4 @@
 - agg render in forums to logos
 - limit feed characters to input
 - fix blog header overflow (DONE)
+- On splash add cork board with visitor map (number + by ip with strings?)

@@ -16,6 +16,8 @@
     "next": "^8.0.3",
     "next-images": "^1.1.0",
     "path": "^0.12.7",
+    "pigeon-maps": "^0.12.1",
+    "pigeon-overlay": "git+https://github.com/mariusandra/pigeon-overlay.git",
     "react": "^16.8.4",
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.8.4",

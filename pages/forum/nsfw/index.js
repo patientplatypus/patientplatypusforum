@@ -27,6 +27,7 @@ class Home extends Component{
       boardType: 'nsfw'
     })
     .then(response=>{
+      console.log('value of response from getNavPage: ', response.data)
       return response.data
     })
     .catch(error=>{
