@@ -12,6 +12,9 @@ import Map from 'pigeon-maps'
 import Overlay from 'pigeon-overlay'
 
 import '../styles/root.css'
+import axios from 'axios';
+
+import {getCookie} from '../services';
 
 
 const MapboxAttribution = () => (
@@ -40,17 +43,32 @@ const WikimediaAttribution = () => (
 )
 
 class FeedPage extends Component{
-  // static async getInitialProps({req, query}){
-  //   if(!req){
-  //     console.log('document: ', document)
-  //   }
-  //   return({thing: {}})
-  // }
+  static async getInitialProps({req, query}){
+    console.log('inside getInitialProps')
+    if (req){
+
+      let latLng = {lat: null, lng: null}
+
+      var pinReturn = await axios.post('http://localhost:5000/getPinData', {latLng}, {withCredentials: true})
+      .then(response=>{
+        console.log('value of response: ', response)
+        return response.data.pins
+      })
+      .catch(error=>{
+        console.log('value of error: ', error)
+        return({})
+      })
+
+    }
+    return {pinData: pinReturn}
+  }
+
   state = {
     textVal: '',
     pixelWH: {},
     coordBound: {}, 
-    bounds: {}
+    bounds: {}, 
+    pinData: []
   }
 
   // 30.2672° N, 97.7431° W
@@ -62,17 +80,44 @@ class FeedPage extends Component{
       let widthCoord = bounds.ne[1]-bounds.sw[1];
       this.setState({bounds: {top: bounds.ne[0], bottom: bounds.sw[0], left: bounds.ne[1], right: bounds.sw[1]}})
       this.setState({coordBound: {height: heightCoord, width: widthCoord}})
-      // console.log('value of heightCoord: ', heightCoord, ' widthCoord: ', widthCoord)
-      // console.log('value of pix/coord Height: ', this.state.pixelWH.height/heightCoord)
-      // console.log('value of pix/coord Width: ', this.state.pixelWH.width/widthCoord)
-      // this.setState({pixCoord: {height: this.state.pixelWH.height/heightCoord, width: this.state.pixelWH.width/widthCoord}})
     }
     // this.setState({ center, zoom })
   }
 
+  addPin = (latLng) => {
+    axios.post('http://localhost:5000/addPinData', {latLng}, {withCredentials: true})
+    .then(response=>{
+      this.setState({pinData: response.data.pins})
+    })
+    .catch(error=>{
+      console.log('there was an error: ', error)
+    })
+  }
+
   componentDidMount(){
+    this.setState({pinData: this.props.pinData})
     console.log('inside componentDidMount')
-    console.log('value of document: ', document)
+    console.log('value of this.props.pinData: ', this.props.pinData)
+    console.log('value of document.cookie: ', document.cookie)
+    console.log('value of lat cookie: ', getCookie('potato')=='')
+    let latLng = {lat: null, lng: null}
+    console.log("")
+    if(getCookie('lat')==''||getCookie('lng')==''){
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition((position)=>{
+          console.log({ lat: position.coords.latitude, lng: position.coords.longitude });
+          latLng = { lat: position.coords.latitude, lng: position.coords.longitude };
+          this.addPin(latLng)
+        });  
+      }else{
+        this.addPin(latLng)
+      }
+    }else{
+      latLng = {lat: getCookie('lat'), lng: getCookie('lng')}
+      this.addPin(latLng)
+    }
+   
+
     let vwPixWidth = document.getElementsByTagName('body')[0].clientWidth * 0.55*0.8;
     let vwPixHeight = document.getElementsByTagName('body')[0].clientHeight * 0.45;
     console.log('vwPix: ', vwPixHeight)
@@ -82,64 +127,111 @@ class FeedPage extends Component{
   }
 
   map = () => {  
-    let distance = Math.sqrt(Math.pow((38.879-30.3672), 2) + Math.pow((-97.6997+97.7431), 2))
-    console.log('value of distance: ', distance)
-    let pinCoord = [43, -110.6997]
-    let starCoord = [30.2672, -97.7431]
-
-    let pinHeight = (Math.abs(this.state.bounds.top-pinCoord[0])/Math.abs(this.state.bounds.top-this.state.bounds.bottom))*this.state.pixelWH.height
-
-    let pinWidth = (Math.abs(this.state.bounds.right-pinCoord[1])/Math.abs(this.state.bounds.left-this.state.bounds.right))*this.state.pixelWH.width
-
-    let starHeight = (Math.abs(this.state.bounds.top-starCoord[0])/Math.abs(this.state.bounds.top-this.state.bounds.bottom))*this.state.pixelWH.height
-
-    let starWidth = (Math.abs(this.state.bounds.right-starCoord[1])/Math.abs(this.state.bounds.left-this.state.bounds.right))*this.state.pixelWH.width
-
-    let diagDist = Math.sqrt(Math.pow((pinHeight-starHeight), 2) + Math.pow((pinWidth-starWidth), 2))
-    let tangent = 0;
-    if(pinWidth<starWidth && pinHeight<starHeight){
-      tangent = -Math.atan((Math.abs(pinWidth-starWidth)/Math.abs(pinHeight-starHeight)))*180/Math.PI-90;
-    }else if(pinWidth>starWidth && pinHeight<starHeight){
-      tangent = Math.atan((Math.abs(pinWidth-starWidth)/Math.abs(pinHeight-starHeight)))*180/Math.PI-90;
-    }else if(pinWidth>starWidth && pinHeight>starHeight){
-      tangent = Math.atan(Math.abs(pinHeight-starHeight)/(Math.abs(pinWidth-starWidth)))*180/Math.PI;
-    }else if(pinWidth<starWidth && pinHeight>starHeight){
-      tangent = -Math.atan(Math.abs(pinHeight-starHeight)/(Math.abs(pinWidth-starWidth)))*180/Math.PI-180;
-    }
-
-
-    console.log('value of tangent: ', tangent)
-    // body = d.getElementsByTagName('body')[0],
-    // let vwPix = document.getElementsByTagName('body')[0].clientHeight * 0.65;
-    // console.log('window: ', window)
-    return(
-      <Map 
-        center={[38.879, -97.6997]}
-        zoom={4} 
-        provider={
-          (x, y, z) => {
-            const retina = typeof window !== 'undefined' && window.devicePixelRatio >= 2 ? '@2x' : ''
-            return `https://stamen-tiles.a.ssl.fastly.net/terrain/${z}/${x}/${y}${retina}.jpg`
+    if(Object.entries(this.state.bounds).length === 0){
+      return(
+        <Map 
+          center={[38.879, -97.6997]}
+          zoom={4} 
+          minZoom={4}
+          maxZoom={4}
+          provider={
+            (x, y, z) => {
+              const retina = typeof window !== 'undefined' && window.devicePixelRatio >= 2 ? '@2x' : ''
+              return `https://stamen-tiles.a.ssl.fastly.net/terrain/${z}/${x}/${y}${retina}.jpg`
+            }
           }
+          attribution={<NoneAttribution/>}
+          onBoundsChanged={this.handleBoundsChange}
+        ></Map>
+      )
+    }else{
+      let pinArray = this.state.pinData;
+      pinArray.push({lat: 43.0760, lng: -107.2903})
+      console.log('value of pinArray: ', pinArray)
+      let starCoord = [30.2672, -97.7431]
+      var threadArray = [];
+      threadArray = pinArray.map(pin=>{
+        let pinCoord = [pin.lat, pin.lng]
+        console.log('value of pinCoord: ', pinCoord)
+        let pinHeight = (Math.abs(this.state.bounds.top-pinCoord[0])/Math.abs(this.state.bounds.top-this.state.bounds.bottom))*this.state.pixelWH.height
+  
+        let pinWidth = (Math.abs(this.state.bounds.right-pinCoord[1])/Math.abs(this.state.bounds.left-this.state.bounds.right))*this.state.pixelWH.width
+    
+        let starHeight = (Math.abs(this.state.bounds.top-starCoord[0])/Math.abs(this.state.bounds.top-this.state.bounds.bottom))*this.state.pixelWH.height
+    
+        let starWidth = (Math.abs(this.state.bounds.right-starCoord[1])/Math.abs(this.state.bounds.left-this.state.bounds.right))*this.state.pixelWH.width
+  
+        var tangent = 0;
+        let distance = Math.sqrt(Math.pow((pinHeight-starHeight), 2) + Math.pow((pinWidth-starWidth), 2))
+        console.log('pinWidth: ', pinWidth)
+        console.log('pinHeight: ', pinHeight)
+        console.log('starWidth: ', starWidth)
+        console.log('starHeight: ', starHeight)
+        console.log('distance: ', distance)
+        if(pinWidth<starWidth && pinHeight<starHeight){
+          tangent = -Math.atan((Math.abs(pinWidth-starWidth)/Math.abs(pinHeight-starHeight)))*180/Math.PI-90;
+          var returnObj = {distance, tangent, pinCoord}
+          console.log('returnObj in if 1: ', returnObj)
+          return(returnObj)
+        }else if(pinWidth>starWidth && pinHeight<starHeight){
+          tangent = Math.atan((Math.abs(pinWidth-starWidth)/Math.abs(pinHeight-starHeight)))*180/Math.PI-90;
+          var returnObj = {distance, tangent, pinCoord}
+          console.log('returnObj in if 2: ', returnObj)
+          return(returnObj)
+        }else if(pinWidth>starWidth && pinHeight>starHeight){
+          tangent = Math.atan(Math.abs(pinHeight-starHeight)/(Math.abs(pinWidth-starWidth)))*180/Math.PI;
+          var returnObj = {distance, tangent, pinCoord}
+          console.log('returnObj in if 3: ', returnObj)
+          return(returnObj)
+        }else if(pinWidth<starWidth && pinHeight>starHeight){
+          tangent = -Math.atan(Math.abs(pinHeight-starHeight)/(Math.abs(pinWidth-starWidth)))*180/Math.PI-180;
+          var returnObj = {distance, tangent, pinCoord}
+          console.log('returnObj in if 4: ', returnObj)
+          return(returnObj)
         }
-        attribution={<NoneAttribution/>}
-        onBoundsChanged={this.handleBoundsChange}
-      >
-        <Overlay anchor={[38.879, -97.6997]} offset={['-100%','-100%']}>
-          <img src='/static/paperbackground.jpg' style={{opacity:'0.5'}} alt='' />
-        </Overlay>
-        <Overlay anchor={starCoord} offset={[0,0]}>
-          <div style={{border: '2px dashed rgb(176, 45, 48)', width: `${diagDist}px`, height: '0px', transform: `rotate(${tangent}deg)`, transformOrigin:'left'}}/>
-        </Overlay>
-        <Overlay anchor={pinCoord} offset={[25,25]}>
-          <img src='/static/pin.png' width={50} height={50} alt='' />
-        </Overlay>
-
-        <Overlay anchor={[30.2672, -97.7431]} offset={[13, 13]}>
-          <img src='/static/star.png' width={26} height={26} alt='' />
-        </Overlay>
-      </Map>
-    )
+      })
+      console.log('value of threadArray: ', threadArray)
+      return(
+        <Map 
+          center={[38.879, -97.6997]}
+          zoom={4} 
+          minZoom={4}
+          maxZoom={4}
+          provider={
+            (x, y, z) => {
+              const retina = typeof window !== 'undefined' && window.devicePixelRatio >= 2 ? '@2x' : ''
+              return `https://stamen-tiles.a.ssl.fastly.net/terrain/${z}/${x}/${y}${retina}.jpg`
+            }
+          }
+          attribution={<NoneAttribution/>}
+          onBoundsChanged={this.handleBoundsChange}
+        >
+          <Overlay anchor={[38.879, -97.6997]} offset={['-100%','-100%']}>
+            <img src='/static/paperbackground.jpg' style={{opacity:'0.6'}} alt='' />
+          </Overlay>
+          {threadArray.map((pin, index)=>{
+            console.log('value of pin in threadmap: ', pin)
+            console.log('pin.diagDist: ', pin.distance)
+            console.log('pin.tangent: ', pin.tangent)
+            return(
+              <Overlay key={index} anchor={starCoord} offset={[0,0]}>
+                <div style={{border: '2px dashed rgb(176, 45, 48)', width: `${pin.distance}px`, height: '0px', transform: `rotate(${pin.tangent}deg)`, transformOrigin:'left'}}/>
+              </Overlay>
+            )
+          })}
+          {threadArray.map((pin, index)=>{
+            return(
+              <Overlay key={index} anchor={pin.pinCoord} offset={[25,25]}>
+                <img src='/static/pin.png' width={50} height={50} alt='' />
+              </Overlay>
+            )
+          })}
+          <Overlay anchor={[30.2672, -97.7431]} offset={[13, 13]}>
+            <img src='/static/star.png' width={26} height={26} alt='' />
+          </Overlay>
+        </Map>
+      )
+    }
   }
 
   render(){
@@ -156,7 +248,7 @@ class FeedPage extends Component{
           <div className='titleFont' style={{fontSize: '4vh', textAlign: 'center'}}>
             Welcome to patientplatypus
           </div>
-          <div className=''>  
+          <div>  
             <div style={{width: '15vw', marginLeft: '1vw', marginRight: '1vw', display: 'inline-block'}}>
               <img src='/static/hellotheresailor.svg' style={{width: '100%'}}/>
             </div>
@@ -169,8 +261,10 @@ class FeedPage extends Component{
               </div>
             </div>
           </div>
-          <div style={{height: '45vh', width: '80%', marginLeft: '10%'}}>
-            {this.map()}
+          <div className='mapBoard' style={{width: 'calc(100% - 40px)', marginLeft: '10px', height: '50%', border: '10px solid #2f1d0a', marginTop: '10px'}}>
+            <div style={{display: 'inline-block', height: '80%', marginTop: '5%', width: '80%', marginRight: '5%', float: 'right', maskImage: "url('/static/mapmask.png')", maskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:"url('/static/mapmask.png')"}}>
+              {this.map()}
+            </div>
           </div>
         </div>
         

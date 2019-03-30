@@ -25,4 +25,7 @@
 - agg render in forums to logos
 - limit feed characters to input
 - fix blog header overflow (DONE)
-- On splash add cork board with visitor map (number + by ip with strings?)
+- On splash add cork board with visitor map (number + by ip with strings?) 
+  - Plus have two charts (unique visitor vs repeat && not from texas vs texas)
+  - Plus cool people and fred (99%)
+- get rid of ipapi json call and put in native function

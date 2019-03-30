@@ -203,6 +203,14 @@ textarea{
   /* background: orange; */
 }
 
+.mapBoard{
+  background: linear-gradient(
+    rgba(47, 29, 10, 0.4), 
+    rgba(47, 29, 10, 0.5)
+  ),url(/static/cork.jpg);
+  background-repeat: repeat; 
+}
+
 .nav{
   display: block;
   width: calc(22vw - 20px);

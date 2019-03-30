@@ -47,8 +47,22 @@ var BlogSchema = new Schema({
   }  
 })
 
+var PinSchema = new Schema({
+  lat: {type: Number},
+  lng: {type: Number},
+  visits: {type: Number, default: 0}
+}, {
+  writeConcern: {
+    w: 0,
+    j: false,
+    wtimeout: 200
+  }  
+})
+
+
 var Post =  mongoose.model('Post', PostSchema);
 var Comment = mongoose.model('Comment', CommentSchema)
 var Blog = mongoose.model('Blog', BlogSchema)
+var Pin = mongoose.model('Pin', PinSchema)
 
-module.exports = {Post, Comment, Blog} 
+module.exports = {Post, Comment, Blog, Pin} 
