@@ -20,6 +20,8 @@
     "pigeon-overlay": "git+https://github.com/mariusandra/pigeon-overlay.git",
     "react": "^16.8.4",
     "react-addons-css-transition-group": "^15.6.2",
+    "react-analog-clock": "^2.1.0",
+    "react-clock": "^2.3.0",
     "react-dom": "^16.8.4",
     "react-html-parser": "^2.0.2",
     "react-ticker": "^1.1.1",

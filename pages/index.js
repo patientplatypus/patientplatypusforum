@@ -16,6 +16,9 @@ import axios from 'axios';
 
 import {getCookie} from '../services';
 
+import Clock from '../components/Clock';
+
+
 
 const MapboxAttribution = () => (
   <span className='map-attribution'>
@@ -68,7 +71,8 @@ class FeedPage extends Component{
     pixelWH: {},
     coordBound: {}, 
     bounds: {}, 
-    pinData: []
+    pinData: [],
+    date: new Date(),
   }
 
   // 30.2672° N, 97.7431° W
@@ -124,6 +128,11 @@ class FeedPage extends Component{
     this.setState({pixelWH: {height: vwPixHeight, width: vwPixWidth}}, ()=>{
       console.log('after setState and value of pixelWH: ', this.state.pixelWH)
     })
+
+    setInterval(
+      () => this.setState({ date: new Date() }),
+      1000
+    );
   }
 
   map = () => {  
@@ -194,7 +203,7 @@ class FeedPage extends Component{
       console.log('value of threadArray: ', threadArray)
       return(
         <Map 
-          center={[38.879, -97.6997]}
+          center={[38.879, -94.6997]}
           zoom={4} 
           minZoom={4}
           maxZoom={4}
@@ -210,6 +219,9 @@ class FeedPage extends Component{
           <Overlay anchor={[38.879, -97.6997]} offset={['-100%','-100%']}>
             <img src='/static/paperbackground.jpg' style={{opacity:'0.6'}} alt='' />
           </Overlay>
+          <Overlay anchor={[30.2672, -97.7431]} offset={[20, 20]}>
+            <img src='/static/star.png' width={40} height={40} alt='' />
+          </Overlay>
           {threadArray.map((pin, index)=>{  
             return(
               <Overlay key={index} anchor={starCoord} offset={[0,0]}>
@@ -224,9 +236,6 @@ class FeedPage extends Component{
               </Overlay>
             )
           })}
-          <Overlay anchor={[30.2672, -97.7431]} offset={[13, 13]}>
-            <img src='/static/star.png' width={26} height={26} alt='' />
-          </Overlay>
         </Map>
       )
     }
@@ -240,6 +249,7 @@ class FeedPage extends Component{
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
           <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=Quicksand:700" rel="stylesheet"/>
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -259,9 +269,15 @@ class FeedPage extends Component{
               </div>
             </div>
           </div>
-          <div className='mapBoard' style={{width: 'calc(100% - 40px)', marginLeft: '10px', height: '50vh', border: '10px solid #2f1d0a', marginTop: '10px'}}>
+          <div className='mapBoard' style={{width: 'calc(100% - 40px)', marginLeft: '10px', height: '50vh', border: '10px solid #2f1d0a', marginTop: '10px', position: 'relative'}}>
             <div style={{display: 'inline-block', height: '45vh',  marginTop: '2.5vh', width: 'calc(0.8 * 55vw)', marginRight: '5%', float: 'right', maskImage: "url('/static/mapmask.png')", maskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:"url('/static/mapmask.png')"}}>
               {this.map()}
+            </div>
+            <div className='woodPlacard' style={{position: 'absolute', top: '-3vh', left: '0', display: 'inline-block', lineHeight: '5vh', paddingLeft: '0.5vw', paddingRight: '0.5vw', border: '5px rgb(203, 144, 3) solid', borderRadius: '5px', color: 'white', fontSize: '2vh'}}>
+              NUMBER OF VISITORS
+            </div>
+            <div style={{position: 'absolute', top: 0, right: `${this.state.pixelWH.width/5}px`, transform: `scale(calc(${this.state.pixelWH.width}/1000))`}}>
+              <Clock/>
             </div>
           </div>
         </div>

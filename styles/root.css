@@ -211,6 +211,18 @@ textarea{
   background-repeat: repeat; 
 }
 
+.woodPlacard{
+  background: linear-gradient(
+    rgba(47, 29, 10, 0.2), 
+    rgba(47, 29, 10, 0.3)
+  ),url(/static/wood.jpg);
+  background-repeat: repeat; 
+  /* font-family: 'Nunito', sans-serif; */
+  font-weight: bold;
+  font-family: 'Quicksand', sans-serif;
+  /* font-family: 'Share Tech Mono', monospace; */
+}
+
 .nav{
   display: block;
   width: calc(22vw - 20px);
@@ -308,3 +320,91 @@ html, body{
   align-items: stretch;
 }
 
+/* clock stuff */
+/* from here: https://jsfiddle.net/aelliott/8q1rhqbp/21/ */
+/*Matt Litzinger - http://codepen.io/mlitzinger/pen/ruEyz*/
+
+.clock {
+  width: 200px;
+  height: 200px;
+  background: -webkit-radial-gradient(#3b3b3b, #000);
+  background: linear-gradient( 
+    rgb(84, 136, 100, 0.25),
+    rgb(84, 136, 100, 0.25)
+  ),url(/static/platypusCircle.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  border: 6px solid #222;
+  border-radius: 106px;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.hour-hand {
+  width: 4px;
+  height: 55px;
+  background: black;
+  position: absolute;
+  top: 45px;
+  left: 98px;
+  -webkit-transform-origin: 50% 100%;
+  -moz-transform-origin: 50% 100%;
+  -o-transform-origin: 50% 100%;
+  -ms-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+}
+
+.min-hand {
+  width: 4px;
+  height: 80px;
+  background: black;
+  position: absolute;
+  top: 20px;
+  left: 98px;
+  -webkit-transform-origin: 50% 100%;
+  -moz-transform-origin: 50% 100%;
+  -o-transform-origin: 50% 100%;
+  -ms-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+}
+
+.second-hand {
+  width: 2px;
+  height: 80px;
+  background: red;
+  position: absolute;
+  top: 20px;
+  left: 99px;
+  -webkit-transform-origin: 50% 100%;
+  -moz-transform-origin: 50% 100%;
+  -o-transform-origin: 50% 100%;
+  -ms-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+}
+
+.pin {
+  width: 10px;
+  height: 10px;
+  background: #111;
+  border-radius: 10px;
+  margin: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+/* 
+.hour-hand,
+.minute-hand,
+.second-hand {
+  -webkit-transform-origin: 50% 100%;
+  -moz-transform-origin: 50% 100%;
+  -o-transform-origin: 50% 100%;
+  -ms-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+} */
