@@ -29,3 +29,4 @@
   - Plus have two charts (unique visitor vs repeat && not from texas vs texas)
   - Plus cool people and fred (99%)
 - get rid of ipapi json call and put in native function
+- rewrite backend/forums to simply serve all pictures as static rather than base64??? (DONE)

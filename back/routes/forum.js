@@ -177,31 +177,6 @@ router.post('/uploadComment', (req, res, next)=>{
 
 })
 
-router.post('/flipPic', (req, res, next)=>{
-  console.log('inside /flipPic')
-  console.log('value of req.body: ', req.body)
-  let dest = __dirname+'/../picFolder/'
-  var picVal = req.body.picVal
-  if(req.body.picVal.fileType=='actual'){
-    console.log('inside if statement 1')
-    dest = dest + 'sharp/'
-    picVal.fileType = 'preview'
-  }else if (req.body.picVal.fileType=='preview'){
-    console.log('inside if statement 2')
-    picVal.fileType = 'actual'
-    //no extension main folder
-  }
-  console.log('value of dest: ', dest)
-  console.log('value of dest+req.body.picVal.fileName: ', dest+req.body.picVal.fileName)
-  const asyncFunc = async () => {
-    var fileData =  await fsPromise.readFile(dest+req.body.picVal.fileName)
-    picVal.data = fileData.toString('base64')
-    console.log('value of picVal: ', picVal)
-    res.json({picVal: picVal})
-  }
-  asyncFunc()
-})
-
 router.post('/getNavPage', (req, res, next)=>{
   console.log('inside /getNavPage')
   console.log('value of req.body.navPage: ', req.body.navPage)
@@ -210,53 +185,8 @@ router.post('/getNavPage', (req, res, next)=>{
     if(err){
       console.log('there was an err: ', err)
     }
-
-    let dest = __dirname+'/../picFolder/sharp/'
-
-    var tempPosts = posts;
-    var dataArr = [];
-
-    const asyncFunc = async () => {
-      await logos.asyncForEach(tempPosts, async (tempPost) => {
-        if (tempPost.fileName!=''){
-          try{
-            var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+tempPost.fileName)
-          }
-          catch(e){
-            console.log('there was an error; ', e)
-            if(e.code=="ENOENT"){
-              var fileData = await fsPromise.readFile(__dirname+'/../picFolder/sharp/noimageavailable.jpg')
-            }
-          }
-          
-          dataArr.push({post: tempPost._id, data: fileData.toString('base64'), extension: tempPost.fileName.match(/\.[0-9a-z]+$/i)[0], fileType: 'preview', fileName: tempPost.fileName})
-        }
-        if(tempPost.comments.length >= 3){
-          var lastThreeComments = tempPost.comments.slice(Math.max(tempPost.comments.length - 3, 1))
-        }else{
-          var lastThreeComments = tempPost.comments
-        }
-        await logos.asyncForEach(lastThreeComments, async (comment) => {
-          if (comment.fileName!=''){
-            try{
-              var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+comment.fileName)
-            }
-            catch(e){
-              console.log('there was an error; ', e)
-              if(e.code=="ENOENT"){
-                var fileData = await fsPromise.readFile(__dirname+'/../picFolder/sharp/noimageavailable.jpg')
-              }
-            }
-            dataArr.push({post: comment._id, data: fileData.toString('base64'), extension: comment.fileName.match(/\.[0-9a-z]+$/i)[0], fileType: 'preview', fileName: tempPost.fileName})
-          }
-        })
-      })
-
-      console.log('before send and value of tempPosts: ', tempPosts)
-      console.log("before send and value of dataArr: ", dataArr)
-      res.json({posts: tempPosts, dataArr: dataArr})
-    }
-    asyncFunc()
+    console.log('value of posts: ', posts)
+    res.json({posts:posts})
   })
 })
 
@@ -264,46 +194,11 @@ router.post('/getPost', (req, res, next)=>{
   console.log('inside /getPost')
 
   model.Post.findOne({_id: req.body.postID}).populate('comments').exec((err, post)=>{
-
-    commentArr = [];
-    var fileObj = null;
-    const asyncFunc = async () => {
-      if(post.fileName!=''){
-        try{
-          var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+post.fileName)
-        }
-        catch(e){
-          console.log('there was an error; ', e)
-          if(e.code=="ENOENT"){
-            var fileData = await fsPromise.readFile(__dirname+'/../picFolder/sharp/noimageavailable.jpg')
-          }
-        }
-        // var fileData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+post.fileName)
-        fileObj = {post: post._id, data: fileData.toString('base64'), extension: post.fileName.match(/\.[0-9a-z]+$/i)[0], fileType:'preview', fileName: post.fileName}
-      }
-      if(post.comments.length>0){
-        console.log('inside second if statement and post.comments; ', post.comments)
-        await logos.asyncForEach(post.comments, async (comment) => {
-          console.log('inside asyncForEach')
-          if (comment.fileName!=''){
-            try{
-              var commentData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+comment.fileName)
-            }
-            catch(e){
-              console.log('there was an error; ', e)
-              if(e.code=="ENOENT"){
-                var commentData = await fsPromise.readFile(__dirname+'/../picFolder/sharp/noimageavailable.jpg')
-              }
-            }
-            // var commentData =  await fsPromise.readFile(__dirname+'/../picFolder/sharp/'+comment.fileName)
-            commentArr.push({post: comment._id, data: commentData.toString('base64'), extension: comment.fileName.match(/\.[0-9a-z]+$/i)[0], fileType: 'preview', fileName: comment.fileName})
-          }
-        })
-      }
-      console.log('inside model.Post.findOne and value of res: ', {post: post, postObj: fileObj, commentArr: commentArr})
-      res.json({post: post, postObj: fileObj, commentArr: commentArr})
+    if(err){
+      console.log('there was an error: ', err)
+    }else{
+      res.json({post: post})
     }
-    asyncFunc()
   })
 })
 

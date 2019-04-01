@@ -342,6 +342,7 @@ html, body{
   bottom: 0;
   left: 0;
   right: 0;
+  /* font-family: 'Pacifico', cursive; */
 }
 
 .hour-hand {
@@ -375,7 +376,7 @@ html, body{
 .second-hand {
   width: 2px;
   height: 80px;
-  background: red;
+  background: rgb(223, 99, 55);
   position: absolute;
   top: 20px;
   left: 99px;

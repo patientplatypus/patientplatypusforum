@@ -7,6 +7,7 @@ var CommentSchema = new Schema({
   flags: {type: Number, default: 0},
   lastFlag: {type: Date, default: Date.now()},
   imageBanned: {type: Boolean, default: false},
+  type: {type: String, default: 'preview'},
   fileName: {type: String, default: ""}
 }, {
   writeConcern: {
@@ -24,6 +25,7 @@ var PostSchema = new Schema({
   fileName: {type: String, default: ""},
   imageBanned: {type: Boolean, default: false},
   board: {type: String, default: ""},
+  type: {type: String, default: 'preview'},
   comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }]
 }, {
   writeConcern: {

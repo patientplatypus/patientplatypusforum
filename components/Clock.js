@@ -30,7 +30,7 @@ class Clock extends Component {
 
     this.setState({
       secondDegrees:  (second/60) * 360 + 90,
-      minuteDegrees: ((minute/60) * 360)%360,
+      minuteDegrees: (((minute+(second/60))/60) * 360)%360,
       hourDegrees:  ((hour/12) * 360)%360 + ((minute/60) * 30),
     }, ()=>{
       console.log('after setState in clock and value: ', this.state)

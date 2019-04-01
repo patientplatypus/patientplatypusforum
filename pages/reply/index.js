@@ -51,41 +51,53 @@ class Reply extends Component{
     })
   }
 
-  flipPic = (picVal, picType) => { 
-    picVal.data = "" //in order to prevent sending the entire buffer in request
-    axios.post('http://localhost:5000/forum/flipPic', {picVal})
-    .then(response=>{
-      if(picType=='post'){
-        let tempPostData = this.state.postData;
-        tempPostData.postObj = response.data.picVal;
-        this.setState({postData: tempPostData})
-      }else if(picType=='comment'){
-        let tempArr = this.state.postData.commentArr;
-        let indexVal = tempArr.indexOf(tempArr.find((datum)=>{return datum.post == picVal.post}))
-        tempArr[indexVal] = response.data.picVal
-        let tempPost = this.state.postData;
-        tempPost.dataArr = tempArr
-        console.log('value of tempPost: ', tempPost)
-        this.setState({postData: tempPost})
-      }
-    })
-    .catch(error=>{
-      console.log('value of error from /flipPic: ', error)
-    })
-  }
-
-  picHandler = (picVal, picType) => {
+  picHandler = (picVal, postType) => {
     console.log('value of picVal: ', picVal)
-    if(picVal==undefined || picVal == null || picVal == -1){
+    // console.log('value of this.state.postData in picHandler: ', this.state.postData)
+    console.log('hello there picHandler')
+    if(picVal==undefined || this.state.postData==undefined){
       return null
     }else{
       return (
         <div
         style={{cursor: 'pointer', height: '100%', width: '100%'}}
-        onClick={()=>{this.flipPic(picVal, picType)}}
+        onClick={()=>{
+          if(postType=='post'){
+            let newTempPostData = this.state.postData;
+            if(newTempPostData.post.type=='preview'){
+              newTempPostData.post.type = 'actual'
+            }else if (newTempPostData.post.type=='actual'){
+              newTempPostData.post.type = 'preview'
+            }
+            this.setState({postData: newTempPostData})
+          }else if(postType=='comment'){
+            let tempPostData = this.state.postData;
+            let newTempPostData = tempPostData
+            newTempPostData.post.comments = tempPostData.post.comments.map(item=>{
+              if(item._id==picVal.post){
+                if(item.type=='preview'){
+                  item.type = 'actual'
+                  return item
+                }else if(item.type=='actual'){
+                  item.type = 'preview'
+                  return item
+                }
+              }else{
+                return item
+              }
+            })
+            console.log('value of newTempPostData: ', newTempPostData)
+            this.setState({postData: newTempPostData})
+          }
+        }}
         >
           <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
-            <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+            {renderIf(picVal.type=='preview')(
+              <img src={'http://localhost:5000/sharp/'+picVal.fileName} style={{maxWidth: '100%'}}/>
+            )}
+            {renderIf(picVal.type=='actual')(
+              <img src={'http://localhost:5000/'+picVal.fileName}  style={{maxWidth: '100%'}}/>
+            )}
           </a>
         </div>
       )
@@ -150,7 +162,7 @@ class Reply extends Component{
           ></Submit>
           <div className='card' style={{marginBottom: '5px'}}>
             <div style={{display: 'inline-block', marginRight: '5px'}}>
-              {this.picHandler(postPicVal, 'post')}
+              {this.picHandler({post: this.state.postData.post._id, fileName: this.state.postData.post.fileName, type: this.state.postData.post.type}, 'post')}
             </div>
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
               <div style={{fontStyle: 'italic'}}>
@@ -192,11 +204,10 @@ class Reply extends Component{
           </div>
           <div>
             {this.state.postData.post.comments.map((comment, index)=>{
-              let commentPicVal = this.state.postData.commentArr.find((datum)=>{return datum.post == comment._id});
               return(
                 <div className='cardComment' key={index} style={{marginBottom: '5px'}}>
                   <div style={{display: 'inline-block', marginRight: '5px'}}>
-                    {this.picHandler(commentPicVal, 'comment')}
+                    {this.picHandler({post: comment._id, parentID: this.state.postData.post._id, fileName: comment.fileName, type: comment.type}, 'comment')}
                   </div>
                   <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                     <div style={{fontStyle: 'italic'}}>

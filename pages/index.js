@@ -269,7 +269,7 @@ class FeedPage extends Component{
               </div>
             </div>
           </div>
-          <div className='mapBoard' style={{width: 'calc(100% - 40px)', marginLeft: '10px', height: '50vh', border: '10px solid #2f1d0a', marginTop: '10px', position: 'relative'}}>
+          <div className='mapBoard' style={{width: 'calc(100% - 40px)', marginLeft: '10px', height: '50vh', border: '10px solid #2f1d0a', marginTop: '2vh', position: 'relative'}}>
             <div style={{display: 'inline-block', height: '45vh',  marginTop: '2.5vh', width: 'calc(0.8 * 55vw)', marginRight: '5%', float: 'right', maskImage: "url('/static/mapmask.png')", maskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:"url('/static/mapmask.png')"}}>
               {this.map()}
             </div>

@@ -15,6 +15,7 @@ import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'bo
 
 import '../../../styles/root.css'
 import { runInThisContext } from 'vm';
+import { networkInterfaces } from 'os';
 
 class Home extends Component{
   static async getInitialProps({req, query}){
@@ -77,38 +78,67 @@ class Home extends Component{
     window.location.href='http://localhost:3000/forum/nsfw/'+this.state.currentPage
   }
 
-  flipPic = (picVal) => { 
-    picVal.data = "" //in order to prevent sending the entire buffer in request
-    axios.post('http://localhost:5000/forum/flipPic', {picVal})
-    .then(response=>{
-      let tempArr = this.state.postData.dataArr;
-      let indexVal = tempArr.indexOf(tempArr.find((datum)=>{return datum.post == picVal.post}))
-      tempArr[indexVal] = response.data.picVal
-      let tempPost = this.state.postData;
-      tempPost.dataArr = tempArr
-      console.log('value of tempPost: ', tempPost)
-      this.setState({postData: tempPost})
-    })
-    .catch(error=>{
-      console.log('value of error from /flipPic: ', error)
-    })
-  }
-
-  picHandler = (picVal) => {
-    if(picVal==undefined){
+  picHandler = (picVal, postType) => {
+    console.log('value of picVal: ', picVal)
+    // console.log('value of this.state.postData in picHandler: ', this.state.postData)
+    if(picVal==undefined || this.state.postData==undefined){
       return null
     }else{
       return (
         <div
         style={{cursor: 'pointer', height: '100%', width: '100%'}}
         onClick={()=>{
-          if(picVal.fileName!='gross.svg'&&picVal.fileName!='noimageavailable.jpg'){
-            this.flipPic(picVal)
+          let tempPostData = this.state.postData
+          let newTempPostData = this.state.postData
+          if(postType=='post'){
+            newTempPostData.posts = tempPostData.posts.map((item, index)=>{
+              if (item._id==picVal.post){
+                if(item.type=='preview'){
+                  item.type = 'actual'
+                  return item
+                }else if(item.type=='actual'){
+                  item.type = 'preview'
+                  return item
+                }
+              }else{
+                return item
+              }
+            })
+            this.setState({postData: newTempPostData})
+          }else if(postType=='comment'){
+            let parentPost = tempPostData.posts.filter((item)=>{return item._id==picVal.parentID})
+            let newCommentData = parentPost[0].comments.map((item, index)=>{
+              if (item._id==picVal.post){
+                if(item.type=='preview'){
+                  item.type = 'actual'
+                  return item
+                }else if(item.type=='actual'){
+                  item.type = 'preview'
+                  return item
+                }
+              }else{
+                return item
+              }
+            })
+            newTempPostData.posts = tempPostData.posts.map((item, index)=>{
+              if(item._id==picVal.parentID){
+                item.comments = newCommentData;
+                return item
+              }else{
+                return item
+              }
+            })
+            this.setState({postData: newTempPostData})
           }
         }}
         >
           <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
-            <img src={`${`data:image/`+picVal.extension+`;base64,`+picVal.data}`} style={{height: '100%', width: '100%'}}/>
+            {renderIf(picVal.type=='preview')(
+              <img src={'http://localhost:5000/sharp/'+picVal.fileName} style={{maxWidth: '100%'}}/>
+            )}
+            {renderIf(picVal.type=='actual')(
+              <img src={'http://localhost:5000/'+picVal.fileName}  style={{maxWidth: '100%'}}/>
+            )}
           </a>
         </div>
       )
@@ -138,6 +168,7 @@ class Home extends Component{
   }
 
   handleCommentPreview = (post) => {
+    console.log('inside handleCommentPreview and value of post: ', post)
     if(post.comments.length >= 3){
       var lastThreeComments = post.comments.slice(Math.max(post.comments.length - 3, 1))
     }else{
@@ -145,12 +176,10 @@ class Home extends Component{
     }
     return(
       lastThreeComments.map((comment, index)=>{
-        console.log('value of comment: ', comment)
-        let commentPicVal = this.state.postData.dataArr.find((datum)=>{return datum.post == comment._id});
         return(
           <div className='cardComment' key={index} style={{marginBottom: '5px'}}>
             <div style={{display: 'inline-block', marginRight: '5px'}}>
-              {this.picHandler(commentPicVal)}
+              {this.picHandler({post: comment._id, parentID: post._id, fileName: comment.fileName, type: comment.type}, 'comment')}
             </div>
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
               <div style={{fontStyle: 'italic'}}>
@@ -243,14 +272,12 @@ class Home extends Component{
           ></Submit>
           <div>
             {this.state.postData.posts.map((post, index)=>{
-              let picVal = this.state.postData.dataArr.find((datum)=>{return datum.post == post._id})
-              console.log('value of post.comments.map(comment=>comment.fileName!="")', post.comments.filter(comment=>comment.fileName!='').length)
               return(
                 <div>
                   <div className='card' key={index} style={{marginBottom: '5px'}}>
                     <div>
                       <div style={{display: 'inline-block', marginRight: '5px'}}>
-                        {this.picHandler(picVal)}
+                        {this.picHandler({post: post._id, fileName: post.fileName, type: post.type}, 'post')}
                       </div>
                       <div style={{display: 'inline-block', verticalAlign: 'top'}}>
                         <div style={{fontStyle: 'italic'}}>
