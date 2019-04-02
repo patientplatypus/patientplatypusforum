@@ -24,6 +24,7 @@
     "react-clock": "^2.3.0",
     "react-dom": "^16.8.4",
     "react-html-parser": "^2.0.2",
+    "react-lottie": "^1.2.3",
     "react-ticker": "^1.1.1",
     "render-if": "^0.1.1",
     "socket.io-client": "^2.2.0",

@@ -12,6 +12,7 @@ import '../../styles/root.css'
 
 import NavMenu from '../../components/NavMenu'
 import Chat from '../../components/Chat'
+import Welcome from '../../components/Welcome';
 
 class FAQ extends Component{
   state = {
@@ -85,13 +86,8 @@ class FAQ extends Component{
             </div>
           </div>
         </div>
-        <div className='rightContainer'>
-          <div style={{height: '10vh', width: '100%', background: ''}}>
-            <div className='allWhoCome' style={{display: 'inline-block', height: '8vh', marginTop: '1vh', marginBottom: '1vh', marginLeft: '1vw', lineHeight: '8vh', fontSize:'1.9vw', width: '20vw'}}>
-              All Who Come Are Welcome
-            </div>
-            <img src='/static/hamsa.png' style={{height: '8vh',  maxWidth: '3vw', marginTop: '1vh', marginBottom: '1vh', marginRight: '1vw', float: 'right'}}/>
-          </div>
+        <div className='houndstooth rightContainer checkOrange'>
+          <Welcome/>
           <NavMenu/>
           <Chat/>
         </div>

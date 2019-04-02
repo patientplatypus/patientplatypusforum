@@ -17,6 +17,7 @@ import axios from 'axios';
 import {getCookie} from '../services';
 
 import Clock from '../components/Clock';
+import Welcome from '../components/Welcome';
 
 
 
@@ -141,7 +142,7 @@ class FeedPage extends Component{
     console.log('value of pinArray: ', pinArray)
     var starCoord = [30.2672, -97.7431]
     var threadArray = [];
-    if(Object.entries(this.state.bounds).length === 0){
+    if(Object.entries(this.state.bounds).length === 0 || pinArray == undefined){
       return(
         <Map 
           center={[38.879, -97.6997]}
@@ -250,6 +251,7 @@ class FeedPage extends Component{
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
           <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Quicksand:700" rel="stylesheet"/>
+          <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet"/> 
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -282,13 +284,8 @@ class FeedPage extends Component{
           </div>
         </div>
         
-        <div className='rightContainer'>
-          <div style={{height: '10vh', width: '100%', background: ''}}>
-            <div className='allWhoCome' style={{display: 'inline-block', height: '8vh', marginTop: '1vh', marginBottom: '1vh', marginLeft: '1vw', lineHeight: '8vh', fontSize:'1.9vw', width: '20vw'}}>
-              All Who Come Are Welcome
-            </div>
-            <img src='/static/hamsa.png' style={{height: '8vh', maxWidth: '3vw', marginTop: '1vh', marginBottom: '1vh', marginRight: '1vw', float: 'right'}}/>
-          </div>
+        <div className='houndstooth rightContainer checkOrange'>
+          <Welcome/>
           <NavMenu/>
           <Chat/>
         </div>
