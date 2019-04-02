@@ -176,6 +176,7 @@ textarea{
   min-height: 100vh;
   height: 100%;
   display: block;
+  box-shadow: 0 9px 0px 0px white, 0 -9px 0px 0px white, 12px 0 15px -4px rgb(48, 59, 59, 0.8), -9px 0 15px -4px rgba(48, 59, 59, 0.8)
   /* overflow: visible; */
   /* overflow: hidden;
   overflow-y: auto; */
