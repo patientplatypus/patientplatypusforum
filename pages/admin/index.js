@@ -14,6 +14,7 @@ import NavMenu from '../../components/NavMenu'
 import Chat from '../../components/Chat'
 
 import Welcome from '../../components/Welcome';
+import ReCAPTCHA from "react-google-recaptcha";
 
 class Admin extends Component{
   state = {
@@ -33,13 +34,16 @@ class Admin extends Component{
     blogIDinput: '',
     bannedReturn: '', 
     deletedBlogReturn: '', 
-    blogPosts: []
+    blogPosts: [], 
+    captcha: ''
   }
 
   mainRef = React.createRef();
 
   componentDidMount(){
-    this.setState({componentMounted: true})
+    setTimeout(() => {
+      this.setState({componentMounted: true})
+    }, 0);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot){
@@ -60,26 +64,29 @@ class Admin extends Component{
 
 
   handlePassSubmit = () => {
-    axios.get('https://ipapi.co/json/')
-    .then(response=>{
-      var payload = {
-        ip: response.data.ip,
-        pass: this.state.passText
-      }
-      axios.post('http://localhost:5000/admin/confirmPass', {payload})
+    if(this.state.captcha!=''){
+      console.log('inside handlePassSubmit and value of captcha: ', this.state.captcha)
+      axios.get('https://ipapi.co/json/')
       .then(response=>{
-        console.log('value from confirmPass; ', response.data)
-        this.setState({
-          passwordVerified: response.data.confirmed
+        var payload = {
+          ip: response.data.ip,
+          pass: this.state.passText
+        }
+        axios.post('http://localhost:5000/admin/confirmPass', {payload, captcha: this.state.captcha})
+        .then(response=>{
+          console.log('value from confirmPass; ', response.data)
+          this.setState({
+            passwordVerified: response.data.confirmed
+          })
+        })
+        .catch(error=>{
+          console.log('there was an error: ', error);
         })
       })
       .catch(error=>{
-        console.log('there was an error: ', error);
-      })
-    })
-    .catch(error=>{
-      console.log('there was an error retrieving ip : ', error);
-    })
+        console.log('there was an error retrieving ip : ', error);
+      }) 
+    }
   }
 
   handleSubmitBlog = () => {
@@ -227,6 +234,7 @@ class Admin extends Component{
       <div className='gridContainer' ref={(input)=>this.mainRef = input}>
         <Head>
           <title>patientplatypus</title>
+          <script src="https://www.google.com/recaptcha/api.js" async defer></script>
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
           <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
@@ -251,10 +259,17 @@ class Admin extends Component{
                 <input
                   value={this.state.passText}
                   onChange={(e)=>{this.setState({passText: e.target.value})}}
-                  style={{marginRight: '5px'}}
+                  style={{marginRight: '5px', marginBottom: '1vh'}}
                 ></input>
+                {renderIf(this.state.componentMounted)(
+                  <ReCAPTCHA
+                  sitekey={process.env.recaptchaSiteKey}
+                  onChange={(e)=>{console.log('value of captcha onchange', e); this.setState({captcha: e})}}
+                  />
+                )}
                 <div className='button'
                   onClick={()=>{this.handlePassSubmit()}}
+                  style={{marginTop: '1vh'}}
                 >
                   SUBMIT
                 </div>

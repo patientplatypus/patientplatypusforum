@@ -48,10 +48,12 @@ class Home extends Component{
       posts: [], 
       files: [], 
       flagWarning: [],
+      componentMounted: false
     }
   }
 
   componentDidMount(){
+    this.setState({componentMounted: true})
     axios({
       method: 'get',
       url: 'http://localhost:5000/forum/getNumPages/nsfw',
@@ -258,6 +260,21 @@ class Home extends Component{
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
           <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
+          <script type='text/javascript'>
+            window.onloadCallback = function() {
+              console.log('loaded() triggered.')
+            }
+          </script>
+          {/* <script src="https://www.google.com/recaptcha/api.js"></script> */}
+          {/* <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer>
+          </script>
+          <script type="text/javascript">
+            var _captchaTries = 0;
+            var recaptchaOnload = function(){
+              console.log('hello there onload')
+            }
+            console.log('hello there sailor')
+          </script> */}
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -266,11 +283,13 @@ class Home extends Component{
               NSFW Forum
             </div>
           </div>
-          <Submit 
-          reloadPage={()=>this.reloadPage()}
-          submitType={'post'}
-          boardType={'nsfw'}
-          ></Submit>
+          {renderIf(this.state.componentMounted)(
+            <Submit 
+            reloadPage={()=>this.reloadPage()}
+            submitType={'post'}
+            boardType={'nsfw'}
+            ></Submit>
+          )}
           <div>
             {this.state.postData.posts.map((post, index)=>{
               return(

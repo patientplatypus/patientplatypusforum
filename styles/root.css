@@ -184,6 +184,7 @@ textarea{
 
 .rightContainer{
   grid-area: rightContainer;
+  position: relative;
   /* margin-top: 2.5vh */
 }
 
@@ -419,6 +420,14 @@ html, body{
   opacity: 0.6;
   background-image: url('/static/checkorange.png');
   background-repeat: repeat;
+}
+
+.establishedNumber{
+  font-family: 'Emblema One', cursive;
+}
+
+.establishedText{
+  font-family: 'Plaster', cursive;
 }
 
 

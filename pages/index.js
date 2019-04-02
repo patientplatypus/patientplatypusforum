@@ -252,6 +252,8 @@ class FeedPage extends Component{
           <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Quicksand:700" rel="stylesheet"/>
           <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=Emblema+One" rel="stylesheet"/>
+          <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -288,6 +290,12 @@ class FeedPage extends Component{
           <Welcome/>
           <NavMenu/>
           <Chat/>
+          <div className='establishedText' style={{position: 'absolute', right: '-10vw', bottom: '5vh', fontSize: '4vw', color: 'rgb(47, 29, 10)', opacity: 0.8}}>
+            ESTABLISHED
+          </div>
+          <div className='establishedNumber' style={{position: 'absolute', right: '0vw', bottom: 0, fontSize: '4vw', color: 'rgb(47, 100, 10)', opacity: 0.9}}>
+            1986
+          </div>
         </div>
         <div className='leftContainer'>
           <div style={{width: '15vw', marginLeft: '2.5vw'}}>

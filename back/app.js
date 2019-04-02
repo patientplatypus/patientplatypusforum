@@ -17,6 +17,9 @@ var forumRouter = require('./routes/forum');
 
 var cors = require('cors')
 var mongoose = require('mongoose');
+// var axios = require('axios');
+// var fetch = require('fetch')
+var request = require('request');
 
 var app = express();
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
@@ -74,6 +77,27 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'picFolder')));
+
+app.use((req, res, next)=>{
+  console.log('inside testing captcha (if it exists)')
+  console.log('and value of req.path: ', req.path)
+  if (req.path=='/forum/uploadPost'||req.path=='/admin/confirmPass'){
+    var verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + process.env.recaptchaSecretKey + "&response=" + req.body.captcha;
+    request(verificationUrl,function(error,response,body) {
+      if (error){
+        res.json({recaptcha: 'error'})
+      }
+      body = JSON.parse(body);
+      console.log('value of recaptcha body: ', body)
+      if(body.success !== undefined && !body.success) {
+        return res.json({recaptcha: "Failed captcha verification"});
+      }
+      next()
+    });
+  }else{
+    next();
+  }
+})
 
 app.use('/', indexRouter);
 

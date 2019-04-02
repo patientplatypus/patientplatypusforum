@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import renderIf from 'render-if';
 // import request from 'request';
 import axios from 'axios';
-
+import ReCAPTCHA from "react-google-recaptcha";
 import '../styles/root.css'
 
 class Submit extends Component{
@@ -13,7 +13,8 @@ class Submit extends Component{
     this.state = {
       selectedFile: null, 
       textVal: '', 
-      errorText: ''
+      errorText: '', 
+      captcha: ''
     }
   }
 
@@ -28,13 +29,16 @@ class Submit extends Component{
     const uploadData = new FormData()
     uploadData.append('pic', this.state.selectedFile)
     uploadData.append('boardType', this.props.boardType)
+    uploadData.append('captcha', this.state.captcha)
 
     if(this.state.textVal==''){
       this.setState({errorText: 'Post text cannot be empty!'})
-    }else if(this.state.selectedFile=='null'){
+    }else if(this.state.selectedFile==null){
       this.setState({errorText: 'You must post a picture DAWG'})
     }else if(this.state.selectedFile.size>5000000){
       this.setState({errorText: 'Image size must be less than 5mb!'})
+    }else if(this.state.captcha==''){
+      this.setState({errorText: 'Please confirm you are not a robot!'})
     }else{
       if(this.props.submitType=='post'){
         uploadData.append('post', this.state.textVal)
@@ -107,6 +111,10 @@ class Submit extends Component{
             </div>
           )}
           <input type="file" style={{display: 'none'}}  name="file"  ref={(input)=>this.fileRef = input} onChange={this.handleselectedFile}/>
+          <ReCAPTCHA
+            sitekey={process.env.recaptchaSiteKey}
+            onChange={(e)=>{console.log('value of captcha onchange', e); this.setState({captcha: e})}}
+          />
           <div className='button' style={{marginRight: '5px'}} onClick={()=>{this.fileRef.click();}}>
             CHOOSE PIC
           </div>

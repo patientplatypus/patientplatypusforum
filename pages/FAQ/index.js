@@ -48,6 +48,7 @@ class FAQ extends Component{
       <div className='gridContainer'>
         <Head>
           <title>patientplatypus</title>
+          <script src="https://www.google.com/recaptcha/api.js" async defer></script>
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
           <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
