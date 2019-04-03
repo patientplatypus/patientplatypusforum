@@ -38,8 +38,10 @@ app.use(function(req, res, next) {
 io.sockets.on('connection', function (socket) {
   socket.emit("connection established", "connection established")
   socket.on('addFeed', (item)=>{
-    console.log('inside addFeed and value of item: ', item)
-    io.sockets.emit('feedItem', item)
+    if(item.length<=200){
+      console.log('inside addFeed and value of item: ', item)
+      io.sockets.emit('feedItem', item)
+    }
   })
   socket.on('disconnect', function() {
     console.log("disconnect: ", socket.id);
@@ -81,7 +83,7 @@ app.use(express.static(path.join(__dirname, 'picFolder')));
 app.use((req, res, next)=>{
   console.log('inside testing captcha (if it exists)')
   console.log('and value of req.path: ', req.path)
-  if (req.path=='/forum/uploadPost'||req.path=='/admin/confirmPass'){
+  if (req.path=='/forum/uploadPost'||req.path=='/admin/confirmPass'||req.path=='/contact'){
     var verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + process.env.recaptchaSecretKey + "&response=" + req.body.captcha;
     request(verificationUrl,function(error,response,body) {
       if (error){
