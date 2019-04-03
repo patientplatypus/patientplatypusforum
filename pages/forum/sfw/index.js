@@ -328,15 +328,19 @@ class Home extends Component{
           </div>
         </div>
         <div className='houndstooth rightContainer checkOrange'>
-          <Welcome/>
-          <NavMenu/>
-          <Chat/>
-          <div style={{height: '100%', width: '100%', position: "absolute", overflow: 'hidden'}}>
-            <div className='establishedText' style={{verticalAlign: 'bottom', fontSize: '4vw', marginLeft: '2vw', color: 'rgb(47, 29, 10)', opacity: 0.8}}>
-              ESTABLISHED
-            </div>
-            <div className='establishedNumber' style={{verticalAlign: 'bottom',   fontSize: '4vw', color: 'rgb(47, 100, 10)', opacity: 0.9, marginTop: 'calc(-2vw - 20px)', float: 'right'}}>
-              1986
+          <div style={{height: '100%', width: '100%', position: "absolute", overflow: 'hidden', top: 0, left: 0, zIndex: 2}}>
+            <Welcome/>
+            <NavMenu/>
+            <Chat/>
+          </div>
+          <div style={{height: '100%', width: '100%', position: "absolute", overflow: 'hidden', top: 0, left: 0, zIndex: 1}}>
+            <div style={{position: 'relative', height: '100%', width: '100%'}}>
+              <div className='establishedText' style={{position: 'absolute', bottom: '4vh', fontSize: '4vw', left: '2vw', color: 'rgb(47, 29, 10)', opacity: 0.8}}>
+                ESTABLISHED
+              </div>
+              <div className='establishedNumber' style={{position: 'absolute', bottom: '1vh', right: 0, fontSize: '4vw', color: 'rgb(47, 100, 10)', opacity: 0.9, marginTop: 'calc(-2vw - 20px)'}}>
+                1986
+              </div>
             </div>
           </div>
         </div>
