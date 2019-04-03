@@ -30,11 +30,13 @@ class Reply extends Component{
   state = {
     postData: this.props.postData,
     postID: this.props.postID, 
-    flagWarning: []
+    flagWarning: [],
+    componentMounted: false
   }
 
   componentDidMount(){
     console.log('inside componentDidMount and value of postData: ', this.state.postData)
+    this.setState({componentMounted: true})
   }
 
   reloadPage = () => {
@@ -149,6 +151,8 @@ class Reply extends Component{
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
           <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=Emblema+One" rel="stylesheet"/>
+          <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -157,11 +161,13 @@ class Reply extends Component{
               Reply
             </div>
           </div>
-          <Submit 
-          reloadPage={()=>this.reloadPage()}
-          submitType={'comment'}
-          postID={this.props.postID}
-          ></Submit>
+          {renderIf(this.state.componentMounted)(
+            <Submit 
+            reloadPage={()=>this.reloadPage()}
+            submitType={'comment'}
+            postID={this.props.postID}
+            ></Submit>
+          )}
           <div className='card' style={{marginBottom: '5px'}}>
             <div style={{display: 'inline-block', marginRight: '5px'}}>
               {this.picHandler({post: this.state.postData.post._id, fileName: this.state.postData.post.fileName, type: this.state.postData.post.type}, 'post')}
@@ -248,6 +254,14 @@ class Reply extends Component{
           <Welcome/>
           <NavMenu/>
           <Chat/>
+          <div style={{height: '100%', width: '100%', position: "absolute", overflow: 'hidden'}}>
+            <div className='establishedText' style={{verticalAlign: 'bottom', fontSize: '4vw', marginLeft: '2vw', color: 'rgb(47, 29, 10)', opacity: 0.8}}>
+              ESTABLISHED
+            </div>
+            <div className='establishedNumber' style={{verticalAlign: 'bottom',   fontSize: '4vw', color: 'rgb(47, 100, 10)', opacity: 0.9, marginTop: 'calc(-2vw - 20px)', float: 'right'}}>
+              1986
+            </div>
+          </div>
         </div>
         <div className='leftContainer'>
           <div style={{width: '15vw', marginLeft: '2.5vw'}}>

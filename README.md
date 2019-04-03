@@ -6,7 +6,7 @@
 - no image if image not found (DONE)
 - backend test on post for no comment/filesize 
 - all devops
-- google recaptcha (for EVERYTHING)
+- google recaptcha (for EVERYTHING) (DONE, feed has char count on front/back instead - do same for chat?)
 - buy DNS and server
 - set up a contact form page (to email me) (DONE)
 - ask a platypus page?

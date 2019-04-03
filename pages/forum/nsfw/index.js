@@ -265,6 +265,8 @@ class Home extends Component{
               console.log('loaded() triggered.')
             }
           </script>
+          <link href="https://fonts.googleapis.com/css?family=Emblema+One" rel="stylesheet"/>
+          <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
           {/* <script src="https://www.google.com/recaptcha/api.js"></script> */}
           {/* <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer>
           </script>
@@ -354,6 +356,14 @@ class Home extends Component{
           <Welcome/>
           <NavMenu/>
           <Chat/>
+          <div style={{height: '100%', width: '100%', position: "absolute", overflow: 'hidden'}}>
+            <div className='establishedText' style={{verticalAlign: 'bottom', fontSize: '4vw', marginLeft: '2vw', color: 'rgb(47, 29, 10)', opacity: 0.8}}>
+              ESTABLISHED
+            </div>
+            <div className='establishedNumber' style={{verticalAlign: 'bottom',   fontSize: '4vw', color: 'rgb(47, 100, 10)', opacity: 0.9, marginTop: 'calc(-2vw - 20px)', float: 'right'}}>
+              1986
+            </div>
+          </div>
         </div>
         <div className='leftContainer'>
           <div style={{width: '15vw', marginLeft: '2.5vw'}}>

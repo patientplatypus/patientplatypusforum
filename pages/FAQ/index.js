@@ -14,11 +14,14 @@ import NavMenu from '../../components/NavMenu'
 import Chat from '../../components/Chat'
 import Welcome from '../../components/Welcome';
 
+import ReCAPTCHA from "react-google-recaptcha";
+
 class FAQ extends Component{
   state = {
     componentMounted: false,
     textVal: '', 
-    notification: ''
+    notification: '', 
+    captcha: ''
   }
   componentDidMount(){
     this.setState({componentMounted: true})
@@ -26,21 +29,24 @@ class FAQ extends Component{
 
   handleSubmit = () => {
     console.log('inside handlesubmit')
-    this.setState({notification: 'sending...'}, ()=>{
-      axios.post('http://localhost:5000/contact', {emailText: this.state.textVal})
-      .then(response=>{
-        console.log('value of response.data: ', response.data)
-        if(response.data.status=='success'){
-          this.setState({textVal: '', notification: 'Email Sent!'})
-        }else if(response.data.status=='error'){
+    if(this.state.captcha!=''){
+      this.setState({notification: 'sending...'}, ()=>{
+        axios.post('http://localhost:5000/contact', {emailText: this.state.textVal, captcha: this.state.captcha})
+        .then(response=>{
+          console.log('value of response.data: ', response.data)
+          if(response.data.status=='success'){
+            this.setState({textVal: '', notification: 'Email Sent!'})
+          }else if(response.data.status=='error'){
+            this.setState({notification:'Error Sending Email, Please Try Later'})
+          }
+        })
+        .catch(error=>{
           this.setState({notification:'Error Sending Email, Please Try Later'})
-        }
+        })
       })
-      .catch(error=>{
-        this.setState({notification:'Error Sending Email, Please Try Later'})
-      })
-    })
-
+    }else{
+      this.setState({notification: 'please provide a successful captcha'})
+    }
   }
 
   render(){
@@ -52,6 +58,8 @@ class FAQ extends Component{
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
           <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=Emblema+One" rel="stylesheet"/>
+          <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -73,6 +81,10 @@ class FAQ extends Component{
               value={this.state.textVal}
               onChange={(e)=>{this.setState({textVal: e.target.value})}}
             ></textarea>
+            <ReCAPTCHA
+              sitekey={process.env.recaptchaSiteKey}
+              onChange={(e)=>{console.log('value of captcha onchange', e); this.setState({captcha: e})}}
+            />
             <div style={{width: '100%', textAlign: 'right'}}>
               {renderIf(this.state.notification!='')(
                 <div style={{display: 'inline-block', color: 'rgb(141, 57, 34)', marginRight: '5px'}}>
@@ -91,6 +103,14 @@ class FAQ extends Component{
           <Welcome/>
           <NavMenu/>
           <Chat/>
+          <div style={{height: '100%', width: '100%', position: "absolute", overflow: 'hidden'}}>
+            <div className='establishedText' style={{verticalAlign: 'bottom', fontSize: '4vw', marginLeft: '2vw', color: 'rgb(47, 29, 10)', opacity: 0.8}}>
+              ESTABLISHED
+            </div>
+            <div className='establishedNumber' style={{verticalAlign: 'bottom',   fontSize: '4vw', color: 'rgb(47, 100, 10)', opacity: 0.9, marginTop: 'calc(-2vw - 20px)', float: 'right'}}>
+              1986
+            </div>
+          </div>
         </div>
         <div className='leftContainer'>
           <div style={{width: '15vw', marginLeft: '2.5vw'}}>

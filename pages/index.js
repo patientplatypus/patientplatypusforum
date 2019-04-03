@@ -286,15 +286,17 @@ class FeedPage extends Component{
           </div>
         </div>
         
-        <div className='houndstooth rightContainer checkOrange' style={{overflow: 'hidden'}}>
+        <div className='houndstooth rightContainer checkOrange'>
           <Welcome/>
           <NavMenu/>
           <Chat/>
-          <div className='establishedText' style={{position: 'absolute', right: '-10vw', bottom: '5vh', fontSize: '4vw', color: 'rgb(47, 29, 10)', opacity: 0.8}}>
-            ESTABLISHED
-          </div>
-          <div className='establishedNumber' style={{position: 'absolute', right: '0vw', bottom: 0, fontSize: '4vw', color: 'rgb(47, 100, 10)', opacity: 0.9}}>
-            1986
+          <div style={{height: '100%', width: '100%', position: "absolute", overflow: 'hidden'}}>
+            <div className='establishedText' style={{verticalAlign: 'bottom', fontSize: '4vw', marginLeft: '2vw', color: 'rgb(47, 29, 10)', opacity: 0.8}}>
+              ESTABLISHED
+            </div>
+            <div className='establishedNumber' style={{verticalAlign: 'bottom',   fontSize: '4vw', color: 'rgb(47, 100, 10)', opacity: 0.9, marginTop: 'calc(-2vw - 20px)', float: 'right'}}>
+              1986
+            </div>
           </div>
         </div>
         <div className='leftContainer'>

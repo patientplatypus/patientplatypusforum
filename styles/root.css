@@ -185,7 +185,7 @@ textarea{
 .rightContainer{
   grid-area: rightContainer;
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
   /* margin-top: 2.5vh */
 }
 
