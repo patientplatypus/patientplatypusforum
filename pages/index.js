@@ -286,7 +286,7 @@ class FeedPage extends Component{
           </div>
         </div>
         
-        <div className='houndstooth rightContainer checkOrange'>
+        <div className='houndstooth rightContainer checkOrange' style={{overflow: 'hidden'}}>
           <Welcome/>
           <NavMenu/>
           <Chat/>
