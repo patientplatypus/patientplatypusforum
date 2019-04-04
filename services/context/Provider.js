@@ -9,7 +9,9 @@ class Provider extends Component {
     feedArr: '~FEED ʕっ˘ڡ˘ςʔ', 
     chatArr: [],
     chatName: 'anonyMouse', 
-    dummy: Date.now()
+    dummy: Date.now(), 
+    stations:[{url:""}],
+    play: false
   }
   socket = null
 
@@ -59,6 +61,14 @@ class Provider extends Component {
     })
     .catch(error=>{
       console.log('there was an error in getting your ip: ', error)
+    })
+    axios.get('http://www.radio-browser.info/webservice/json/stations/topclick/10')
+    .then(response=>{
+      console.log('response from radio-browser: ', response)
+      this.setState({stations: response.data})
+    })
+    .catch(error=>{
+      console.log('there was an errr from radio-browswer: ', error)
     })
   }
 

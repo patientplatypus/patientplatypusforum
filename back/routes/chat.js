@@ -9,6 +9,7 @@ var names = require('../utilities/names')
 var axios = require('axios');
 var logos = require('../utilities/logos')
 
+//fix this to work with routed ip in production!
 router.post('/getChatName', (req, res, next)=>{
   console.log('inside /getChatName')
   console.log('and value of ip: ', req.body.ip)

@@ -1,20 +1,58 @@
 import React, { Component } from 'react';
 import renderIf from 'render-if'
 import Ticker from 'react-ticker'
+import axios from 'axios';
+
+import {MainContext} from '../services';
 
 import '../styles/root.css'
 
-class Radio extends Component{
+class RadioContext extends Component{
   state={
-    stationName: "whattimeisiet", 
-    componentMounted: false
+    stationName: "HELLO THIS IS RADIO", 
+    componentMounted: false, 
+    channelNum: 0, 
   }
+
+  vidRef = React.createRef();
+
   componentDidMount(){
+    console.log('97934792837423947239847 value of this.props.context.state: ', this.props.context.state)
+    console.log('97934792837423947239847 value of this.state.channelNum: ', this.state.channelNum)
     this.setState({componentMounted: true})
   }
+
+  handleChangeChannel(type){
+    console.log('97934792837423947239847 inside handleChangeChannel and type: ', type)
+    if(type=='next'){
+      var newChannelNum = Math.abs((this.state.channelNum+1)%10)
+      if (newChannelNum < 0){
+        newChannelNum = 10 + newChannelNum
+      }
+      this.setState({channelNum: newChannelNum, stationName: this.props.context.state.stations[newChannelNum]['name']}, ()=>{
+        console.log('97934792837423947239847 value of this.state.channelNum: ', this.state.channelNum)
+        this.vidRef.play();
+      })
+    }else if(type=='prev'){
+      var newChannelNum = (this.state.channelNum-1)%10
+      if (newChannelNum < 0){
+        newChannelNum = 10 + newChannelNum
+      }
+      console.log('97934792837423947239847 value of newChannelNum: ', newChannelNum)
+      console.log('97934792837423947239847 value of this.props.context.state.stations[newChannelNum]', this.props.context.state.stations[newChannelNum])
+      this.setState({channelNum: newChannelNum, stationName: this.props.context.state.stations[newChannelNum]['name']}, ()=>{
+        console.log('97934792837423947239847 value of this.state.channelNum: ', this.state.channelNum)
+        this.vidRef.play();
+      })
+    }
+  }
+
   render(){
     return(
       <div className='radioBackground' style={{minHeight: '10vh', width: '90%', float: 'left', color: 'rgb(231, 146, 8)', borderTopRightRadius: '5px', borderBottomRightRadius: '5px', marginLeft: '-2px'}}>
+        {renderIf(this.props.context.state.play && this.state.componentMounted)(
+          <video ref={(input)=>this.vidRef = input} height={0} width={0} src={`${this.props.context.state.stations[this.state.channelNum]['url']}`}/>
+        )}
         <div style={{fontSize: '1.5vh', marginLeft: '1vw', width: '1vw', marginRight: '1vw', display: 'inline-block', height: '100%', float: 'left'}}>
           <div className='flexContainerColumn' style={{textAlign: 'center'}}>
             <div className='radioHeader' style={{flex: 1}}>
@@ -59,7 +97,10 @@ class Radio extends Component{
                   VOL.
                   </div>
                   <div style={{marginTop: '-5px', fontSize: '1vw'}}>
-                    <input type="range" min="1" max="100" id="myRange" style={{display: 'inline-block', width: '100%'}}></input> 
+                    <input type="range" min="1" max="100" id="myRange" style={{display: 'inline-block', width: '100%'}} onChange={(e=>{
+                      this.vidRef.volume = e.target.value/100
+                    })}
+                    ></input> 
                   </div>
                 </div>
               </div>
@@ -68,19 +109,47 @@ class Radio extends Component{
         </div>
         <div style={{display: 'inline-block', width: '25%', height: '10vh', position: 'relative', float: 'left', marginLeft: '0.25vw'}}>
           <div className='flexContainerColumn' style={{height: 'calc(100% - 4px)' ,width: 'calc(100% - 4px)', marginTop: '4px', marginLeft: '2px', marginRight: '2px', maxHeight: '10vh'}}>
-            <div style={{flex: 1, background: 'rgba(100,100,100,1)', border: '1px silver solid', borderRadius:'5px'}}>
-              <div style={{width: '100%', textAlign: 'center', paddingTop: '0.25vw', fontSize: '1.5vw'}}>
-                ▶
+            {renderIf(!this.props.context.state.play)(
+              <div style={{flex: 1, background: 'rgba(100,100,100,1)', border: '1px silver solid', borderRadius:'5px'}}
+              onClick={()=>{
+                this.props.context.setState('play', true)
+                console.log('value of stationName: ', this.props.context.state.stations[this.state.channelNum]['name'])
+                this.setState({stationName: this.props.context.state.stations[this.state.channelNum]['name']}, ()=>{
+                  this.vidRef.play();
+                  this.vidRef.volume = 0.5;
+                })
+              }}
+              >
+                <div style={{width: '100%', textAlign: 'center', paddingTop: '0.25vw', fontSize: '1.5vw'}}>
+                  ▶
+                </div>
               </div>
-            </div>
+            )}
+            {renderIf(this.props.context.state.play)(
+              <div style={{flex: 1, background: 'rgba(100,100,100,1)', border: '1px silver solid', borderRadius:'5px'}}
+              onClick={()=>{
+                this.vidRef.pause()
+                this.props.context.setState('play', false)
+                this.setState({play: false, stationName: 'Radio Stopped'})
+              }}
+              >
+                <div style={{width: '100%', textAlign: 'center', paddingTop: '0.25vw', fontSize: '1.5vw'}}>
+                  ■
+                </div>
+              </div>
+            )}
             <div style={{flex: 1}}>
               <div className='flexContainerRow radioInfo' style={{height: '100%', width: '100%'}}>
                 <div style={{flex: 1}}/>
-                <div style={{flex: 3, background: 'rgba(100,100,100,1)', fontSize: '0.75vw', alignSelf:'center', textAlign: 'center', paddingBottom: '0.1rem',  border: '1px silver solid', paddingLeft: '2px',paddingRight: '2px'}}>
+                <div style={{flex: 3, background: 'rgba(100,100,100,1)', fontSize: '0.75vw', alignSelf:'center', textAlign: 'center', paddingBottom: '0.1rem',  border: '1px silver solid', paddingLeft: '2px',paddingRight: '2px'}}
+                onClick={()=>{this.handleChangeChannel('prev')}}
+                >
                   Prev
                 </div>
                 <div style={{flex: 1}}/>
-                <div style={{flex: 3,  background: 'rgba(100,100,100,1)', fontSize: '0.75vw', alignSelf:'center', textAlign: 'center', paddingBottom: '0.1rem', border: '1px silver solid', paddingLeft: '2px',paddingRight: '2px'}}>
+                <div style={{flex: 3,  background: 'rgba(100,100,100,1)', fontSize: '0.75vw', alignSelf:'center', textAlign: 'center', paddingBottom: '0.1rem', border: '1px silver solid', paddingLeft: '2px',paddingRight: '2px'}}
+                onClick={()=>{this.handleChangeChannel('next')}}
+                >
                   Next
                 </div>
                 <div style={{flex: 1}}/>
@@ -90,6 +159,22 @@ class Radio extends Component{
         </div>
         <div style={{clear: 'both'}}/>
       </div>
+    )
+  }
+}
+
+class Radio extends Component{
+  render(){
+    return(
+      <MainContext.Consumer>
+        {context => {
+          return(
+            <div>
+              <RadioContext context={context}/>
+            </div>
+          )
+        }}
+      </MainContext.Consumer>
     )
   }
 }
