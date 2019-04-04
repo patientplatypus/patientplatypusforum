@@ -19,7 +19,7 @@ import {getCookie} from '../services';
 import Clock from '../components/Clock';
 import Welcome from '../components/Welcome';
 
-
+import Radio from '../components/Radio'
 
 const MapboxAttribution = () => (
   <span className='map-attribution'>
@@ -254,6 +254,8 @@ class FeedPage extends Component{
           <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Emblema+One" rel="stylesheet"/>
           <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
+          <link href="https://fonts.googleapis.com/css?family=Faster+One" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=Quantico" rel="stylesheet"/> 
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -308,6 +310,9 @@ class FeedPage extends Component{
             <div className='titleFont' style={{fontSize: '1.7vw'}}>
               Patient Platypus
             </div>
+          </div>
+          <div style={{marginTop: '2vh'}}>
+            <Radio/>
           </div>
         </div>
       </div>
