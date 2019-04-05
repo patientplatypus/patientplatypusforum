@@ -9,7 +9,7 @@ This is a image based web forum (like 4chan), that also includes chat, a feed, r
 
 # Motivation
 
-I wanted to make a website that was as interactive and fun to use as possible. Lot's of parts of the application are user modfiable driving user engagement. It's my hope that the playful, "comfy", design encourages enjoyment and good will in communication between users.
+I wanted to make a website that was as interactive and fun to use as possible. Lot's of parts of the application require interaction (chat, forum, etc) and it's my hope that this will drive user engagement. The playful, "comfy", design encourages enjoyment and good will in communication between users.
 
 # It's not running why isn't it running?
 
