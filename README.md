@@ -29,7 +29,7 @@ The .env files are not included. A google server (`recaptchaSecretKey`) and a cl
 - front page splash w/SVG (DONE)
 - admin delete blog picture handler (DONE)
 - newspaper (snooze news)
-- radio (iheartradio api)
+- radio (DONE)
 - testing
 - break routes file up into (blog etc) (DONE for now)
 - make utility function folder and deagg multi-use functions in routes (DONE for now)
