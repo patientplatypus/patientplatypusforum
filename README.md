@@ -1,3 +1,19 @@
+#What is this thing?
+
+This is a image based web forum (like 4chan), that also includes chat, a feed, radio, and more! 
+
+#Screen Shot of the Splash Page
+
+![alt text](/static/SplashPageScreenShot.png "Screen Shot of the Splash Page")
+
+
+#Motivation
+
+I wanted to make a website that was as interactive and fun to use as possible. Lot's of parts of the application are user modfiable driving user engagement. It's my hope that the playful, "comfy", design encourages enjoyment and good will in communication between users.
+
+#It's not running why isn't it running?
+
+The .env files are not included. A google server (`recaptchaSecretKey`) and a client (`recaptchaSiteKey`) are need for recaptcha (v2) which are not supplied. Also the server .env file needs an `adminPass` environmental variable for admin login challenge.
 
 #Things to Do: 
 
