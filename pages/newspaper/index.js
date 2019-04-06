@@ -52,12 +52,29 @@ class Newspaper extends Component{
       }
     }
     console.log('value of postData before set:', postData)
-    this.setState({postData: postData})
+    this.setState({postData})
   }
 
   submitEdit(){
-    
-
+    axios.post('http://localhost:5000/newspaper/addHeadline', {
+      editNum: this.state.editNum,
+      editHeadline: this.state.editHeadline,
+      editURL: this.state.editURL
+    })
+    .then(response=>{
+      console.log('value of response: ', response)
+      let postData = response.data.posts;
+      var postDatalength = postData.length;
+      if (postDatalength<10){
+        for(var x = 0; x<10-postDatalength; x++){
+          postData.push({headline: 'Empty', url: 'Empty'})
+        }
+      }
+      this.setState({postData, editNum: 0, editHeadline:  postData[0]!=undefined?postData[0]['headline']:'Empty', editURL: postData[0]!=undefined?postData[0]['url']:'Empty'})
+    })
+    .catch(error=>{
+      console.log('value of error: ', error)
+    })
   }
 
   render(){
@@ -148,7 +165,9 @@ class Newspaper extends Component{
               onChange={(e)=>{this.setState({editURL: e.target.value})}}/>
             </div>
             <div style={{clear: 'both'}}/>
-            <div className='button' style={{display: 'inline-block', float: 'right'}}>
+            <div className='button' style={{display: 'inline-block', float: 'right'}}
+            onClick={()=>{this.submitEdit()}}
+            >
               Submit
             </div>
             <div style={{clear: 'both'}}/>
