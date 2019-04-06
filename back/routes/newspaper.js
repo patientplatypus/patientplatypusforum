@@ -26,19 +26,25 @@ router.post('/addHeadline', (req, res, next)=>{
     console.log('posts.length: ', posts.length)
     console.log('req.body.editNum: ', req.body.editNum)
     if (posts.length>req.body.editNum){
-      model.Newspaper.findOneAndUpdate({_id: posts[req.body.editNum]}, {"$set":{headline: req.body.editHeadline, url: req.body.editURL, created: Date.now()}}, (err, doc)=>{
-        if (err){
-          console.log('there was an error: ', err)
-          res.json({error: err})
-        }
-        model.Newspaper.find({}).sort({created: -1}).exec((err, posts)=>{
+      if((Date.now()-posts[0]['created']-900000)<0){
+        // res.json({error: 'please wait 15 minutes between posts'})
+        // need to send back posts in case two or more users attempt to update at the same time.
+        res.json({posts: posts})
+      }else{
+        model.Newspaper.findOneAndUpdate({_id: posts[req.body.editNum]}, {"$set":{headline: req.body.editHeadline, url: req.body.editURL, created: Date.now()}}, (err, doc)=>{
           if (err){
             console.log('there was an error: ', err)
             res.json({error: err})
           }
-          res.json({posts: posts})
+          model.Newspaper.find({}).sort({created: -1}).exec((err, posts)=>{
+            if (err){
+              console.log('there was an error: ', err)
+              res.json({error: err})
+            }
+            res.json({posts: posts})
+          })
         })
-      })
+      }
     }else if (posts.length<=req.body.editNum){
       var post = {
         headline: req.body.editHeadline,

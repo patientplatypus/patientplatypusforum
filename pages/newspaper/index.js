@@ -14,6 +14,9 @@ import NavMenu from '../../components/NavMenu'
 import Chat from '../../components/Chat'
 import Welcome from '../../components/Welcome';
 
+import Radio from '../../components/Radio'
+import NewsPaper from '../../components/NewsPaper'
+
 class Newspaper extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
@@ -38,7 +41,11 @@ class Newspaper extends Component{
     postData: [],
     editNum: 0,
     editHeadline: this.props.postData[0]!=undefined?this.props.postData[0]['headline']:'Empty', 
-    editURL: this.props.postData[0]!=undefined?this.props.postData[0]['url']:'Empty'
+    editURL: this.props.postData[0]!=undefined?this.props.postData[0]['url']:'Empty', 
+    // notification: ''
+    notification: this.props.postData[0]!=undefined?this.props.postData[0]['created']:'', 
+    timeDif: 0,
+    submitSuccess: false
   }
 
   componentDidMount(){
@@ -53,6 +60,12 @@ class Newspaper extends Component{
     }
     console.log('value of postData before set:', postData)
     this.setState({postData})
+    if(this.state.notification!=''){
+      console.log('inside displayNotification and value of this.state.notification: ', this.state.notification)
+      var notificationDate = new Date(this.state.notification)
+      var timeDif = Date.now() - notificationDate - 900000
+      this.setState({timeDif})
+    }
   }
 
   submitEdit(){
@@ -70,11 +83,20 @@ class Newspaper extends Component{
           postData.push({headline: 'Empty', url: 'Empty'})
         }
       }
-      this.setState({postData, editNum: 0, editHeadline:  postData[0]!=undefined?postData[0]['headline']:'Empty', editURL: postData[0]!=undefined?postData[0]['url']:'Empty'})
+      this.setState({postData, editNum: 0, editHeadline:  postData[0]!=undefined?postData[0]['headline']:'Empty', editURL: postData[0]!=undefined?postData[0]['url']:'Empty', notification: postData[0]!=undefined?postData[0]['created']:'', submitSuccess: true})
     })
     .catch(error=>{
       console.log('value of error: ', error)
     })
+  }
+
+  displayNotification(){
+    console.log('inside displayNotification and value of this.state.notification: ', this.state.notification)
+    var notificationDate = new Date(this.state.notification)
+    var timeDif = Date.now() - notificationDate
+    console.log('value of timeDif: ', timeDif-9000)
+    console.log('value of notificationDate: ', notificationDate)
+    return null;
   }
 
   render(){
@@ -86,8 +108,12 @@ class Newspaper extends Component{
           <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
           <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=Quicksand:700" rel="stylesheet"/>
+          <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Emblema+One" rel="stylesheet"/>
           <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
+          <link href="https://fonts.googleapis.com/css?family=Faster+One" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=Quantico" rel="stylesheet"/> 
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -165,11 +191,23 @@ class Newspaper extends Component{
               onChange={(e)=>{this.setState({editURL: e.target.value})}}/>
             </div>
             <div style={{clear: 'both'}}/>
-            <div className='button' style={{display: 'inline-block', float: 'right'}}
-            onClick={()=>{this.submitEdit()}}
-            >
-              Submit
-            </div>
+            {renderIf(this.state.timeDif>=0)(
+              <div className='button' style={{display: 'inline-block', float: 'right'}}
+              onClick={()=>{this.submitEdit()}}
+              >
+                Submit
+              </div>
+            )}
+            {renderIf(this.state.timeDif<0)(
+              <div style={{display: 'inline-block', float: 'right', color: 'rgb(141, 57, 34)', marginRight: '5px'}}>
+                Newspaper was updated recently. Please wait {Math.round(Math.abs(this.state.timeDif/60000))} minutes to update.
+              </div>
+            )}
+            {renderIf(this.state.submitSuccess)(
+              <div style={{display: 'inline-block', float: 'right', color: 'rgb(141, 57, 34)', marginRight: '5px'}}>
+                News item successfully submitted. Reload page to see community news sidebar update. Thanks!
+              </div>
+            )}
             <div style={{clear: 'both'}}/>
           </div>
         </div>
@@ -196,6 +234,12 @@ class Newspaper extends Component{
             <div className='titleFont' style={{fontSize: '1.7vw'}}>
               Patient Platypus
             </div>
+          </div>
+          <div style={{marginTop: '2vh'}}>
+            <Radio/>
+          </div>
+          <div style={{marginTop: '14vh'}}>
+            <NewsPaper/>
           </div>
         </div>
       </div>

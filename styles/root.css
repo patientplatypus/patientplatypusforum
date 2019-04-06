@@ -159,7 +159,7 @@ textarea{
   overflow-y: auto;
   grid-template-areas:
          "leftContainer mainView rightContainer";
-  grid-template-columns: 20vw  55vw  25vw;
+  grid-template-columns: 20vw  55vw  calc(25vw + 100% - 100vw);
   grid-template-rows: auto;
   background-color: var(--background_main)
 }
@@ -185,7 +185,7 @@ textarea{
 .rightContainer{
   grid-area: rightContainer;
   position: relative;
-  /* overflow: hidden; */
+  overflow-x: hidden;
   /* margin-top: 2.5vh */
 }
 
@@ -257,23 +257,42 @@ textarea{
   background: #71481b;
 }
 
+/* html {
+  margin-left: calc(100vw - 100%);
+  margin-right: 0;
+} */
 
-html, body{
+body{
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+  /* overflow-x: hidden;
+  overflow-y: auto; */
+  height: 100%;
+  background: black;
+  /* background: linear-gradient( 
+    rgb(84, 136, 100, 0.25),
+    rgb(84, 136, 100, 0.25)
+  ),url(/static/homerback.jpg); */
   /* overflow: hidden; */
   /* overflow-anchor: none; */
+  /* background: linear-gradient(
+    rgba(47, 29, 10, 0.4), 
+    rgba(47, 29, 10, 0.5)
+  ),url(/static/cork.jpg);
+  background-repeat: repeat;  */
+  /* background-image: url(/static/homerback.jpg);
+  height: 110vh;
+  background-repeat: repeat; */
 }
 
-/* .mainBoßdy{
+/* .mainBody{
   position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  overflow: auto;
+  overflow-y: overlay;
+  overflow-x: hidden;
 } */
 
 .example-enter {
@@ -453,6 +472,17 @@ html, body{
 
 .radioInfo{
   font-family: 'Quantico', sans-serif;
+}
+
+.newspaperBorder{
+  border-width: 11px;
+  border-style: solid;
+  border-image: 
+    linear-gradient(
+      to bottom, 
+      rgb(49, 95, 12), 
+      rgba(0, 0, 0, 0)
+    ) 1 100%;
 }
 
 /* input[type=range]::-webkit-slider-thumb {
