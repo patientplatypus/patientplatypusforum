@@ -84,7 +84,7 @@ app.use(express.static(path.join(__dirname, 'picFolder')));
 app.use((req, res, next)=>{
   console.log('inside testing captcha (if it exists)')
   console.log('and value of req.path: ', req.path)
-  if (req.path=='/forum/uploadPost'||req.path=='/admin/confirmPass'||req.path=='/contact'){
+  if (req.path=='/forum/uploadPost'||req.path=='/admin/confirmPass'||req.path=='/contact'||req.path=='/newspaper/addHeadline'){
     var verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + process.env.recaptchaSecretKey + "&response=" + req.body.captcha;
     request(verificationUrl,function(error,response,body) {
       if (error){

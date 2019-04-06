@@ -257,6 +257,7 @@ class FeedPage extends Component{
           <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
           <link href="https://fonts.googleapis.com/css?family=Faster+One" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Quantico" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=IM+Fell+English:400i" rel="stylesheet"/> 
         </Head>
         <div className='mainView'>
           <Feed/>

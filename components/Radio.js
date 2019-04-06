@@ -97,7 +97,7 @@ class RadioContext extends Component{
                   VOL.
                   </div>
                   <div style={{marginTop: '-5px', fontSize: '1vw'}}>
-                    <input type="range" min="1" max="100" id="myRange" style={{display: 'inline-block', width: '100%'}} onChange={(e=>{
+                    <input type="range" min="1" max="100" id="myRange" style={{display: 'inline-block', width: '100%', cursor: 'grab'}} onChange={(e=>{
                       this.vidRef.volume = e.target.value/100
                     })}
                     ></input> 
@@ -110,7 +110,7 @@ class RadioContext extends Component{
         <div style={{display: 'inline-block', width: '25%', height: '10vh', position: 'relative', float: 'left', marginLeft: '0.25vw'}}>
           <div className='flexContainerColumn' style={{height: 'calc(100% - 4px)' ,width: 'calc(100% - 4px)', marginTop: '4px', marginLeft: '2px', marginRight: '2px', maxHeight: '10vh'}}>
             {renderIf(!this.props.context.state.play)(
-              <div style={{flex: 1, background: 'rgba(100,100,100,1)', border: '1px silver solid', borderRadius:'5px'}}
+              <div className='radioButtonColors' style={{flex: 1, border: '1px silver solid', borderRadius:'5px'}}
               onClick={()=>{
                 this.props.context.setState('play', true)
                 console.log('value of stationName: ', this.props.context.state.stations[this.state.channelNum]['name'])
@@ -120,20 +120,20 @@ class RadioContext extends Component{
                 })
               }}
               >
-                <div style={{width: '100%', textAlign: 'center', paddingTop: '0.25vw', fontSize: '1.5vw'}}>
+                <div style={{width: '100%', textAlign: 'center', paddingTop: '0.25vw', fontSize: '1.5vw', cursor: 'pointer'}}>
                   ▶
                 </div>
               </div>
             )}
             {renderIf(this.props.context.state.play)(
-              <div style={{flex: 1, background: 'rgba(100,100,100,1)', border: '1px silver solid', borderRadius:'5px'}}
+              <div className='radioButtonColors' style={{flex: 1, border: '1px silver solid', borderRadius:'5px'}}
               onClick={()=>{
                 this.vidRef.pause()
                 this.props.context.setState('play', false)
                 this.setState({play: false, stationName: 'Radio Stopped'})
               }}
               >
-                <div style={{width: '100%', textAlign: 'center', paddingTop: '0.25vw', fontSize: '1.5vw'}}>
+                <div style={{width: '100%', textAlign: 'center', paddingTop: '0.25vw', fontSize: '1.5vw', cursor: 'pointer'}}>
                   ■
                 </div>
               </div>
@@ -141,13 +141,13 @@ class RadioContext extends Component{
             <div style={{flex: 1}}>
               <div className='flexContainerRow radioInfo' style={{height: '100%', width: '100%'}}>
                 <div style={{flex: 1}}/>
-                <div style={{flex: 3, background: 'rgba(100,100,100,1)', fontSize: '0.75vw', alignSelf:'center', textAlign: 'center', paddingBottom: '0.1rem',  border: '1px silver solid', paddingLeft: '2px',paddingRight: '2px'}}
+                <div className='radioButtonColors' style={{flex: 3, fontSize: '0.75vw', alignSelf:'center', textAlign: 'center', paddingBottom: '0.1rem',  border: '1px silver solid', paddingLeft: '2px',paddingRight: '2px', cursor: 'pointer'}}
                 onClick={()=>{this.handleChangeChannel('prev')}}
                 >
                   Prev
                 </div>
                 <div style={{flex: 1}}/>
-                <div style={{flex: 3,  background: 'rgba(100,100,100,1)', fontSize: '0.75vw', alignSelf:'center', textAlign: 'center', paddingBottom: '0.1rem', border: '1px silver solid', paddingLeft: '2px',paddingRight: '2px'}}
+                <div className='radioButtonColors' style={{flex: 3, fontSize: '0.75vw', alignSelf:'center', textAlign: 'center', paddingBottom: '0.1rem', border: '1px silver solid', paddingLeft: '2px',paddingRight: '2px', cursor: 'pointer'}}
                 onClick={()=>{this.handleChangeChannel('next')}}
                 >
                   Next

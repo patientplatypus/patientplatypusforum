@@ -16,6 +16,7 @@ import Welcome from '../../components/Welcome';
 
 import Radio from '../../components/Radio'
 import NewsPaper from '../../components/NewsPaper'
+import ReCAPTCHA from "react-google-recaptcha";
 
 class Newspaper extends Component{
   static async getInitialProps({req, query}){
@@ -40,6 +41,8 @@ class Newspaper extends Component{
     captcha: '', 
     postData: [],
     editNum: 0,
+    captcha: '',
+    captchaOK: true,
     editHeadline: this.props.postData[0]!=undefined?this.props.postData[0]['headline']:'Empty', 
     editURL: this.props.postData[0]!=undefined?this.props.postData[0]['url']:'Empty', 
     // notification: ''
@@ -69,25 +72,32 @@ class Newspaper extends Component{
   }
 
   submitEdit(){
-    axios.post('http://localhost:5000/newspaper/addHeadline', {
-      editNum: this.state.editNum,
-      editHeadline: this.state.editHeadline,
-      editURL: this.state.editURL
-    })
-    .then(response=>{
-      console.log('value of response: ', response)
-      let postData = response.data.posts;
-      var postDatalength = postData.length;
-      if (postDatalength<10){
-        for(var x = 0; x<10-postDatalength; x++){
-          postData.push({headline: 'Empty', url: 'Empty'})
-        }
-      }
-      this.setState({postData, editNum: 0, editHeadline:  postData[0]!=undefined?postData[0]['headline']:'Empty', editURL: postData[0]!=undefined?postData[0]['url']:'Empty', notification: postData[0]!=undefined?postData[0]['created']:'', submitSuccess: true})
-    })
-    .catch(error=>{
-      console.log('value of error: ', error)
-    })
+    if(this.state.captcha==''){
+      this.setState({captchaOK: false})
+    }else{
+      this.setState({captchaOK: true}, ()=>{
+        axios.post('http://localhost:5000/newspaper/addHeadline', {
+          editNum: this.state.editNum,
+          editHeadline: this.state.editHeadline,
+          editURL: this.state.editURL,
+          captcha: this.state.captcha
+        })
+        .then(response=>{
+          console.log('value of response: ', response)
+          let postData = response.data.posts;
+          var postDatalength = postData.length;
+          if (postDatalength<10){
+            for(var x = 0; x<10-postDatalength; x++){
+              postData.push({headline: 'Empty', url: 'Empty'})
+            }
+          }
+          this.setState({postData, editNum: 0, editHeadline:  postData[0]!=undefined?postData[0]['headline']:'Empty', editURL: postData[0]!=undefined?postData[0]['url']:'Empty', notification: postData[0]!=undefined?postData[0]['created']:'', submitSuccess: true})
+        })
+        .catch(error=>{
+          console.log('value of error: ', error)
+        })
+      })
+    }
   }
 
   displayNotification(){
@@ -114,6 +124,7 @@ class Newspaper extends Component{
           <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
           <link href="https://fonts.googleapis.com/css?family=Faster+One" rel="stylesheet"/> 
           <link href="https://fonts.googleapis.com/css?family=Quantico" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=IM+Fell+English:400i" rel="stylesheet"/> 
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -192,19 +203,34 @@ class Newspaper extends Component{
             </div>
             <div style={{clear: 'both'}}/>
             {renderIf(this.state.timeDif>=0)(
-              <div className='button' style={{display: 'inline-block', float: 'right'}}
-              onClick={()=>{this.submitEdit()}}
-              >
-                Submit
+              <div>
+                {renderIf(this.state.componentMounted)(
+                  <div style={{paddingTop: '10px', marginLeft: '5px'}}>
+                    <ReCAPTCHA
+                      sitekey={process.env.recaptchaSiteKey}
+                      onChange={(e)=>{console.log('value of captcha onchange', e); this.setState({captcha: e})}}
+                    />
+                  </div>
+                )}
+                <div className='button' style={{display: 'inline-block', float: 'right'}}
+                onClick={()=>{this.submitEdit()}}
+                >
+                  Submit
+                </div>
+              </div>
+            )}
+            {renderIf(!this.state.captchaOK)(
+              <div style={{display: 'inline-block', float: 'right', color: 'rgb(141, 57, 34)', marginRight: '5px', marginTop: '5px'}}>
+                Please check that you are not a robot.
               </div>
             )}
             {renderIf(this.state.timeDif<0)(
-              <div style={{display: 'inline-block', float: 'right', color: 'rgb(141, 57, 34)', marginRight: '5px'}}>
+              <div style={{display: 'inline-block', float: 'right', color: 'rgb(141, 57, 34)', marginRight: '5px', marginTop: '5px'}}>
                 Newspaper was updated recently. Please wait {Math.round(Math.abs(this.state.timeDif/60000))} minutes to update.
               </div>
             )}
             {renderIf(this.state.submitSuccess)(
-              <div style={{display: 'inline-block', float: 'right', color: 'rgb(141, 57, 34)', marginRight: '5px'}}>
+              <div style={{display: 'inline-block', float: 'right', color: 'rgb(141, 57, 34)', marginRight: '5px', marginTop: '5px'}}>
                 News item successfully submitted. Reload page to see community news sidebar update. Thanks!
               </div>
             )}

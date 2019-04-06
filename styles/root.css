@@ -308,6 +308,11 @@ body{
 	-webkit-text-fill-color: transparent;
 }
 
+.communityNews{
+  font-family: 'IM Fell English', serif;
+  /* font-style: italic, black; */
+}
+
 .example-enter.example-enter-active {
   opacity: 1;
   transition: opacity 500ms ease-in;
@@ -483,6 +488,16 @@ body{
       rgb(49, 95, 12), 
       rgba(0, 0, 0, 0)
     ) 1 100%;
+}
+
+.radioButtonColors{
+  background: transparent;
+  color: rgb(231, 146, 8);
+}
+
+.radioButtonColors:hover{
+  color: black;
+  background: rgb(231, 146, 8);
 }
 
 /* input[type=range]::-webkit-slider-thumb {
