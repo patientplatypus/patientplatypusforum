@@ -18,8 +18,14 @@ class RadioContext extends Component{
 
   componentDidMount(){
     console.log('97934792837423947239847 value of this.props.context.state: ', this.props.context.state)
+    if(this.props.context.state.play==true){
+      setTimeout(() => {
+        this.vidRef.play();
+        this.vidRef.volume = 0.5; 
+      }, 0);
+    }
     console.log('97934792837423947239847 value of this.state.channelNum: ', this.state.channelNum)
-    this.setState({componentMounted: true})
+    this.setState({componentMounted: true, channelNum: this.props.context.state.channelNum, stationName: this.props.context.state.stationName})
   }
 
   handleChangeChannel(type){
@@ -30,6 +36,8 @@ class RadioContext extends Component{
         newChannelNum = 10 + newChannelNum
       }
       this.setState({channelNum: newChannelNum, stationName: this.props.context.state.stations[newChannelNum]['name']}, ()=>{
+        this.props.context.setState('channelNum', this.state.channelNum)
+        this.props.context.setState('stationName', this.state.stationName)
         console.log('97934792837423947239847 value of this.state.channelNum: ', this.state.channelNum)
         this.vidRef.play();
       })
@@ -41,6 +49,8 @@ class RadioContext extends Component{
       console.log('97934792837423947239847 value of newChannelNum: ', newChannelNum)
       console.log('97934792837423947239847 value of this.props.context.state.stations[newChannelNum]', this.props.context.state.stations[newChannelNum])
       this.setState({channelNum: newChannelNum, stationName: this.props.context.state.stations[newChannelNum]['name']}, ()=>{
+        this.props.context.setState('channelNum', this.state.channelNum)
+        this.props.context.setState('stationName', this.state.stationName)
         console.log('97934792837423947239847 value of this.state.channelNum: ', this.state.channelNum)
         this.vidRef.play();
       })
@@ -115,6 +125,7 @@ class RadioContext extends Component{
                 this.props.context.setState('play', true)
                 console.log('value of stationName: ', this.props.context.state.stations[this.state.channelNum]['name'])
                 this.setState({stationName: this.props.context.state.stations[this.state.channelNum]['name']}, ()=>{
+                  this.props.context.setState('stationName', this.state.stationName)
                   this.vidRef.play();
                   this.vidRef.volume = 0.5;
                 })
@@ -130,7 +141,9 @@ class RadioContext extends Component{
               onClick={()=>{
                 this.vidRef.pause()
                 this.props.context.setState('play', false)
-                this.setState({play: false, stationName: 'Radio Stopped'})
+                this.setState({play: false, stationName: 'Radio Stopped'}, ()=>{
+                  this.props.context.setState('stationName', this.state.stationName)
+                })
               }}
               >
                 <div style={{width: '100%', textAlign: 'center', paddingTop: '0.25vw', fontSize: '1.5vw', cursor: 'pointer'}}>

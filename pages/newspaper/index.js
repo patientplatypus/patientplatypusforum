@@ -114,17 +114,7 @@ class Newspaper extends Component{
       <div className='gridContainer'>
         <Head>
           <title>patientplatypus</title>
-          <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-          <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
-          <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
-          <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
-          <link href="https://fonts.googleapis.com/css?family=Quicksand:700" rel="stylesheet"/>
-          <link href="https://fonts.googleapis.com/css?family=Pacifico" rel="stylesheet"/> 
-          <link href="https://fonts.googleapis.com/css?family=Emblema+One" rel="stylesheet"/>
-          <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
-          <link href="https://fonts.googleapis.com/css?family=Faster+One" rel="stylesheet"/> 
-          <link href="https://fonts.googleapis.com/css?family=Quantico" rel="stylesheet"/> 
-          <link href="https://fonts.googleapis.com/css?family=IM+Fell+English:400i" rel="stylesheet"/> 
+          <link href="https://fonts.googleapis.com/css?family=Emblema+One|Faster+One|Germania+One|IM+Fell+English|Pacifico|Plaster|Quantico|Quicksand|Share+Tech+Mono|Shrikhand" rel="stylesheet"/>
         </Head>
         <div className='mainView'>
           <Feed/>

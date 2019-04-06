@@ -13,6 +13,10 @@ import axios from 'axios'
 import NavMenu from '../../components/NavMenu'
 import Chat from '../../components/Chat'
 
+
+import Radio from '../../components/Radio'
+import NewsPaper from '../../components/NewsPaper'
+
 import Welcome from '../../components/Welcome';
 import ReCAPTCHA from "react-google-recaptcha";
 
@@ -235,11 +239,7 @@ class Admin extends Component{
         <Head>
           <title>patientplatypus</title>
           <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-          <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
-          <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
-          <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
-          <link href="https://fonts.googleapis.com/css?family=Emblema+One" rel="stylesheet"/>
-          <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
+          <link href="https://fonts.googleapis.com/css?family=Emblema+One|Faster+One|Germania+One|IM+Fell+English|Pacifico|Plaster|Quantico|Quicksand|Share+Tech+Mono|Shrikhand" rel="stylesheet"/>
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -688,6 +688,12 @@ class Admin extends Component{
             <div className='titleFont' style={{fontSize: '1.7vw'}}>
               Patient Platypus
             </div>
+          </div>
+          <div style={{marginTop: '2vh'}}>
+            <Radio/>
+          </div>
+          <div style={{marginTop: '14vh'}}>
+            <NewsPaper/>
           </div>
         </div>
       </div>

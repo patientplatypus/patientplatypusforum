@@ -18,6 +18,10 @@ import { runInThisContext } from 'vm';
 import { networkInterfaces } from 'os';
 import Welcome from '../../../components/Welcome';
 
+
+import Radio from '../../../components/Radio'
+import NewsPaper from '../../../components/NewsPaper'
+
 class Home extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
@@ -257,26 +261,7 @@ class Home extends Component{
       <div className='gridContainer'>
         <Head>
           <title>patientplatypus</title>
-          <link href="https://fonts.googleapis.com/css?family=Share+Tech+Mono" rel="stylesheet"/> 
-          <link href="https://fonts.googleapis.com/css?family=Shrikhand" rel="stylesheet"></link>
-          <link href="https://fonts.googleapis.com/css?family=Germania+One" rel="stylesheet"/> 
-          <script type='text/javascript'>
-            window.onloadCallback = function() {
-              console.log('loaded() triggered.')
-            }
-          </script>
-          <link href="https://fonts.googleapis.com/css?family=Emblema+One" rel="stylesheet"/>
-          <link href="https://fonts.googleapis.com/css?family=Plaster" rel="stylesheet"/>  
-          {/* <script src="https://www.google.com/recaptcha/api.js"></script> */}
-          {/* <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer>
-          </script>
-          <script type="text/javascript">
-            var _captchaTries = 0;
-            var recaptchaOnload = function(){
-              console.log('hello there onload')
-            }
-            console.log('hello there sailor')
-          </script> */}
+          <link href="https://fonts.googleapis.com/css?family=Emblema+One|Faster+One|Germania+One|IM+Fell+English|Pacifico|Plaster|Quantico|Quicksand|Share+Tech+Mono|Shrikhand" rel="stylesheet"/>
         </Head>
         <div className='mainView'>
           <Feed/>
@@ -375,6 +360,12 @@ class Home extends Component{
             <div className='titleFont' style={{fontSize: '1.7vw'}}>
               Patient Platypus
             </div>
+          </div>
+          <div style={{marginTop: '2vh'}}>
+            <Radio/>
+          </div>
+          <div style={{marginTop: '14vh'}}>
+            <NewsPaper/>
           </div>
         </div>
       </div>

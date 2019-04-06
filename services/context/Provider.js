@@ -11,7 +11,9 @@ class Provider extends Component {
     chatName: 'anonyMouse', 
     dummy: Date.now(), 
     stations:[{url:""}],
-    play: false
+    play: false, 
+    channelNum: 0, 
+    stationName: 'HELLO THIS IS RADIO'
   }
   socket = null
 
