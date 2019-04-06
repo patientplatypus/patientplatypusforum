@@ -14,6 +14,7 @@ var adminRouter = require('./routes/admin');
 var blogRouter = require('./routes/blog');
 var chatRouter = require('./routes/chat');
 var forumRouter = require('./routes/forum');
+var newsPaperRouter = require('./routes/newspaper');
 
 var cors = require('cors')
 var mongoose = require('mongoose');
@@ -107,6 +108,7 @@ app.use('/admin', adminRouter);
 app.use('/blog', blogRouter);
 app.use('/chat', chatRouter);
 app.use('/forum', forumRouter);
+app.use('/newspaper', newsPaperRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

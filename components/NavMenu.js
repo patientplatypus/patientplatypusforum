@@ -35,6 +35,9 @@ class NavMenu extends Component{
                 </div>
                 <div style={{display: 'block'}}>
                   <div style={{display: 'inline-block', marginRight: '5px'}}>
+                    <a href=''>Newspaper</a>
+                  </div>
+                  <div style={{display: 'inline-block', marginRight: '5px'}}>
                     <a href=''>Blog</a>
                   </div>
                   <div style={{display: 'inline-block'}}>
@@ -65,6 +68,9 @@ class NavMenu extends Component{
                   </div>
                 </div>
                 <div style={{display: 'block'}}>
+                <div style={{display: 'inline-block', marginRight: '5px'}}>
+                    <Link href='/newspaper'><a href=''>Newspaper</a></Link>
+                  </div>
                   <div style={{display: 'inline-block', marginRight: '5px'}}>
                     <Link href='/blog'><a href=''>Blog</a></Link>
                   </div>

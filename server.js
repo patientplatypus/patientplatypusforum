@@ -68,6 +68,10 @@ app.prepare().then(() => {
     return app.render(req, res, '/admin', req.query)
   })
 
+  server.get('/newspaper', (req, res) => {
+    return app.render(req, res, '/newspaper', req.query)
+  })
+
 
   // server.get('/archive', (req, res) => {
   //   return app.render(req, res, '/archive', req.query)

@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var CommentSchema = new Schema({
   body: {type: String, required: true, max: 2000},
-  created: { type: Date, default: Date.now },
+  created: { type: Date, default: Date.now()},
   flags: {type: Number, default: 0},
   lastFlag: {type: Date, default: Date.now()},
   imageBanned: {type: Boolean, default: false},
@@ -19,7 +19,7 @@ var CommentSchema = new Schema({
 
 var PostSchema = new Schema({
   body: {type: String, required: true, max: 2000},
-  created: { type: Date, default: Date.now },
+  created: { type: Date, default: Date.now()},
   flags: {type: Number, default: 0},
   lastFlag: {type: Date, default: Date.now()},
   fileName: {type: String, default: ""},
@@ -61,10 +61,23 @@ var PinSchema = new Schema({
   }  
 })
 
+var NewspaperSchema = new Schema({
+  headline: {type: String},
+  url: {type: String},
+  created: { type: Date, default: Date.now()}
+}, {
+  writeConcern: {
+    w: 0,
+    j: false,
+    wtimeout: 200
+  }  
+})
+
 
 var Post =  mongoose.model('Post', PostSchema);
 var Comment = mongoose.model('Comment', CommentSchema)
 var Blog = mongoose.model('Blog', BlogSchema)
 var Pin = mongoose.model('Pin', PinSchema)
+var Newspaper = mongoose.model('Newspaper', NewspaperSchema)
 
-module.exports = {Post, Comment, Blog, Pin} 
+module.exports = {Post, Comment, Blog, Pin, Newspaper} 

@@ -20,6 +20,7 @@ import Clock from '../components/Clock';
 import Welcome from '../components/Welcome';
 
 import Radio from '../components/Radio'
+import NewsPaper from '../components/NewsPaper'
 
 const MapboxAttribution = () => (
   <span className='map-attribution'>
@@ -313,6 +314,9 @@ class FeedPage extends Component{
           </div>
           <div style={{marginTop: '2vh'}}>
             <Radio/>
+          </div>
+          <div style={{marginTop: '14vh'}}>
+            <NewsPaper/>
           </div>
         </div>
       </div>
