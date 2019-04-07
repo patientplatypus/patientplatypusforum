@@ -124,7 +124,14 @@ class BlogArchive extends Component{
         </div>
         <div className='leftContainer'>
           <div style={{width: '15vw', marginLeft: '2.5vw'}}>
-            <img src='/static/patientplatypus777.svg' style={{width: '100%'}}/>
+            <div className='grad' style={{position: 'absolute', top: '0', left: '5%', width: '90%', height: '40vh', backgroundRepeat: 'no-repeat', maskImage: 'url("/static/comiclines.png")', maskSize: 'cover', maskRepeat: 'no-repeat', WebkitMaskSize: 'cover', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:'url("/static/comiclines.png")', zIndex: '1'}}
+            >
+            </div>
+            <div style={{position: 'absolute', top: 0, left: '5%', width: '90%', height: '40vh', zIndex: '2'}}>
+              <img src='/static/patientplatypus777.svg' style={{height: '100%', maxHeight: '100%', maxWidth: '90%', marginLeft: '5%', marginRight: '5%'}}/>
+            </div>
+            <div style={{width: '100%', height: '40vh', background: 'black', padding: 0, margin: 0}}>
+            </div>
             <div className='titleFont' style={{fontSize: '1.7vw'}}>
               Patient Platypus
             </div>

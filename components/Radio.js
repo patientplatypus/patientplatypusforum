@@ -108,7 +108,9 @@ class RadioContext extends Component{
                   </div>
                   <div style={{marginTop: '-5px', fontSize: '1vw'}}>
                     <input type="range" min="1" max="100" id="myRange" style={{display: 'inline-block', width: '100%', cursor: 'grab'}} onChange={(e=>{
-                      this.vidRef.volume = e.target.value/100
+                      if(this.props.context.state.play){
+                        this.vidRef.volume = e.target.value/100
+                      }
                     })}
                     ></input> 
                   </div>

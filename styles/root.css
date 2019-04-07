@@ -167,6 +167,7 @@ textarea{
 .leftContainer{
   margin-top: 2.5vh;
   grid-area: leftContainer;
+  position: relative;
 }
 
 .mainView{
@@ -498,6 +499,37 @@ body{
 .radioButtonColors:hover{
   color: black;
   background: rgb(231, 146, 8);
+}
+
+.borderimg2 { 
+  border: 10px solid transparent;
+  padding: 15px;
+  -webkit-border-image: url(/static/border.png) 30 stretch; /* Safari 3.1-5 */
+  -o-border-image: url(/static/border.png) 30 stretch; /* Opera 11-12.1 */
+  border-image: url(/static/border.png) 30 stretch;
+}
+
+.borderzigzag{
+  border: 10px solid #cc4242;
+  padding: 15px;
+  border-image-source: url('/static/zigzag_red.png');
+  border-image-slice: 10 fill;
+  border-image-repeat: round;
+}
+
+.borderimg3{
+  border: 20px solid #cc4242;
+	border-image-source: url('/static/svg_border.svg');
+	border-image-slice: 33.3333%;
+}
+
+.border4{
+  border: 10px solid #cc4242;
+  border-image: repeating-linear-gradient(15deg, rgb(68, 43, 16), rgb(68, 43, 16), rgb(203, 144, 3) 15px) 30;
+}
+
+.grad{
+  background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet);
 }
 
 /* input[type=range]::-webkit-slider-thumb {

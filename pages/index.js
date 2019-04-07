@@ -75,6 +75,7 @@ class FeedPage extends Component{
     bounds: {}, 
     pinData: [],
     date: new Date(),
+    componentMounted: false
   }
 
   // 30.2672° N, 97.7431° W
@@ -101,7 +102,7 @@ class FeedPage extends Component{
   }
 
   componentDidMount(){
-    this.setState({pinData: this.props.pinData})
+    this.setState({pinData: this.props.pinData, componentMounted: true})
     console.log('inside componentDidMount')
     console.log('value of this.props.pinData: ', this.props.pinData)
     console.log('value of document.cookie: ', document.cookie)
@@ -256,17 +257,29 @@ class FeedPage extends Component{
             Welcome to patientplatypus
           </div>
           <div>  
-            <div style={{width: '15vw', marginLeft: '1vw', marginRight: '1vw', display: 'inline-block'}}>
+            <div style={{width: '15vw', marginLeft: '1vw', marginRight: '5px', display: 'inline-block'}}>
               <img src='/static/hellotheresailor.svg' style={{width: '100%'}}/>
             </div>
-            <div className='card' style={{width: 'calc(100% - 19vw)', display: 'inline-block', verticalAlign: 'top'}}>
-              <div>
-                Hi 👋
-              </div>
-              <div>
-                This is a side project website that I'm working on. It's primarily a web forum with some pretty pictures. Right now it has a chat and blog as well. I'll be adding cool things as I go. Navigation on the top right. Cheers 🍻
+            <div style={{padding: 0, width: '2Ovw', display: 'inline-block', float: 'right', marginRight:'5px'}}>
+              <img  className='border4' src='/static/templegenerated.jpg' style={{width: '20vw'}}/>
+            </div>
+            <div style={{width: '15vw', display: 'inline-block', verticalAlign: 'top', padding: 0}}>
+              <div className='card' style={{width: '100%', display: 'inline-block'}}>
+                <div>
+                  Hi 👋
+                </div>
+                <div>
+                  <p>
+                    This is a side project website that I'm working on. It's primarily a web forum with some pretty pictures. Right now it has a chat and blog as well. I'll be adding cool things as I go.
+                  </p>
+                  <p>
+                    Navigation is on the top right. 
+                    <br/>Cheers 🍻
+                  </p>
+                </div>
               </div>
             </div>
+
           </div>
           <div className='mapBoard' style={{width: 'calc(100% - 40px)', marginLeft: '10px', height: '50vh', border: '10px solid #2f1d0a', marginTop: '2vh', position: 'relative'}}>
             <div style={{display: 'inline-block', height: '45vh',  marginTop: '2.5vh', width: 'calc(0.8 * 55vw)', marginRight: '5%', float: 'right', maskImage: "url('/static/mapmask.png')", maskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:"url('/static/mapmask.png')"}}>
@@ -299,7 +312,14 @@ class FeedPage extends Component{
         </div>
         <div className='leftContainer'>
           <div style={{width: '15vw', marginLeft: '2.5vw'}}>
-            <img src='/static/patientplatypus777.svg' style={{width: '100%'}}/>
+            <div className='grad' style={{position: 'absolute', top: '0', left: '5%', width: '90%', height: '40vh', backgroundRepeat: 'no-repeat', maskImage: 'url("/static/comiclines.png")', maskSize: 'cover', maskRepeat: 'no-repeat', WebkitMaskSize: 'cover', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:'url("/static/comiclines.png")', zIndex: '1'}}
+            >
+            </div>
+            <div style={{position: 'absolute', top: 0, left: '5%', width: '90%', height: '40vh', zIndex: '2'}}>
+              <img src='/static/patientplatypus777.svg' style={{height: '100%', maxHeight: '100%', maxWidth: '90%', marginLeft: '5%', marginRight: '5%'}}/>
+            </div>
+            <div style={{width: '100%', height: '40vh', background: 'black', padding: 0, margin: 0}}>
+            </div>
             <div className='titleFont' style={{fontSize: '1.7vw'}}>
               Patient Platypus
             </div>
@@ -315,5 +335,7 @@ class FeedPage extends Component{
     )
   }
 }
+
+// maskImage: "url('/static/mapmask.png')", maskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:"url('/static/mapmask.png')"
 
 export default FeedPage
