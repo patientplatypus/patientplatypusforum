@@ -22,6 +22,8 @@ import Welcome from '../components/Welcome';
 import Radio from '../components/Radio'
 import NewsPaper from '../components/NewsPaper'
 
+import {VerticalCenter} from '../components/FlexCenter'; 
+
 const MapboxAttribution = () => (
   <span className='map-attribution'>
     <span>© <a href='https://www.mapbox.com/about/maps/'>Mapbox</a></span>{' | '}
@@ -244,6 +246,39 @@ class FeedPage extends Component{
     }
   }
 
+  getVisits(unique){
+    if (unique){
+      if(this.state.pinData!=[] && this.state.pinData!=undefined){
+        return(
+          <div>
+            {this.state.pinData.length}
+          </div>
+        )
+      }else{
+        return null;
+      }
+    }else{
+      if(this.state.pinData!=[] && this.state.pinData!=undefined){
+        const add = (a, b) => a + b
+        const numVisits = this.state.pinData.map(pin=>{return pin.visits})
+        if(numVisits!=[]){
+          console.log('value of numVisits: ', numVisits)
+          const numVisitsSum = numVisits.reduce(add, 0)
+          console.log('value of numVisits: ', numVisits)
+          return(
+            <div>
+              {numVisitsSum}
+            </div>
+          )
+        }else{
+         return null 
+        }
+      }else{
+        return null
+      }
+    }
+  }
+
   render(){
     return(
       <div className='gridContainer'>
@@ -285,8 +320,19 @@ class FeedPage extends Component{
             <div style={{display: 'inline-block', height: '45vh',  marginTop: '2.5vh', width: 'calc(0.8 * 55vw)', marginRight: '5%', float: 'right', maskImage: "url('/static/mapmask.png')", maskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:"url('/static/mapmask.png')"}}>
               {this.map()}
             </div>
-            <div className='woodPlacard' style={{position: 'absolute', top: '-3vh', left: '0', display: 'inline-block', lineHeight: '5vh', paddingLeft: '0.5vw', paddingRight: '0.5vw', border: '5px rgb(203, 144, 3) solid', borderRadius: '5px', color: 'white', fontSize: '2vh'}}>
-              NUMBER OF VISITORS
+            <div style={{position: 'absolute', top: '-3vh', left: '0', paddingTop: '0'}}>
+              <div className='woodPlacard' style={{display: 'inline-block', lineHeight: '5vh', paddingLeft: '0.5vw', paddingRight: '0.5vw', border: '5px rgb(203, 144, 3) solid', borderRadius: '5px', color: 'white', fontSize: '2vh'}}>
+                NUMBER OF VISITORS
+              </div>
+              <div className='pacificoFont' style={{display: 'inline-block', fontSize: '2vh', color: '#F05924', paddingLeft: '0.5vw', paddingRight: '0.5vw', border: '5px rgb(203, 144, 3) solid', borderRadius: '5px', background: '#432B10', marginLeft: '0.5vw', marginRight: '0.5vw'}}>
+                {this.getVisits(false)}
+              </div>
+              <div className='woodPlacard' style={{display: 'inline-block', lineHeight: '5vh', paddingLeft: '0.5vw', paddingRight: '0.5vw', border: '5px rgb(203, 144, 3) solid', borderRadius: '5px', color: 'white', fontSize: '2vh'}}>
+                UNIQUE VISITORS
+              </div>
+              <div className='pacificoFont' style={{display: 'inline-block', fontSize: '2vh', color: '#F05924', paddingLeft: '0.5vw', paddingRight: '0.5vw', border: '5px rgb(203, 144, 3) solid', borderRadius: '5px', background: '#432B10', marginLeft: '0.5vw', marginRight: '0.5vw'}}>
+                {this.getVisits(true)}
+              </div>
             </div>
             <div style={{position: 'absolute', top: 0, right: `${this.state.pixelWH.width/5}px`, transform: `scale(calc(${this.state.pixelWH.width}/1000))`}}>
               <Clock/>

@@ -52,7 +52,7 @@ var BlogSchema = new Schema({
 var PinSchema = new Schema({
   lat: {type: Number},
   lng: {type: Number},
-  visits: {type: Number, default: 0}
+  visits: {type: Number, default: 1}
 }, {
   writeConcern: {
     w: 0,

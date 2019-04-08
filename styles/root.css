@@ -532,6 +532,10 @@ body{
   background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,violet);
 }
 
+.pacificoFont{
+  font-family: 'Pacifico', cursive;
+}
+
 /* input[type=range]::-webkit-slider-thumb {
   background: orange;
 }
