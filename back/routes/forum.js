@@ -31,51 +31,54 @@ router.post('/uploadPost', (req, res, next)=>{
   console.log('value of req.files: ', req.files)
   console.log('value of req.body: ', req.body)
 
+  if(req.body.length<=2000){
+    const savePost = (fileName) => {
 
-  const savePost = (fileName) => {
-
-    console.log('inside savePost')
-
-    var post = {
-      body: req.body.post, 
-      created: Date.now(),
-      flags: 0, 
-      lastFlag: Date.now(),
-      comments: [],
-      fileName: fileName, 
-      board: req.body.boardType
+      console.log('inside savePost')
+  
+      var post = {
+        body: req.body.post, 
+        created: Date.now(),
+        flags: 0, 
+        lastFlag: Date.now(),
+        comments: [],
+        fileName: fileName, 
+        board: req.body.boardType
+      }
+    
+      console.log('value of post: ', post)
+    
+      let postInstance = new model.Post(post)
+      
+      console.log('value of postInstance: ', postInstance)
+    
+      postInstance.save().then(post=>{
+        console.log('value of post in save: ', post)
+        model.Post.find({}).sort({created: -1}).skip(300).exec((err, posts)=>{
+          if(err){
+            console.log('value of err: ', err)
+          }
+          let postIDs = [] 
+          postIDs = posts.map(post=>post._id)
+          model.Post.deleteMany({_id: {$in: postIDs}}, (err, posts)=>{
+            if (err){
+              console.log('there was an error in find: ', err)
+            }
+            res.json({post: 'saved!'})
+          })    
+        })
+      }).catch( (e) => {
+        console.log('There was an error', e.message);
+      });
     }
   
-    console.log('value of post: ', post)
-  
-    let postInstance = new model.Post(post)
-    
-    console.log('value of postInstance: ', postInstance)
-  
-    postInstance.save().then(post=>{
-      console.log('value of post in save: ', post)
-      model.Post.find({}).sort({created: -1}).skip(300).exec((err, posts)=>{
-        if(err){
-          console.log('value of err: ', err)
-        }
-        let postIDs = [] 
-        postIDs = posts.map(post=>post._id)
-        model.Post.deleteMany({_id: {$in: postIDs}}, (err, posts)=>{
-          if (err){
-            console.log('there was an error in find: ', err)
-          }
-          res.json({post: 'saved!'})
-        })    
-      })
-    }).catch( (e) => {
-      console.log('There was an error', e.message);
-    });
-  }
-
-  if(req.files!=null){
-    logos.writePic(req.files.pic.name, req.files.pic.data, (fileName)=>savePost(fileName))
+    if(req.files!=null){
+      logos.writePic(req.files.pic.name, req.files.pic.data, (fileName)=>savePost(fileName))
+    }else{
+      savePost()
+    }
   }else{
-    savePost()
+    res.json({error: "body too long"})
   }
 })
 
@@ -83,97 +86,100 @@ router.post('/uploadComment', (req, res, next)=>{
   console.log('inside /uploadComment')
   console.log('value of req.body: ', req.body)
 
-  const uploadComment = (fileName) => {
+  if(req.body.length<=2000){
+    const uploadComment = (fileName) => {
 
-    console.log('inside uploadComment')
-
-    var comment = {
-      body: req.body.comment, 
-      created: Date.now(),
-      flags: 0, 
-      lastFlag: Date.now(),
-      fileName: fileName,
-    }
-
-    let commentInstance = new model.Comment(comment)
+      console.log('inside uploadComment')
   
-    commentInstance.save().then(comment=>{
-      model.Post.findOne({_id: req.body.postID}).populate('comments').exec((err, post)=>{
-        if(err){
-          console.log('there was an error in retrieving post: ', err)
-        }
-        console.log('value of post: ', post)
-        if(post==null){
-          res.json({'success': 'success'})
-        }else{
-          if (post.comments.length>250){
-            console.log('inside delete if statement')
-            console.log('value of post; ', post)
-            console.log('value of comments: ', post.comments)
-            const asyncFunc = async () => {
-              if (post.fileName!=''){
-                try{
-                  let dest = __dirname+'/../picFolder/sharp/'+post.fileName
-                  await fsPromise.unlink(dest)
-                  dest = __dirname+'/../picFolder/'+post.fileName
-                  await fsPromise.unlink(dest)
+      var comment = {
+        body: req.body.comment, 
+        created: Date.now(),
+        flags: 0, 
+        lastFlag: Date.now(),
+        fileName: fileName,
+      }
+  
+      let commentInstance = new model.Comment(comment)
+    
+      commentInstance.save().then(comment=>{
+        model.Post.findOne({_id: req.body.postID}).populate('comments').exec((err, post)=>{
+          if(err){
+            console.log('there was an error in retrieving post: ', err)
+          }
+          console.log('value of post: ', post)
+          if(post==null){
+            res.json({'success': 'success'})
+          }else{
+            if (post.comments.length>250){
+              console.log('inside delete if statement')
+              console.log('value of post; ', post)
+              console.log('value of comments: ', post.comments)
+              const asyncFunc = async () => {
+                if (post.fileName!=''){
+                  try{
+                    let dest = __dirname+'/../picFolder/sharp/'+post.fileName
+                    await fsPromise.unlink(dest)
+                    dest = __dirname+'/../picFolder/'+post.fileName
+                    await fsPromise.unlink(dest)
+                  }
+                  catch(e){
+                    console.log('there was an error deleting file: ', e)
+                  }
                 }
-                catch(e){
-                  console.log('there was an error deleting file: ', e)
-                }
+                await logos.asyncForEach(post.comments, async (item, index) => {
+                  try{
+                    let dest = __dirname+'/../picFolder/sharp/'+item.fileName
+                    await fsPromise.unlink(dest)
+                    dest = __dirname+'/../picFolder/'+item.fileName
+                    await fsPromise.unlink(dest)
+                  }
+                  catch(e){
+                    console.log('there was an error attempting to delete the file: ', e)
+                  }
+                })
               }
-              await logos.asyncForEach(post.comments, async (item, index) => {
-                try{
-                  let dest = __dirname+'/../picFolder/sharp/'+item.fileName
-                  await fsPromise.unlink(dest)
-                  dest = __dirname+'/../picFolder/'+item.fileName
-                  await fsPromise.unlink(dest)
+              asyncFunc()
+              model.Post.deleteOne({_id: req.body.postID}).exec((err)=>{
+                if(err){
+                  console.log('there was an error deleting: ', err)
                 }
-                catch(e){
-                  console.log('there was an error attempting to delete the file: ', e)
+                console.log('inside deleteOne')
+                res.json({'success': 'success'})
+              })
+            }else if(post.comments.length>200){
+              model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }}, {new: true}, (err, post)=>{
+                if(err){
+                  console.log('there was an error: ', err)
                 }
+                console.log('value of post after updating: ', post)     
+                res.json({'success': 'success'})   
+              })
+            }else{
+              model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }, $set: {created: Date.now()}}, {new: true}, (err, post)=>{
+                if(err){
+                  console.log('there was an error: ', err)
+                }
+                console.log('value of post after updating: ', post)     
+                res.json({'success': 'success'})   
               })
             }
-            asyncFunc()
-            model.Post.deleteOne({_id: req.body.postID}).exec((err)=>{
-              if(err){
-                console.log('there was an error deleting: ', err)
-              }
-              console.log('inside deleteOne')
-              res.json({'success': 'success'})
-            })
-          }else if(post.comments.length>200){
-            model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }}, {new: true}, (err, post)=>{
-              if(err){
-                console.log('there was an error: ', err)
-              }
-              console.log('value of post after updating: ', post)     
-              res.json({'success': 'success'})   
-            })
-          }else{
-            model.Post.findOneAndUpdate({_id:req.body.postID}, { $push: { comments: comment._id }, $set: {created: Date.now()}}, {new: true}, (err, post)=>{
-              if(err){
-                console.log('there was an error: ', err)
-              }
-              console.log('value of post after updating: ', post)     
-              res.json({'success': 'success'})   
-            })
           }
-        }
-      })
-    }).catch((e) => {
-      console.log('there was an error: ', e)
-    });
-  }
-
-  console.log('value of req.files: ', req.files)
-
-  if(req.files!=null){
-    logos.writePic(req.files.pic.name, req.files.pic.data, (fileName)=>uploadComment(fileName))
+        })
+      }).catch((e) => {
+        console.log('there was an error: ', e)
+      });
+    }
+  
+    console.log('value of req.files: ', req.files)
+  
+    if(req.files!=null){
+      logos.writePic(req.files.pic.name, req.files.pic.data, (fileName)=>uploadComment(fileName))
+    }else{
+      uploadComment()
+    }  
   }else{
-    uploadComment()
+    res.json({error: "body too long"})
   }
-
 
 })
 

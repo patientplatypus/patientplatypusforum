@@ -109,14 +109,18 @@ class Submit extends Component{
         <textarea
           style={{height: '20vh', width: 'calc(100% - 5px)', marginBottom:'5px'}}
           value={this.state.textVal}
-          onChange={(e)=>{this.setState({textVal: e.target.value})}}
+          onChange={(e)=>{
+            if(e.target.value.length<=2000){
+              let numValLeft = 2000 - e.target.value.length
+              this.setState({errorText: numValLeft.toString() + " characters remaining"})
+            }else if (e.target.value.length > 2000){
+              let numValLeft = e.target.value.length - 2000
+              this.setState({errorText: numValLeft.toString() + " characters too many"})
+            }
+            this.setState({textVal: e.target.value})
+          }}
         ></textarea>
         <div>
-          {renderIf(this.state.errorText!='')(
-            <div style={{fontStyle: 'italic', display: 'inline-block', marginLeft: '5px', float: 'left', color: 'rgb(141, 57, 34)'}}>
-              {this.state.errorText}
-            </div>
-          )}
           {renderIf(name!=null)(
             <div style={{fontStyle: 'italic', display: 'inline-block', marginRight: '5px'}}>
               chosen file: {name}
@@ -127,12 +131,31 @@ class Submit extends Component{
             sitekey={process.env.recaptchaSiteKey}
             onChange={(e)=>{console.log('value of captcha onchange', e); this.setState({captcha: e})}}
           />
-          <div className='button' style={{marginRight: '5px'}} onClick={()=>{this.fileRef.click();}}>
-            CHOOSE PIC
-          </div>
-          <div className='button' onClick={()=>{this.handlePost()}}>
-            POST
-          </div>
+          {renderIf(this.state.errorText!='')(
+            <div style={{fontStyle: 'italic', display: 'inline-block', marginLeft: '5px', float: 'left', color: 'rgb(141, 57, 34)', marginTop: '5px'}}>
+              {this.state.errorText}
+            </div>
+          )}
+          {renderIf(!this.state.errorText.includes('too many'))(
+            <div>
+              <div className='button' style={{marginRight: '5px'}} onClick={()=>{this.fileRef.click();}}>
+                CHOOSE PIC
+              </div>
+              <div className='button' onClick={()=>{this.handlePost()}}>
+                POST
+              </div>
+            </div>
+          )}
+          {renderIf(this.state.errorText.includes('too many'))(
+            <div>
+              <div className='button' style={{marginRight: '5px', background: 'grey'}}>
+                CHOOSE PIC
+              </div>
+              <div className='button' style={{background: 'grey'}}>
+                POST
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )
