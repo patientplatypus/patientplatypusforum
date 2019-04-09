@@ -52,7 +52,10 @@ class Home extends Component{
       posts: [], 
       files: [], 
       flagWarning: [],
-      componentMounted: false
+      componentMounted: false,
+      showID: '', 
+      x: 0, 
+      y: 0
     }
   }
 
@@ -195,7 +198,8 @@ class Home extends Component{
               <div style={{fontStyle: 'italic'}}>
                 {comment.created}
               </div>
-              {comment.body}
+              {/* {comment.body} */}
+              {this.parseCommentBody(comment.body)}
             </div>
             <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
               {renderIf(comment.imageBanned==false)(
@@ -256,6 +260,67 @@ class Home extends Component{
     })
   }
 
+  _onMouseMove(e, item) {
+    console.log('9837249234234 value of e.screenX in _onMouseMove', e.screenX)
+    this.setState({ x: e.pageX, y: e.pageY, showID: item });
+  }
+
+  parseCommentBody(commentBody){
+    console.log('234234234235623462346 inside parseCommentBody')
+    // var result = commentBody.match(/(?<="<<"\s+).*?(?=\s+">>")/gs); 
+    var result = commentBody.match(new RegExp(">>" + "(.*)" + ">>"));
+    console.log('234234234235623462346 value of result from parseCommentBody: ', result)
+    if(result!=null && result!=undefined){
+      return(
+        <div>
+          {
+            commentBody.split(">>").map((item, index)=>{
+              if(result[1].includes(item)){
+                return(
+                  <div onMouseMove={(e)=>this._onMouseMove(e, item)} onMouseLeave={()=>{this.setState({x: 0, y: 0, showID: ''})}} style={{fontStyle: 'italic', display: 'inline-block', marginLeft: '5px', marginRight: '5px', cursor: 'pointer'}}>
+                    {item}
+                  </div>
+                )
+              }else{
+                return(
+                  <div style={{display: 'inline-block'}}>
+                    {item}
+                  </div>
+                )
+              }
+            })
+          }
+        </div>
+      )
+    }else{
+      return commentBody;
+    }
+  }
+
+  renderCommentTagged(){
+    return(
+      this.state.postData.posts.map((post, index)=>{
+        if(post._id==this.state.showID){
+          return(
+            <div className='card' style={{position: 'absolute', top: `${this.state.y}px`, left: `${this.state.x}px`, zIndex: '99'}}>
+              {post.body}
+            </div>
+          )
+        }else{
+          post.comments.map((comment, index)=>{
+            if(comment._id==this.state.showID){
+              return(
+                <div className='card' style={{position: 'absolute', top: `${this.state.y}px`, left: `${this.state.x}px`, zIndex: '99'}}>
+                  {comment.body}
+                </div>
+              )
+            }
+          })
+        }
+      })
+    )
+  }
+
   render(){
     return(
       <div className='gridContainer'>
@@ -263,6 +328,11 @@ class Home extends Component{
           <title>patientplatypus</title>
           <link href="https://fonts.googleapis.com/css?family=Emblema+One|Faster+One|Germania+One|IM+Fell+English|Pacifico|Plaster|Quantico|Quicksand|Share+Tech+Mono|Shrikhand" rel="stylesheet"/>
         </Head>
+        {renderIf(this.state.x!=0 && this.state.y!=0 && this.state.showID!="")(
+          <div>
+            {this.renderCommentTagged()}
+          </div>
+        )}
         <div className='mainView'>
           <Feed/>
           <div style={{height: '5vh', textAlign: 'center'}}>

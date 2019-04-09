@@ -24,13 +24,24 @@ class Submit extends Component{
     })
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot){
+    console.log('237498237423847 inside componentDidUpdate for Submit');
+    console.log('237498237423847 and value of props: ', this.props)
+    if(prevProps.IDclicked!=this.props.IDclicked && !this.state.textVal.includes(this.props.IDclicked)){
+      let tempTextVal = this.state.textVal;
+      tempTextVal = tempTextVal + ">>"+this.props.IDclicked+">>";
+      this.setState({textVal: tempTextVal}, ()=>{
+        console.log('237498237423847 after setState and value of textVal in Submit: ', this.state.textVal)
+      })
+    }
+  }
+
   handlePost = () => {
     console.log('234234234324234234234234242 inside handlePost YODAWG')
     const uploadData = new FormData()
     uploadData.append('pic', this.state.selectedFile)
     uploadData.append('boardType', this.props.boardType)
     uploadData.append('captcha', this.state.captcha)
-
     if(this.state.textVal==''){
       this.setState({errorText: 'Post text cannot be empty!'})
     }else if(this.state.selectedFile==null){
@@ -39,10 +50,9 @@ class Submit extends Component{
       this.setState({errorText: 'Image size must be less than 5mb!'})
     }else if(this.state.captcha==''){
       this.setState({errorText: 'Please confirm you are not a robot!'})
-    }else{
-      if(this.props.submitType=='post'){
-        uploadData.append('post', this.state.textVal)
-
+    }else if(this.props.submitType=='post'){
+      uploadData.append('post', this.state.textVal)
+      this.setState({textVal: '', errorText: ''}, ()=>{
         axios({
           method: 'post',
           url: 'http://localhost:5000/forum/uploadPost',
@@ -62,10 +72,12 @@ class Submit extends Component{
           //handle error
           console.log(response);
         });
-      }else if(this.props.submitType=='comment'){
-        console.log('inside if statement for comment')
-        uploadData.append('comment', this.state.textVal)
-        uploadData.append('postID', this.props.postID)
+      })
+    }else if(this.props.submitType=='comment'){
+      console.log('inside if statement for comment')
+      uploadData.append('comment', this.state.textVal)
+      uploadData.append('postID', this.props.postID)
+      this.setState({textVal: '', errorText: ''}, ()=>{
         axios({
           method: 'post',
           url: 'http://localhost:5000/forum/uploadComment',
@@ -86,7 +98,7 @@ class Submit extends Component{
           //handle error
           console.log(response);
         });
-      }
+      })
     }
   }
 

@@ -13,6 +13,7 @@ import Welcome from '../../components/Welcome';
 
 import Radio from '../../components/Radio'
 import NewsPaper from '../../components/NewsPaper'
+import { timingSafeEqual } from 'crypto';
 
 class Reply extends Component{
   static async getInitialProps({req, query}){
@@ -35,7 +36,11 @@ class Reply extends Component{
     postData: this.props.postData,
     postID: this.props.postID, 
     flagWarning: [],
-    componentMounted: false
+    componentMounted: false, 
+    IDclicked: '', 
+    showID: '', 
+    x: 0, 
+    y: 0
   }
 
   componentDidMount(){
@@ -145,6 +150,69 @@ class Reply extends Component{
     })
   }
 
+  _onMouseMove(e, item) {
+    console.log('9837249234234 value of e.screenX in _onMouseMove', e.screenX)
+    this.setState({ x: e.pageX, y: e.pageY, showID: item });
+  }
+
+  parseCommentBody(commentBody){
+    console.log('234234234235623462346 inside parseCommentBody')
+    // var result = commentBody.match(/(?<="<<"\s+).*?(?=\s+">>")/gs); 
+    var result = commentBody.match(new RegExp(">>" + "(.*)" + ">>"));
+    console.log('234234234235623462346 value of result from parseCommentBody: ', result)
+    if(result!=null && result!=undefined){
+      return(
+        <div>
+          {
+            commentBody.split(">>").map((item, index)=>{
+              if(result[1].includes(item)){
+                return(
+                  <div onMouseMove={(e)=>this._onMouseMove(e, item)} onMouseLeave={()=>{this.setState({x: 0, y: 0, showID: ''})}} style={{fontStyle: 'italic', display: 'inline-block', marginLeft: '5px', marginRight: '5px', cursor: 'pointer'}}>
+                    {item}
+                  </div>
+                )
+              }else{
+                return(
+                  <div style={{display: 'inline-block'}}>
+                    {item}
+                  </div>
+                )
+              }
+            })
+          }
+        </div>
+      )
+    }else{
+      return commentBody;
+    }
+  }
+
+  renderCommentTagged(){
+    console.log('9837249234234 inside renderCommentTagged')
+    console.log('9837249234234 value of this.state.x: ', this.state.x)
+    console.log('9837249234234 value of this.state.y: ', this.state.y)
+    
+    if(this.state.postData.post._id==this.state.showID){
+      return(
+        <div>
+          {this.state.postData.post.body}
+        </div>
+      )
+    }else{
+      return(
+        this.state.postData.post.comments.map(comment=>{
+          if(comment._id==this.state.showID){
+            return(
+              <div>
+                {comment.body}
+              </div>
+            )
+          }
+        })
+      )
+    }
+  }
+
   render(){
     let postPicVal = this.state.postData.postObj == null?-1:this.state.postData.postObj;
     return(
@@ -153,6 +221,11 @@ class Reply extends Component{
           <title>patientplatypus</title>
           <link href="https://fonts.googleapis.com/css?family=Emblema+One|Faster+One|Germania+One|IM+Fell+English|Pacifico|Plaster|Quantico|Quicksand|Share+Tech+Mono|Shrikhand" rel="stylesheet"/>
         </Head>
+        {renderIf(this.state.x!=0 && this.state.y!=0 && this.state.showID!="")(
+          <div className='card' style={{position: 'absolute', top: `${this.state.y}px`, left: `${this.state.x}px`, zIndex: '99'}}>
+            {this.renderCommentTagged()}
+          </div>
+        )}
         <div className='mainView'>
           <Feed/>
           <div style={{height: '5vh', textAlign: 'center'}}>
@@ -165,6 +238,7 @@ class Reply extends Component{
             reloadPage={()=>this.reloadPage()}
             submitType={'comment'}
             postID={this.props.postID}
+            IDclicked={this.state.IDclicked}
             ></Submit>
           )}
           <div className='card' style={{marginBottom: '5px'}}>
@@ -172,7 +246,11 @@ class Reply extends Component{
               {this.picHandler({post: this.state.postData.post._id, fileName: this.state.postData.post.fileName, type: this.state.postData.post.type}, 'post')}
             </div>
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
-              <div style={{fontStyle: 'italic'}}>
+              <div style={{fontStyle: 'italic'}}
+              onClick={()=>{
+                this.setState({IDclicked: this.state.postData.post._id})
+              }}
+              >
                 ID: <span style={{textDecoration: 'underline', cursor: 'pointer'}}>{this.state.postData.post._id}</span>
               </div>
               <div style={{fontStyle: 'italic'}}>
@@ -217,13 +295,18 @@ class Reply extends Component{
                     {this.picHandler({post: comment._id, parentID: this.state.postData.post._id, fileName: comment.fileName, type: comment.type}, 'comment')}
                   </div>
                   <div style={{display: 'inline-block', verticalAlign: 'top'}}>
-                    <div style={{fontStyle: 'italic'}}>
+                    <div style={{fontStyle: 'italic'}}
+                    onClick={()=>{
+                      this.setState({IDclicked: comment._id})
+                    }}
+                    >
                       ID: <span style={{textDecoration: 'underline', cursor: 'pointer'}}>{comment._id}</span>
                     </div>
                     <div style={{fontStyle: 'italic'}}>
                       {comment.created}
                     </div>
-                    {comment.body}
+                    {this.parseCommentBody(comment.body)}
+                    {/* {comment.body} */}
                   </div>
                   <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
                     {renderIf(comment.imageBanned==false)(

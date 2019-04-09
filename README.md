@@ -18,19 +18,19 @@ The .env files are not included. A google server (`recaptchaSecretKey`) and a cl
 # Things to Do: 
 
 - Three strikes then yuk face (throttled by timer) (DONE)
-- add way to reference previous comments
+- add way to reference previous comments (DONE - basic for now)
 - no image if image not found (DONE)
 - backend test on post for no comment/filesize 
 - all devops
 - google recaptcha (for EVERYTHING) (DONE, feed has char count on front/back instead - do same for chat?)
 - buy DNS and server
 - set up a contact form page (to email me) (DONE)
-- ask a platypus page?
+- ask a platypus page? (PROBABLY NOT)
 - front page splash w/SVG (DONE)
 - admin delete blog picture handler (DONE)
 - newspaper (snooze news)
 - radio (DONE)
-- testing
+- testing (WE DONT NEED NO STINKING TESTS - WHAT IS THIS DISNEYLAND FOR KIDDIES?)
 - break routes file up into (blog etc) (DONE for now)
 - make utility function folder and deagg multi-use functions in routes (DONE for now)
 - get rid of console logs where unnecessary or may crash (heartbeat especially)
@@ -43,6 +43,6 @@ The .env files are not included. A google server (`recaptchaSecretKey`) and a cl
 - fix blog header overflow (DONE)
 - On splash add cork board with visitor map (number + by ip with strings?) 
   - Plus have two charts (unique visitor vs repeat && not from texas vs texas)
-  - Plus cool people and fred (99%)
+  - Plus cool people and fred (99%) (SPLASH DONE FOR NOW - MAY ADD LATER)
 - get rid of ipapi json call and put in native function
 - rewrite backend/forums to simply serve all pictures as static rather than base64??? (DONE)

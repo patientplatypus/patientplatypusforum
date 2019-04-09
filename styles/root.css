@@ -270,6 +270,7 @@ body{
   overflow-y: auto; */
   height: 100%;
   background: black;
+  overflow-x: hidden;
   /* background: linear-gradient( 
     rgb(84, 136, 100, 0.25),
     rgb(84, 136, 100, 0.25)
