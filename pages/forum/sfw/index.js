@@ -297,15 +297,17 @@ class Home extends Component{
             </div>
           )
         }else{
-          post.comments.map((comment, index)=>{
-            if(comment._id==this.state.showID){
-              return(
-                <div className='card' style={{position: 'absolute', top: `${this.state.y}px`, left: `${this.state.x}px`, zIndex: '99'}}>
-                  {comment.body}
-                </div>
-              )
-            }
-          })
+          return(
+            post.comments.map((comment, index)=>{
+              if(comment._id==this.state.showID){
+                return(
+                  <div className='card' style={{position: 'absolute', top: `${this.state.y}px`, left: `${this.state.x}px`, zIndex: '99'}}>
+                    {comment.body}
+                  </div>
+                )
+              }
+            })
+          )
         }
       })
     )

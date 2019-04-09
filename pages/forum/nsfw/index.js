@@ -198,7 +198,6 @@ class Home extends Component{
               <div style={{fontStyle: 'italic'}}>
                 {comment.created}
               </div>
-              {/* {comment.body} */}
               {this.parseCommentBody(comment.body)}
             </div>
             <div style={{width: '100%', display: 'inline-block', marginBottom: '5px'}}>
@@ -262,14 +261,16 @@ class Home extends Component{
 
   _onMouseMove(e, item) {
     console.log('9837249234234 value of e.screenX in _onMouseMove', e.screenX)
-    this.setState({ x: e.pageX, y: e.pageY, showID: item });
+    this.setState({ x: e.pageX, y: e.pageY, showID:item }, ()=>{
+      //console.log('2346234623462345 after setState and value of showID', this.state.showID)
+    });
   }
 
   parseCommentBody(commentBody){
     console.log('234234234235623462346 inside parseCommentBody')
     // var result = commentBody.match(/(?<="<<"\s+).*?(?=\s+">>")/gs); 
     var result = commentBody.match(new RegExp(">>" + "(.*)" + ">>"));
-    console.log('234234234235623462346 value of result from parseCommentBody: ', result)
+    // console.log('32423452352532 value of result from parseCommentBody: ', result)
     if(result!=null && result!=undefined){
       return(
         <div>
@@ -298,6 +299,8 @@ class Home extends Component{
   }
 
   renderCommentTagged(){
+    // console.log('32423452352532 inside renderCommentTagged')
+    // console.log('2346234623462345 value of this.state.showID: ', this.state.showID)
     return(
       this.state.postData.posts.map((post, index)=>{
         if(post._id==this.state.showID){
@@ -307,15 +310,19 @@ class Home extends Component{
             </div>
           )
         }else{
-          post.comments.map((comment, index)=>{
-            if(comment._id==this.state.showID){
-              return(
-                <div className='card' style={{position: 'absolute', top: `${this.state.y}px`, left: `${this.state.x}px`, zIndex: '99'}}>
-                  {comment.body}
-                </div>
-              )
-            }
-          })
+          return(
+            post.comments.map((comment, index)=>{
+              // console.log('2346234623462345 value of comment._id: ', comment._id, ' and value of this.state.showID: ', this.state.showID)
+              if(comment._id==this.state.showID){
+                console.log("2346234623462345~~~~~~INSIDE EQUALITY~~~~~~ and comment.body: ", comment.body)
+                return(
+                  <div className='card' style={{position: 'absolute', top: `${this.state.y}px`, left: `${this.state.x}px`, zIndex: '99'}}>
+                    {comment.body}
+                  </div>
+                )
+              }
+            })
+          )
         }
       })
     )
