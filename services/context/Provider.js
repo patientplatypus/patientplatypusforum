@@ -22,7 +22,7 @@ class Provider extends Component {
     console.log('value of socket: ', this.socket)
     if (this.socket == null){
       console.log('inside this.socket = null')
-      this.socket = Socket('http://localhost:5000')
+      this.socket = Socket(process.env.serverADD)
       this.socket.on('connection established', (msg)=>{
         console.log('connection established...', msg)
         this.setState({componentMounted: true})
@@ -55,7 +55,7 @@ class Provider extends Component {
     axios.get('https://ipapi.co/json/')
     .then(response=>{
       console.log('response from ipapi: ', response)
-      axios.post('http://localhost:5000/chat/getChatName', {ip: response.data.ip})
+      axios.post(process.env.serverADD+'chat/getChatName', {ip: response.data.ip})
       .then(response=>{console.log('response from getChatName', response)
         this.setState({chatName: response.data.chatName})
       })
