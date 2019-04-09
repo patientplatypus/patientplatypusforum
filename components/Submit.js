@@ -55,7 +55,7 @@ class Submit extends Component{
       this.setState({textVal: '', errorText: ''}, ()=>{
         axios({
           method: 'post',
-          url: 'http://localhost:5000/forum/uploadPost',
+          url: process.env.serverADD+'forum/uploadPost',
           data: uploadData,
           config: { headers: {'Content-Type': 'multipart/form-data' }}
         })

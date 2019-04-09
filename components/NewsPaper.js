@@ -9,7 +9,7 @@ class NewsPaper extends Component{
   }
 
   componentDidMount(){
-    let url = 'http://localhost:5000/newspaper/getHeadlines'
+    let url = process.env.serverADD+'newspaper/getHeadlines'
     axios.get(url)
     .then(response=>{
       console.log('headlines for newspaper: ', response.data.posts)

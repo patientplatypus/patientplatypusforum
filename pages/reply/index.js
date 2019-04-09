@@ -18,7 +18,7 @@ import { timingSafeEqual } from 'crypto';
 class Reply extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = "http://localhost:5000/forum/getPost"
+    let url = process.env.serverADD+"forum/getPost"
     console.log('value of url: ', url)
     var postReturn = await axios.post(url, {postID: query.post})
     .then(response=>{
@@ -50,7 +50,7 @@ class Reply extends Component{
 
   reloadPage = () => {
     console.log("inside reloadPage")
-    let url = "http://localhost:5000/forum/getPost"
+    let url = process.env.serverADD+"forum/getPost"
     axios.post(url, {postID: this.state.postID})
     .then(response=>{
       console.log('value of response: ', response)
@@ -103,12 +103,12 @@ class Reply extends Component{
           }
         }}
         >
-          <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
+          <a href={`${process.env.serverADD}${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
             {renderIf(picVal.type=='preview')(
-              <img src={'http://localhost:5000/sharp/'+picVal.fileName} style={{maxWidth: '100%'}}/>
+              <img src={`${process.env.serverADD}sharp/`+picVal.fileName} style={{maxWidth: '100%'}}/>
             )}
             {renderIf(picVal.type=='actual')(
-              <img src={'http://localhost:5000/'+picVal.fileName}  style={{maxWidth: '100%'}}/>
+              <img src={`${process.env.serverADD}`+picVal.fileName}  style={{maxWidth: '100%'}}/>
             )}
           </a>
         </div>

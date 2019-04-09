@@ -21,7 +21,7 @@ import NewsPaper from '../../../components/NewsPaper'
 class Home extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = "http://localhost:5000/forum/getNavPage"
+    let url = process.env.serverADD+"forum/getNavPage"
     console.log('value of url: ', url)
     console.log('value of query: ', query)
     var postReturn = await axios.post(url, {
@@ -57,7 +57,7 @@ class Home extends Component{
   componentDidMount(){
     axios({
       method: 'get',
-      url: 'http://localhost:5000/forum/getNumPages/sfw',
+      url: process.env.serverADD+'forum/getNumPages/sfw',
     })
     .then((response)=>{
       //handle success
@@ -75,7 +75,7 @@ class Home extends Component{
 
   reloadPage = () => {
     console.log('inside reloadPosts')
-    window.location.href='http://localhost:3000/forum/sfw/'+this.state.currentPage
+    window.location.href=process.env.clientADD+'forum/sfw/'+this.state.currentPage
   }
 
   picHandler = (picVal, postType) => {
@@ -132,12 +132,12 @@ class Home extends Component{
           }
         }}
         >
-          <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
+          <a href={`${process.env.serverADD}${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
             {renderIf(picVal.type=='preview')(
-              <img src={'http://localhost:5000/sharp/'+picVal.fileName} style={{maxWidth: '100%'}}/>
+              <img src={`${process.env.serverADD}sharp/`+picVal.fileName} style={{maxWidth: '100%'}}/>
             )}
             {renderIf(picVal.type=='actual')(
-              <img src={'http://localhost:5000/'+picVal.fileName}  style={{maxWidth: '100%'}}/>
+              <img src={`${process.env.serverADD}`+picVal.fileName}  style={{maxWidth: '100%'}}/>
             )}
           </a>
         </div>
@@ -221,9 +221,9 @@ class Home extends Component{
     let url = '';
     let setMsg = '';
     if(type=='post'){
-      url = 'http://localhost:5000/forum/flagPost'
+      url = process.env.serverADD+'forum/flagPost'
     }else if(type=='comment'){
-      url = 'http://localhost:5000/forum/flagComment'
+      url = process.env.serverADD+'forum/flagComment'
     }
     axios.post(url, {id: post._id, secondID: secondID})
     .then(response=>{

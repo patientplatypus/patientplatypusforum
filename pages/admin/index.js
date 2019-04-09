@@ -55,7 +55,7 @@ class Admin extends Component{
       window.scrollTo(0,document.body.scrollHeight);
     }
     if(prevState.updateBlogPost!=this.state.updateBlogPost && this.state.updateBlogPost){
-      axios.post('http://localhost:5000/getBlogArchive')
+      axios.post(process.env.serverADD+'getBlogArchive')
       .then(response=>{
         console.log('value of response from blogArchive: ', response.data)
         this.setState({archiveArr: response.data})
@@ -76,7 +76,7 @@ class Admin extends Component{
           ip: response.data.ip,
           pass: this.state.passText
         }
-        axios.post('http://localhost:5000/admin/confirmPass', {payload, captcha: this.state.captcha})
+        axios.post(process.env.serverADD+'admin/confirmPass', {payload, captcha: this.state.captcha})
         .then(response=>{
           console.log('value from confirmPass; ', response.data)
           this.setState({
@@ -100,7 +100,7 @@ class Admin extends Component{
       dateText: this.state.dateText, 
       id: this.state.blogUpdateID
     }
-    axios.post('http://localhost:5000/admin/submitBlogPost', {payload})
+    axios.post(process.env.serverADD+'admin/submitBlogPost', {payload})
     .then(response=>{
       console.log('response from blog post: ', response)
       this.setState({
@@ -145,7 +145,7 @@ class Admin extends Component{
       id: this.state.blogUpdateID
     }
     console.log('value of payload: ', payload)
-    axios.post('http://localhost:5000/admin/updateBlogPost', {payload})
+    axios.post(process.env.serverADD+'admin/updateBlogPost', {payload})
     .then(response=>{
       console.log('response from blog post: ', response)
       this.setState({
@@ -162,7 +162,7 @@ class Admin extends Component{
   handleGetBlog = (id) => {
     console.log('inside handleGetBlog and id: ', id)
     this.setState({blogUpdateID: id}, ()=>{
-      axios.post('http://localhost:5000/blog/getBlogPost', {navID: id})
+      axios.post(process.env.serverADD+'blog/getBlogPost', {navID: id})
       .then(response=>{
         console.log('value of response from getBlogPost, ', response);
         let masterArr = response.data.post.bodyArr.concat(response.data.post.fileArr);
@@ -180,7 +180,7 @@ class Admin extends Component{
   }
 
   handleBanImage = () => {
-    axios.post('http://localhost:5000/admin/banImage', {id: this.state.imageIDinput})
+    axios.post(process.env.serverADD+'admin/banImage', {id: this.state.imageIDinput})
     .then(response=>{
       if(response.data.banned=='comment'||response.data.banned=='post'){
         let deletedBlogReturn = "A "+response.data.banned+" image was successfully banned."
@@ -200,7 +200,7 @@ class Admin extends Component{
 
   handleShowBlogDelete = () => {
     console.log('inside handleShowBlogDelete')
-    axios.post('http://localhost:5000/blog/getBlogArchive')
+    axios.post(process.env.serverADD+'blog/getBlogArchive')
     .then(response=>{
       this.setState({
         blogPosts: response.data.posts,
@@ -212,7 +212,7 @@ class Admin extends Component{
 
   handleDeleteBlog = () => {
     console.log('inside handleDeleteBlog')
-    axios.post('http://localhost:5000/admin/deleteBlogPost', {id: this.state.blogIDinput})
+    axios.post(process.env.serverADD+'admin/deleteBlogPost', {id: this.state.blogIDinput})
     .then(response=>{
       if(response.data.deleted=='success'){
         let deletedBlogReturn = 'Blog was successfully deleted.'

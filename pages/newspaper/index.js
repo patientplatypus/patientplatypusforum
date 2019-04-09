@@ -21,7 +21,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 class Newspaper extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = "http://localhost:5000/newspaper/getHeadlines"
+    let url = process.env.serverADD+"newspaper/getHeadlines"
     var postReturn = await axios.get(url)
     .then(response=>{
       console.log('value of response from getNavPage: ', response.data)
@@ -76,7 +76,7 @@ class Newspaper extends Component{
       this.setState({captchaOK: false})
     }else{
       this.setState({captchaOK: true}, ()=>{
-        axios.post('http://localhost:5000/newspaper/addHeadline', {
+        axios.post(process.env.serverADD+'newspaper/addHeadline', {
           editNum: this.state.editNum,
           editHeadline: this.state.editHeadline,
           editURL: this.state.editURL,

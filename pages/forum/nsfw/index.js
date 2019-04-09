@@ -25,7 +25,7 @@ import NewsPaper from '../../../components/NewsPaper'
 class Home extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = "http://localhost:5000/forum/getNavPage"
+    let url = process.env.serverADD+"forum/getNavPage"
     console.log('value of url: ', url)
     console.log('value of query: ', query)
     var postReturn = await axios.post(url, {
@@ -63,7 +63,7 @@ class Home extends Component{
     this.setState({componentMounted: true})
     axios({
       method: 'get',
-      url: 'http://localhost:5000/forum/getNumPages/nsfw',
+      url: process.env.serverADD+'forum/getNumPages/nsfw',
     })
     .then((response)=>{
       //handle success
@@ -85,7 +85,7 @@ class Home extends Component{
 
   reloadPage = () => {
     console.log('inside reloadPosts')
-    window.location.href='http://localhost:3000/forum/nsfw/'+this.state.currentPage
+    window.location.href=process.env.clientADD+'forum/nsfw/'+this.state.currentPage
   }
 
   picHandler = (picVal, postType) => {
@@ -142,12 +142,12 @@ class Home extends Component{
           }
         }}
         >
-          <a href={`http://localhost:5000/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
+          <a href={`${process.env.serverADD}${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
             {renderIf(picVal.type=='preview')(
-              <img src={'http://localhost:5000/sharp/'+picVal.fileName} style={{maxWidth: '100%'}}/>
+              <img src={`${process.env.serverADD}sharp/`+picVal.fileName} style={{maxWidth: '100%'}}/>
             )}
             {renderIf(picVal.type=='actual')(
-              <img src={'http://localhost:5000/'+picVal.fileName}  style={{maxWidth: '100%'}}/>
+              <img src={`${process.env.serverADD}`+picVal.fileName}  style={{maxWidth: '100%'}}/>
             )}
           </a>
         </div>
@@ -230,9 +230,9 @@ class Home extends Component{
     let url = '';
     let setMsg = '';
     if(type=='post'){
-      url = 'http://localhost:5000/forum/flagPost'
+      url = process.env.serverADD+'forum/flagPost'
     }else if(type=='comment'){
-      url = 'http://localhost:5000/forum/flagComment'
+      url = process.env.serverADD+'forum/flagComment'
     }
     axios.post(url, {id: post._id, secondID: secondID})
     .then(response=>{
@@ -299,8 +299,6 @@ class Home extends Component{
   }
 
   renderCommentTagged(){
-    // console.log('32423452352532 inside renderCommentTagged')
-    // console.log('2346234623462345 value of this.state.showID: ', this.state.showID)
     return(
       this.state.postData.posts.map((post, index)=>{
         if(post._id==this.state.showID){
@@ -312,9 +310,7 @@ class Home extends Component{
         }else{
           return(
             post.comments.map((comment, index)=>{
-              // console.log('2346234623462345 value of comment._id: ', comment._id, ' and value of this.state.showID: ', this.state.showID)
               if(comment._id==this.state.showID){
-                console.log("2346234623462345~~~~~~INSIDE EQUALITY~~~~~~ and comment.body: ", comment.body)
                 return(
                   <div className='card' style={{position: 'absolute', top: `${this.state.y}px`, left: `${this.state.x}px`, zIndex: '99'}}>
                     {comment.body}

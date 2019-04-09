@@ -35,7 +35,7 @@ class FAQ extends Component{
     console.log('inside handlesubmit')
     if(this.state.captcha!=''){
       this.setState({notification: 'sending...'}, ()=>{
-        axios.post('http://localhost:5000/contact', {emailText: this.state.textVal, captcha: this.state.captcha})
+        axios.post(process.env.serverADD+'contact', {emailText: this.state.textVal, captcha: this.state.captcha})
         .then(response=>{
           console.log('value of response.data: ', response.data)
           if(response.data.status=='success'){

@@ -14,7 +14,7 @@ class NavMenu extends Component{
   constructor(props){
     super(props);
     try{
-      this.socket =  Socket('http://localhost:5000');
+      this.socket =  Socket(process.env.serverADD);
     }catch(e){
       console.log('catch: ', e)
     }
