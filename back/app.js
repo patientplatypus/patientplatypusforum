@@ -29,7 +29,7 @@ app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 var server = require('http').Server(app);
 var io = require('socket.io').listen(server, { origins: '*:*'}); 
 
-server.listen(5000)
+server.listen(8000)
 
 app.use(function(req, res, next) {
   req.io = io;

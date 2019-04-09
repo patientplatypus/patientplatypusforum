@@ -56,7 +56,7 @@ class FeedPage extends Component{
 
       let latLng = {lat: null, lng: null}
 
-      var pinReturn = await axios.post('http://localhost:5000/getPinData', {latLng}, {withCredentials: true})
+      var pinReturn = await axios.post(process.env.serverADD+'getPinData', {latLng}, {withCredentials: true})
       .then(response=>{
         console.log('value of response: ', response)
         return response.data.pins
@@ -94,7 +94,7 @@ class FeedPage extends Component{
   }
 
   addPin = (latLng) => {
-    axios.post('http://localhost:5000/addPinData', {latLng}, {withCredentials: true})
+    axios.post(process.env.serverADD+'addPinData', {latLng}, {withCredentials: true})
     .then(response=>{
       this.setState({pinData: response.data.pins})
     })
