@@ -2,6 +2,31 @@
 version: '3'
 
 services:
+  # go here instead https://github.com/drginm/docker-boilerplates/tree/master/mongodb-replicaset
+  # mongo1:
+  #   hostname: mongo1
+  #   container_name: localmongo1
+  #   image: mongo:4.0-xenial
+  #   expose:
+  #     - 27017
+  #   restart: always
+  #   entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+  # mongo2:
+  #   hostname: mongo2
+  #   container_name: localmongo2
+  #   image: mongo:4.0-xenial
+  #   expose:
+  #     - 27017
+  #   restart: always
+  #   entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+  # mongo3:
+  #   hostname: mongo3
+  #   container_name: localmongo3
+  #   image: mongo:4.0-xenial
+  #   expose:
+  #     - 27017
+  #   restart: always
+  #   entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
   nodejs:
     build:
       context: .
@@ -10,6 +35,8 @@ services:
       - "8000:8000"
     container_name: nodejs
     restart: unless-stopped
+    networks:
+      - app-network
   nextjs:
     build:
       context: ../.
@@ -18,4 +45,45 @@ services:
       - "3000:3000"
     container_name: nextjs
     restart: unless-stopped
-  
+    networks:
+      - app-network
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - web-root:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - nodejs
+      - nextjs
+    networks:
+      - app-network
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/var/lib/letsencrypt
+  #     - web-root:/var/www/html
+  #   depends_on:
+  #     - webserver
+  #   command: certonly --webroot --webroot-path=/var/www/html --email pweyand@gmail.com --agree-tos --no-eff-email --staging -d patientplatypus.com  -d www.patientplatypus.com 
+
+volumes:
+  certbot-etc:
+  certbot-var:
+  web-root:
+    driver: local
+    driver_opts:
+      type: none
+      device: /
+      o: bind
+
+networks:
+  app-network:
+    driver: bridge  

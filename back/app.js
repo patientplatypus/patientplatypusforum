@@ -84,7 +84,7 @@ app.use(express.static(path.join(__dirname, 'picFolder')));
 app.use((req, res, next)=>{
   console.log('inside testing captcha (if it exists)')
   console.log('and value of req.path: ', req.path)
-  if (req.path=='/forum/uploadPost'||req.path=='/admin/confirmPass'||req.path=='/contact'||req.path=='/newspaper/addHeadline'){
+  if (req.path=='/back/forum/uploadPost'||req.path=='/back/admin/confirmPass'||req.path=='/back/contact'||req.path=='/back/newspaper/addHeadline'){
     var verificationUrl = "https://www.google.com/recaptcha/api/siteverify?secret=" + process.env.recaptchaSecretKey + "&response=" + req.body.captcha;
     request(verificationUrl,function(error,response,body) {
       if (error){
@@ -102,13 +102,13 @@ app.use((req, res, next)=>{
   }
 })
 
-app.use('/', indexRouter);
+app.use('/back', indexRouter);
 
-app.use('/admin', adminRouter);
-app.use('/blog', blogRouter);
-app.use('/chat', chatRouter);
-app.use('/forum', forumRouter);
-app.use('/newspaper', newsPaperRouter);
+app.use('/back/admin', adminRouter);
+app.use('/back/blog', blogRouter);
+app.use('/back/chat', chatRouter);
+app.use('/back/forum', forumRouter);
+app.use('/back/newspaper', newsPaperRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

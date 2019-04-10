@@ -53,10 +53,7 @@ class FeedPage extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
     if (req){
-
-      let latLng = {lat: null, lng: null}
-
-      var pinReturn = await axios.post(process.env.serverADD+'getPinData', {latLng}, {withCredentials: true})
+      var pinReturn = await axios.post(process.env.serverADD+'getPinData', {withCredentials: true})
       .then(response=>{
         console.log('value of response: ', response)
         return response.data.pins
