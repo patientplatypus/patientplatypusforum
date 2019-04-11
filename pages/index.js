@@ -91,7 +91,7 @@ class FeedPage extends Component{
   }
 
   addPin = (latLng) => {
-    axios.post(process.env.serverADD+'addPinData', {latLng}, {withCredentials: true})
+    axios.post(process.env.serverfrontADD+'addPinData', {latLng}, {withCredentials: true})
     .then(response=>{
       this.setState({pinData: response.data.pins})
     })
@@ -102,6 +102,13 @@ class FeedPage extends Component{
 
   componentDidMount(){
     this.setState({pinData: this.props.pinData, componentMounted: true})
+    // axios.get(process.env.serverADD)
+    // .response((response)=>{
+    //   console.log('93470239472304723047320974 response from GET TEST: ', response)
+    // })
+    // .catch(error=>{
+    //   console.log('93470239472304723047320974 error from GET TEST: ', error)
+    // })
     console.log('inside componentDidMount')
     console.log('value of this.props.pinData: ', this.props.pinData)
     console.log('value of document.cookie: ', document.cookie)
@@ -140,7 +147,6 @@ class FeedPage extends Component{
   map = () => {  
     var pinArray = this.state.pinData;
     // pinArray.push({lat: 43.0760, lng: -107.2903})
-    console.log('value of pinArray: ', pinArray)
     var starCoord = [30.2672, -97.7431]
     var threadArray = [];
     if(Object.entries(this.state.bounds).length === 0 || pinArray == undefined){
@@ -163,8 +169,6 @@ class FeedPage extends Component{
     }else{
       threadArray = pinArray.map(pin=>{
         let pinCoord = [pin.lat, pin.lng]
-        console.log('value of pinCoord: ', pinCoord)
-        console.log('value of this.state.bounds: ', this.state.bounds)
         let pinHeight = (Math.abs(this.state.bounds.top-pinCoord[0])/Math.abs(this.state.bounds.top-this.state.bounds.bottom))*this.state.pixelWH.height
   
         let pinWidth = (Math.abs(this.state.bounds.right-pinCoord[1])/Math.abs(this.state.bounds.left-this.state.bounds.right))*this.state.pixelWH.width
@@ -175,34 +179,28 @@ class FeedPage extends Component{
   
         var tangent = 0;
         let distance = Math.sqrt(Math.pow((pinHeight-starHeight), 2) + Math.pow((pinWidth-starWidth), 2))
-        console.log('pinWidth: ', pinWidth)
-        console.log('pinHeight: ', pinHeight)
-        console.log('starWidth: ', starWidth)
-        console.log('starHeight: ', starHeight)
-        console.log('distance: ', distance)
         if(pinWidth<starWidth && pinHeight<starHeight){
           tangent = -Math.atan((Math.abs(pinWidth-starWidth)/Math.abs(pinHeight-starHeight)))*180/Math.PI-90;
           var returnObj = {distance, tangent, pinCoord}
-          console.log('returnObj in if 1: ', returnObj)
+          // console.log('returnObj in if 1: ', returnObj)
           return(returnObj)
         }else if(pinWidth>starWidth && pinHeight<starHeight){
           tangent = Math.atan((Math.abs(pinWidth-starWidth)/Math.abs(pinHeight-starHeight)))*180/Math.PI-90;
           var returnObj = {distance, tangent, pinCoord}
-          console.log('returnObj in if 2: ', returnObj)
+          // console.log('returnObj in if 2: ', returnObj)
           return(returnObj)
         }else if(pinWidth>starWidth && pinHeight>starHeight){
           tangent = Math.atan(Math.abs(pinHeight-starHeight)/(Math.abs(pinWidth-starWidth)))*180/Math.PI;
           var returnObj = {distance, tangent, pinCoord}
-          console.log('returnObj in if 3: ', returnObj)
+          // console.log('returnObj in if 3: ', returnObj)
           return(returnObj)
         }else if(pinWidth<starWidth && pinHeight>starHeight){
           tangent = -Math.atan(Math.abs(pinHeight-starHeight)/(Math.abs(pinWidth-starWidth)))*180/Math.PI-180;
           var returnObj = {distance, tangent, pinCoord}
-          console.log('returnObj in if 4: ', returnObj)
+          // console.log('returnObj in if 4: ', returnObj)
           return(returnObj)
         }
       })
-      console.log('value of threadArray: ', threadArray)
       return(
         <Map 
           center={[38.879, -94.6997]}
@@ -259,9 +257,7 @@ class FeedPage extends Component{
         const add = (a, b) => a + b
         const numVisits = this.state.pinData.map(pin=>{return pin.visits})
         if(numVisits!=[]){
-          console.log('value of numVisits: ', numVisits)
           const numVisitsSum = numVisits.reduce(add, 0)
-          console.log('value of numVisits: ', numVisits)
           return(
             <div>
               {numVisitsSum}
@@ -378,7 +374,5 @@ class FeedPage extends Component{
     )
   }
 }
-
-// maskImage: "url('/static/mapmask.png')", maskSize: 'contain', maskRepeat: 'no-repeat', WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskImage:"url('/static/mapmask.png')"
 
 export default FeedPage

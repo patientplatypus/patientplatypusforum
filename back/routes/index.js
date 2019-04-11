@@ -15,7 +15,7 @@ const nodemailer = require("nodemailer");
 
 
 router.get('/', function(req, res, next) {
-  res.json({'hello': 'there sailor'});
+  res.json({hello: 'there sailor'});
 });
 
 router.post('/contact', (req, res, next) => {

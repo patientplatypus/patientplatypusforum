@@ -18,8 +18,6 @@ var newsPaperRouter = require('./routes/newspaper');
 
 var cors = require('cors')
 var mongoose = require('mongoose');
-// var axios = require('axios');
-// var fetch = require('fetch')
 var request = require('request');
 
 var app = express();

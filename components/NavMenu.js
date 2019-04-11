@@ -61,15 +61,15 @@ class NavMenu extends Component{
                 </div>
                 <div style={{display: 'block'}}>
                   <div style={{display: 'inline-block',marginRight: '5px'}}>
-                    <Link href='/forum/sfw'><a href=''>SFW Forum</a></Link>
+                    <a href={"http://localhost:80/forum/sfw"}>SFW Forum</a>
                   </div>
                   <div style={{display: 'inline-block'}}>
-                    <Link href='/forum/nsfw'><a href=''>NSFW Forum</a></Link>
+                    <a href={"http://localhost:80/forum/nsfw"}>NSFW Forum</a>
                   </div>
                 </div>
                 <div style={{display: 'block'}}>
                 <div style={{display: 'inline-block', marginRight: '5px'}}>
-                    <Link href='/newspaper'><a href=''>Newspaper</a></Link>
+                    <a href={"http://localhost:80/newspaper"}>Newspaper</a>
                   </div>
                   <div style={{display: 'inline-block', marginRight: '5px'}}>
                     <Link href='/blog'><a href=''>Blog</a></Link>

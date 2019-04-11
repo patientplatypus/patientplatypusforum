@@ -9,16 +9,11 @@ import '../styles/root.css'
 
 import renderIf from 'render-if'
 
-class NavMenu extends Component{
+class Feed extends Component{
 
   constructor(props){
     super(props);
-    try{
-      this.socket =  Socket(process.env.serverADD);
-    }catch(e){
-      console.log('catch: ', e)
-    }
-   
+    this.socket = null;
     this.state = {
       feedArr: "FEED ʕっ˘ڡ˘ςʔ", 
       componentMounted: false
@@ -26,24 +21,35 @@ class NavMenu extends Component{
   }
 
   componentDidMount(){
-    this.socket.on('connection established', (msg)=>{
-      console.log('connection established...', msg)
-      this.setState({componentMounted: true})
-      this.socket.on('feedItem', (msg)=>{
-        console.log('feedItem: ', msg)
-        let tempArr = this.state.feedArr
-        if (tempArr=="FEED"){
-          tempArr = "//" + msg
-        }else{
-          tempArr = tempArr + "//" + msg
-        }
-        this.setState({
-          feedArr: tempArr,
-        }, ()=>{
-          console.log("after setState and value of feedArr : ", this.state.feedArr)
+    try{
+      console.log("29323452345234523452345 IN TRY FOR FEED")
+      this.socket =  Socket(process.env.socketADD);
+      console.log('29323452345234523452345 IN FEED and value of this.socket: ', this.socket)
+      this.socket.on('connect', function() {
+        console.log('SOCKET HAS CONNECTED')
+        // console.log('29323452345234523452345 check 2', this.socket.connected);
+      });
+      this.socket.on('connection established', (msg)=>{
+        console.log('29323452345234523452345 connection established...IN FEED', msg)
+        this.setState({componentMounted: true})
+        this.socket.on('feedItem', (msg)=>{
+          console.log('feedItem: ', msg)
+          let tempArr = this.state.feedArr
+          if (tempArr=="FEED"){
+            tempArr = "//" + msg
+          }else{
+            tempArr = tempArr + "//" + msg
+          }
+          this.setState({
+            feedArr: tempArr,
+          }, ()=>{
+            console.log("after setState and value of feedArr : ", this.state.feedArr)
+          })
         })
       })
-    })
+    }catch(e){
+      console.log('29323452345234523452345 CATCH IN FEED: ', e)
+    }
   }
 
   render(){
@@ -52,7 +58,7 @@ class NavMenu extends Component{
         {renderIf(this.state.componentMounted)(
           <Ticker
           offset="run-in"
-          speed={10}
+          speed={5}
           >
             { ({index})=><div className='feedFont' style={{display: 'inline-block', whiteSpace: 'nowrap'}}>{this.state.feedArr}</div>
             }
@@ -63,4 +69,4 @@ class NavMenu extends Component{
   }
 }
 
-export default NavMenu
+export default Feed

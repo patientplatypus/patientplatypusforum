@@ -25,7 +25,7 @@ import NewsPaper from '../../../components/NewsPaper'
 class Home extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = process.env.serverADD+"forum/getNavPage"
+    let url = process.env.serverInitADD+"forum/getNavPage"
     console.log('value of url: ', url)
     console.log('value of query: ', query)
     var postReturn = await axios.post(url, {

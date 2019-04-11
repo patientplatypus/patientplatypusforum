@@ -112,6 +112,7 @@ textarea{
   color: white;
   font-size: 30pt;
   overflow: hidden;
+  /* min-height: 5vh; */
 }
 
 
