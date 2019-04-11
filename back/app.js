@@ -77,7 +77,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(fileUpload());
-app.use(express.static(path.join(__dirname, '/picFolder')));
+// app.use(express.static('/var/www/back/picFolder'));
 
 app.use((req, res, next)=>{
   console.log('inside testing captcha (if it exists)')

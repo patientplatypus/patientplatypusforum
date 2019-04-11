@@ -142,12 +142,12 @@ class Home extends Component{
           }
         }}
         >
-          <a href={`${process.env.serverfrontADD}/${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
+          <a href={`${process.env.serverStatic}${picVal.fileName}`} target="_blank" onClick={(e)=>{e.preventDefault()}}>
             {renderIf(picVal.type=='preview')(
-              <img src={`${process.env.serverfrontADD}sharp/`+picVal.fileName} style={{maxWidth: '100%'}}/>
+              <img src={`${process.env.serverStatic}sharp/`+picVal.fileName} style={{maxWidth: '100%'}}/>
             )}
             {renderIf(picVal.type=='actual')(
-              <img src={`${process.env.serverfrontADD}/`+picVal.fileName}  style={{maxWidth: '100%'}}/>
+              <img src={`${process.env.serverStatic}`+picVal.fileName}  style={{maxWidth: '100%'}}/>
             )}
           </a>
         </div>
