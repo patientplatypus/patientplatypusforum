@@ -21,17 +21,19 @@ import ReCAPTCHA from "react-google-recaptcha";
 class Newspaper extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = process.env.serverfrontADD+"newspaper/getHeadlines"
-    var postReturn = await axios.get(url)
-    .then(response=>{
-      console.log('value of response from getNavPage: ', response.data)
-      return response.data.posts
-    })
-    .catch(error=>{
-      console.log('error from Node: ', error)
-      return({})
-    })
-    return({postData: postReturn})
+    if (req){
+      let url = process.env.serverInitADD+"newspaper/getHeadlines"
+      var postReturn = await axios.get(url)
+      .then(response=>{
+        console.log('value of response from getNavPage: ', response.data)
+        return response.data.posts
+      })
+      .catch(error=>{
+        console.log('error from Node: ', error)
+        return({})
+      })
+      return({postData: postReturn})
+    }
   }
 
   state = {
