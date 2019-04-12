@@ -55,7 +55,7 @@ class Provider extends Component {
     axios.get('https://ipapi.co/json/')
     .then(response=>{
       console.log('response from ipapi: ', response)
-      axios.post(process.env.serverfrontADD+'chat/getChatName', {ip: response.data.ip})
+      axios.post(process.env.serverfrontADD+'/chat/getChatName', {ip: response.data.ip})
       .then(response=>{console.log('response from getChatName', response)
         this.setState({chatName: response.data.chatName})
       })

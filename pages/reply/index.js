@@ -18,7 +18,7 @@ import { timingSafeEqual } from 'crypto';
 class Reply extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = process.env.serverInitADD+"forum/getPost"
+    let url = process.env.webserverback+"forum/getPost"
     console.log('value of url: ', url)
     var postReturn = await axios.post(url, {postID: query.post})
     .then(response=>{
@@ -50,7 +50,7 @@ class Reply extends Component{
 
   reloadPage = () => {
     console.log("inside reloadPage")
-    let url = process.env.serverADD+"forum/getPost"
+    let url = process.env.serverfrontADD+"/forum/getPost"
     axios.post(url, {postID: this.state.postID})
     .then(response=>{
       console.log('value of response: ', response)
@@ -121,9 +121,9 @@ class Reply extends Component{
     let url = '';
     let setMsg = '';
     if(type=='post'){
-      url = 'http://localhost:5000/forum/flagPost'
+      url = process.env.serverfrontADD+'/forum/flagPost'
     }else if(type=='comment'){
-      url = 'http://localhost:5000/forum/flagComment'
+      url = process.env.serverfrontADD+'/forum/flagComment'
     }
     axios.post(url, {id: post._id, secondID: secondID})
     .then(response=>{

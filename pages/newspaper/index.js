@@ -22,7 +22,7 @@ class Newspaper extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
     if (req){
-      let url = process.env.serverInitADD+"newspaper/getHeadlines"
+      let url = process.env.webserverback+"/newspaper/getHeadlines"
       var postReturn = await axios.get(url)
       .then(response=>{
         console.log('value of response from getNavPage: ', response.data)
@@ -78,7 +78,7 @@ class Newspaper extends Component{
       this.setState({captchaOK: false})
     }else{
       this.setState({captchaOK: true}, ()=>{
-        axios.post(process.env.serverADD+'newspaper/addHeadline', {
+        axios.post(process.env.serverADD+'/newspaper/addHeadline', {
           editNum: this.state.editNum,
           editHeadline: this.state.editHeadline,
           editURL: this.state.editURL,

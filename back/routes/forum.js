@@ -31,7 +31,8 @@ router.post('/uploadPost', (req, res, next)=>{
   console.log('value of req.files: ', req.files)
   console.log('value of req.body: ', req.body)
 
-  if(req.body.length<=2000){
+  if(req.body.post.length<=2000){
+    console.log('past length if statement')
     const savePost = (fileName) => {
 
       console.log('inside savePost')
@@ -73,8 +74,10 @@ router.post('/uploadPost', (req, res, next)=>{
     }
   
     if(req.files!=null){
+      console.log('inside req.files!=null going to logos to write file')
       logos.writePic(req.files.pic.name, req.files.pic.data, (fileName)=>savePost(fileName))
     }else{
+      console.log('apparently req.files==null')
       savePost()
     }
   }else{
@@ -86,7 +89,7 @@ router.post('/uploadComment', (req, res, next)=>{
   console.log('inside /uploadComment')
   console.log('value of req.body: ', req.body)
 
-  if(req.body.length<=2000){
+  if(req.body.comment.length<=2000){
     const uploadComment = (fileName) => {
 
       console.log('inside uploadComment')

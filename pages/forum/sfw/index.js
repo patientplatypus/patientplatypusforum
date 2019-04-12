@@ -21,21 +21,23 @@ import NewsPaper from '../../../components/NewsPaper'
 class Home extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
-    let url = process.env.serverInitADD+"forum/getNavPage"
-    console.log('value of url: ', url)
-    console.log('value of query: ', query)
-    var postReturn = await axios.post(url, {
-      navPage: query.navPage==undefined?0:query.navPage, 
-      boardType: 'sfw'
-    })
-    .then(response=>{
-      return response.data
-    })
-    .catch(error=>{
-      console.log('error from Node: ', error)
-      return({})
-    })
-    return({postData: postReturn, currentPage: query.navPage})
+    if(req){
+      let url = process.env.webserverback+"forum/getNavPage"
+      console.log('value of url: ', url)
+      console.log('value of query: ', query)
+      var postReturn = await axios.post(url, {
+        navPage: query.navPage==undefined?0:query.navPage, 
+        boardType: 'sfw'
+      })
+      .then(response=>{
+        return response.data
+      })
+      .catch(error=>{
+        console.log('error from Node: ', error)
+        return({})
+      })
+      return({postData: postReturn, currentPage: query.navPage})
+    }
   }
 
   constructor(props){
@@ -57,7 +59,7 @@ class Home extends Component{
   componentDidMount(){
     axios({
       method: 'get',
-      url: process.env.serverfrontADD+'forum/getNumPages/sfw',
+      url: process.env.serverfrontADD+'/forum/getNumPages/sfw',
     })
     .then((response)=>{
       //handle success
@@ -221,9 +223,9 @@ class Home extends Component{
     let url = '';
     let setMsg = '';
     if(type=='post'){
-      url = process.env.serverADD+'forum/flagPost'
+      url = process.env.serverfrontADD+'/forum/flagPost'
     }else if(type=='comment'){
-      url = process.env.serverADD+'forum/flagComment'
+      url = process.env.serverfrontADD+'/forum/flagComment'
     }
     axios.post(url, {id: post._id, secondID: secondID})
     .then(response=>{

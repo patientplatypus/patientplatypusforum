@@ -3,30 +3,43 @@ version: '3'
 
 services:
   # go here instead https://github.com/drginm/docker-boilerplates/tree/master/mongodb-replicaset
-  # mongo1:
-  #   hostname: mongo1
-  #   container_name: localmongo1
-  #   image: mongo:4.0-xenial
-  #   expose:
-  #     - 27017
-  #   restart: always
-  #   entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
-  # mongo2:
-  #   hostname: mongo2
-  #   container_name: localmongo2
-  #   image: mongo:4.0-xenial
-  #   expose:
-  #     - 27017
-  #   restart: always
-  #   entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
-  # mongo3:
-  #   hostname: mongo3
-  #   container_name: localmongo3
-  #   image: mongo:4.0-xenial
-  #   expose:
-  #     - 27017
-  #   restart: always
-  #   entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0" ]
+  mongo1:
+    image: mongo-start
+    build: ./mongo1
+    container_name: mongo1
+    restart: unless-stopped
+    networks:
+      - app-network
+    volumes:
+      - ./mongo1/data:/data/db
+    depends_on:
+      - mongo2
+      - mongo3
+  mongo2:
+    image: mongo
+    command: --replSet rs
+    restart: unless-stopped
+    container_name: mongo2
+    networks:
+      - app-network
+    volumes:
+      - ./mongo2/data:/data/db
+  mongo3:
+    image: mongo
+    command: --replSet rs
+    restart: unless-stopped
+    container_name: mongo3
+    networks:
+      - app-network
+    volumes:
+      - ./mongo3/data:/data/db
+  setup-rs:
+    image: setup-rs
+    build: ./setup
+    networks:
+      - app-network
+    depends_on:
+      - mongo1
   nodejs:
     build:
       context: .
@@ -34,11 +47,15 @@ services:
     ports:
       - "8000:8000"
     container_name: nodejs
+    volumes:
+      - ./picFolder:/picFolder
     restart: unless-stopped
     networks:
       - app-network
-    # volumes:
-    #   - './picFolder:/var/www/back/picFolder'
+    depends_on:
+      - mongo1
+      - mongo2
+      - mongo3
   nextjs:
     build:
       context: ../.
@@ -49,6 +66,8 @@ services:
     restart: unless-stopped
     networks:
       - app-network
+    depends_on:
+      - nodejs
   webserver:
     image: nginx:mainline-alpine
     container_name: webserver
@@ -64,6 +83,9 @@ services:
     depends_on:
       - nodejs
       - nextjs
+      - mongo1
+      - mongo2
+      - mongo3  
     networks:
       - app-network
   # certbot:

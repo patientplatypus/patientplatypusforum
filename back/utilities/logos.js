@@ -10,8 +10,11 @@ async function asyncForEach(array, callback) {
 }
 
 const writePic = (picName, picData, callback) => {
+  console.log('inside writePic in logos')
   let tempFileName = Date.now().toString() + '&&' + picName
-  let dest = __dirname+'/../picFolder/sharp/'+tempFileName
+  let dest = '/picFolder/sharp/'+tempFileName
+  console.log('and value of dest : ', dest)
+  console.log('and value of picData: ', picData)
   sharp(picData)
   .resize(200, 300, {
     fit: 'inside',
@@ -19,10 +22,13 @@ const writePic = (picName, picData, callback) => {
   })
   .toFile(dest)
   .then(() => {
-    let dest = __dirname+'/../picFolder/'+tempFileName
+    let dest = '/picFolder/'+tempFileName
     fs.writeFile(dest, picData, function(err, data) {
-      if (err) console.log(err);
-      console.log("Successfully Written to File.");
+      if (err){
+        console.log("there was an error writing the pic: ", err);
+      }else{
+        console.log("Successfully Written to File."); 
+      }
       fileName = tempFileName;
       callback(fileName)
     });

@@ -49,11 +49,13 @@ const WikimediaAttribution = () => (
   </span>
 )
 
-class FeedPage extends Component{
+class SplashPage extends Component{
   static async getInitialProps({req, query}){
     console.log('inside getInitialProps')
     if (req){
-      var pinReturn = await axios.post(process.env.serverADD+'getPinData', {withCredentials: true})
+      let url = process.env.webserverback+'getPinData'
+      console.log('getting pins for splash page with url: ', url)
+      var pinReturn = await axios.post(url, {withCredentials: true})
       .then(response=>{
         console.log('value of response: ', response)
         return response.data.pins
@@ -91,7 +93,7 @@ class FeedPage extends Component{
   }
 
   addPin = (latLng) => {
-    axios.post(process.env.serverfrontADD+'addPinData', {latLng}, {withCredentials: true})
+    axios.post(process.env.serverfrontADD+'/addPinData', {latLng}, {withCredentials: true})
     .then(response=>{
       this.setState({pinData: response.data.pins})
     })
@@ -375,4 +377,4 @@ class FeedPage extends Component{
   }
 }
 
-export default FeedPage
+export default SplashPage
