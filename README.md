@@ -4,7 +4,7 @@ This is a image based web forum (like 4chan), that also includes chat, a feed, r
 
 # Screen Shot of the Splash Page
 
-![alt text](/static/SplashPageScreenShot.png "Screen Shot of the Splash Page")
+![alt text](/static/SplashPageScreen.png "Screen Shot of the Splash Page")
 
 
 # Motivation
