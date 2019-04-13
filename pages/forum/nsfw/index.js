@@ -57,7 +57,8 @@ class Home extends Component{
       componentMounted: false,
       showID: '', 
       x: 0, 
-      y: 0
+      y: 0, 
+      IDclicked: ''
     }
   }
 
@@ -194,7 +195,9 @@ class Home extends Component{
               {this.picHandler({post: comment._id, parentID: post._id, fileName: comment.fileName, type: comment.type}, 'comment')}
             </div>
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
-              <div style={{fontStyle: 'italic'}}>
+              <div style={{fontStyle: 'italic'}}
+              onClick={()=>{this.setState({IDclicked: comment._id})}}
+              >
                 ID: <span style={{textDecoration: 'underline', cursor: 'pointer'}}>{comment._id}</span>
               </div>
               <div style={{fontStyle: 'italic'}}>
@@ -350,6 +353,7 @@ class Home extends Component{
             reloadPage={()=>this.reloadPage()}
             submitType={'post'}
             boardType={'nsfw'}
+            IDclicked={this.state.IDclicked}
             ></Submit>
           )}
           <div>
@@ -362,7 +366,9 @@ class Home extends Component{
                         {this.picHandler({post: post._id, fileName: post.fileName, type: post.type}, 'post')}
                       </div>
                       <div style={{display: 'inline-block', verticalAlign: 'top'}}>
-                        <div style={{fontStyle: 'italic'}}>
+                        <div style={{fontStyle: 'italic'}}
+                        onClick={()=>{this.setState({IDclicked: post._id})}}
+                        >
                           ID: <span style={{textDecoration: 'underline', cursor: 'pointer'}}>{post._id}</span>
                         </div>
                         <div style={{fontStyle: 'italic'}}>

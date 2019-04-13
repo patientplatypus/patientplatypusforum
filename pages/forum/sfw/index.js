@@ -51,7 +51,8 @@ class Home extends Component{
       flagWarning: [],
       showID: '', 
       x: 0, 
-      y: 0
+      y: 0, 
+      IDclicked: ''
     }
     this.mainRef = React.createRef();
   }
@@ -185,7 +186,9 @@ class Home extends Component{
               {this.picHandler({post: comment._id, parentID: post._id, fileName: comment.fileName, type: comment.type}, 'comment')}
             </div>
             <div style={{display: 'inline-block', verticalAlign: 'top'}}>
-              <div style={{fontStyle: 'italic'}}>
+              <div style={{fontStyle: 'italic'}}
+              onClick={()=>{this.setState({IDclicked: comment._id})}}
+              >
                 ID: <span style={{textDecoration: 'underline', cursor: 'pointer'}}>{comment._id}</span>
               </div>
               <div style={{fontStyle: 'italic'}}>
@@ -338,6 +341,7 @@ class Home extends Component{
           reloadPage={()=>this.reloadPage()}
           submitType={'post'}
           boardType={'sfw'}
+          IDclicked={this.state.IDclicked}
           ></Submit>
           <div>
             {this.state.postData.posts.map((post, index)=>{
@@ -349,7 +353,9 @@ class Home extends Component{
                       {this.picHandler({post: post._id, fileName: post.fileName, type: post.type}, 'post')}
                       </div>
                       <div style={{display: 'inline-block', verticalAlign: 'top'}}>
-                        <div style={{fontStyle: 'italic'}}>
+                        <div style={{fontStyle: 'italic'}}
+                        onClick={()=>{this.setState({IDclicked: comment._id})}}
+                        >
                           ID: <span style={{textDecoration: 'underline', cursor: 'pointer'}}>{post._id}</span>
                         </div>
                         <div style={{fontStyle: 'italic'}}>
